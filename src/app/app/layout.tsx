@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useSession, signOut } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
@@ -22,6 +23,8 @@ import {
   Brain,
   Bot,
   Settings,
+  LogOut,
+  User,
 } from "lucide-react";
 
 const navItems = [
@@ -39,6 +42,32 @@ const navItems = [
   { label: "Publish", href: "/app/publish", icon: Globe },
   { label: "Settings", href: "/app/settings", icon: Settings },
 ];
+
+function AppUserSection() {
+  const { data: session } = useSession();
+  const name = session?.user?.name || "Player 1";
+  const email = session?.user?.email || "";
+  const initial = name.charAt(0).toUpperCase();
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className="w-7 h-7 bg-yellow-400 flex items-center justify-center text-black font-bold text-[10px] font-[Press_Start_2P]">
+        {initial}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-[10px] text-white truncate font-[VT323]">{name}</p>
+        <p className="text-[8px] text-gray-600 truncate">{email}</p>
+      </div>
+      <button
+        onClick={() => signOut({ callbackUrl: "/login" })}
+        className="p-1.5 text-gray-600 hover:text-red-400 transition-colors"
+        title="Sign out"
+      >
+        <LogOut className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+}
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -122,8 +151,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           })}
         </nav>
 
-        {/* Footer */}
-        <div className="px-5 py-4 border-t-4 border-yellow-400">
+        {/* User + Logout */}
+        <div className="px-5 py-3 border-t-4 border-yellow-400 space-y-2">
+          <AppUserSection />
           <Link
             href="/"
             className="flex items-center gap-2 text-[10px] text-gray-600 hover:text-white transition-colors uppercase tracking-wider font-[VT323]"

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import {
   FolderOpen,
@@ -17,212 +18,337 @@ import {
   AlertCircle,
   Shield,
   ChevronRight,
+  Settings,
+  ExternalLink,
+  Key,
 } from "lucide-react";
 
-interface ConnectorCard {
+interface ConnectorConfig {
   id: string;
   name: string;
   description: string;
   icon: React.ElementType;
-  status: "available" | "connected" | "permission_required";
-  permissionText: string;
-  actionLabel: string;
-  color: string;
+  oauthUrl?: string;
+  oauthConfigured: boolean;
   features: string[];
+  color: string;
+  borderColor: string;
 }
 
-const connectors: ConnectorCard[] = [
-  {
-    id: "local-folder",
-    name: "Local Folder",
-    description: "Select a folder and build a private wiki from local files. Browser permission required.",
-    icon: FolderOpen,
-    status: "available",
-    permissionText: "Browser File System Access API permission",
-    actionLabel: "Connect Folder",
-    color: "from-amber-500 to-orange-600",
-    features: [".txt", ".md", ".json", ".csv", ".html"],
-  },
-  {
-    id: "google-drive",
-    name: "Google Drive",
-    description: "Import docs, PDFs, notes, and files from Drive. OAuth or manual export mode.",
-    icon: HardDrive,
-    status: "available",
-    permissionText: "OAuth consent or manual file export",
-    actionLabel: "Connect Drive",
-    color: "from-blue-500 to-indigo-600",
-    features: ["Docs", "Sheets", "PDFs", "Slides"],
-  },
-  {
-    id: "notion",
-    name: "Notion",
-    description: "Import pages and databases into your personal wiki. Integration token or export upload.",
-    icon: NotepadText,
-    status: "connected",
-    permissionText: "Integration token (session-only mode)",
-    actionLabel: "Connect Notion",
-    color: "from-gray-500 to-slate-600",
-    features: ["Pages", "Databases", "Blocks"],
-  },
-  {
-    id: "linkedin",
-    name: "LinkedIn Export",
-    description: "Import profile, posts, saved text, job notes, and exported archive files.",
-    icon: Briefcase,
-    status: "available",
-    permissionText: "Export Import Mode — upload your LinkedIn archive",
-    actionLabel: "Import LinkedIn Data",
-    color: "from-blue-600 to-blue-800",
-    features: ["Profile", "Posts", "Connections"],
-  },
-  {
-    id: "instagram",
-    name: "Instagram Export",
-    description: "Import captions, saved reels notes, copied transcripts, or export files.",
-    icon: Camera,
-    status: "available",
-    permissionText: "Export Import Mode — upload your Instagram archive",
-    actionLabel: "Import Instagram Data",
-    color: "from-pink-500 to-purple-600",
-    features: ["Captions", "Stories", "Reels"],
-  },
-  {
-    id: "manual-url",
-    name: "Manual URL",
-    description: "Add a webpage or article by URL. The app will fetch and index the content.",
-    icon: LinkIcon,
-    status: "available",
-    permissionText: "No special permission needed",
-    actionLabel: "Add URL",
-    color: "from-emerald-500 to-teal-600",
-    features: ["Webpages", "Articles", "Docs"],
-  },
-  {
-    id: "manual-text",
-    name: "Manual Paste",
-    description: "Paste raw text, notes, or copied content directly into your wiki.",
-    icon: Upload,
-    status: "available",
-    permissionText: "No special permission needed",
-    actionLabel: "Paste Text",
-    color: "from-violet-500 to-purple-600",
-    features: ["Raw text", "Notes", "Snippets"],
-  },
-  {
-    id: "demo-dataset",
-    name: "Demo Dataset",
-    description: "Load a polished AI Agent Memory Encyclopedia demo with sample sources, pages, and contradictions.",
-    icon: Database,
-    status: "connected",
-    permissionText: "No permission needed — public demo data",
-    actionLabel: "Load Demo",
-    color: "from-orange-500 to-red-600",
-    features: ["7 sources", "8 pages", "Graph", "Contradictions"],
-  },
-];
+function buildOAuthUrl(provider: string, redirectUri: string, scope: string): string | undefined {
+  const clientId =
+    provider === "google"
+      ? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
+      : provider === "microsoft"
+      ? process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID
+      : provider === "notion"
+      ? process.env.NEXT_PUBLIC_NOTION_CLIENT_ID
+      : undefined;
+
+  if (!clientId) return undefined;
+
+  const params = new URLSearchParams({
+    client_id: clientId,
+    redirect_uri: redirectUri,
+    response_type: "code",
+    scope,
+    access_type: "offline",
+    prompt: "consent",
+  });
+
+  const urls: Record<string, string> = {
+    google: `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`,
+    microsoft: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${params.toString()}`,
+    notion: `https://api.notion.com/v1/oauth/authorize?${params.toString()}`,
+  };
+
+  return urls[provider];
+}
+
+function getConnectors(): ConnectorConfig[] {
+  const redirectUri = typeof window !== "undefined" ? `${window.location.origin}/app/connect/callback` : "";
+
+  return [
+    {
+      id: "local-folder",
+      name: "Local Folder",
+      description: "Select a folder and build a private wiki from local files. Uses File System Access API or Tauri native bridge.",
+      icon: FolderOpen,
+      oauthConfigured: true,
+      features: [".txt", ".md", ".json", ".csv", ".html"],
+      color: "#ffeb3b",
+      borderColor: "rgba(255,235,59,0.3)",
+    },
+    {
+      id: "google-drive",
+      name: "Google Drive",
+      description: "Import docs, PDFs, notes, and files from Google Drive via OAuth.",
+      icon: HardDrive,
+      oauthUrl: buildOAuthUrl("google", redirectUri, "https://www.googleapis.com/auth/drive.readonly"),
+      oauthConfigured: !!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+      features: ["Docs", "Sheets", "PDFs", "Slides"],
+      color: "#00ffff",
+      borderColor: "rgba(0,255,255,0.3)",
+    },
+    {
+      id: "notion",
+      name: "Notion",
+      description: "Import pages and databases into your personal wiki via Notion OAuth integration.",
+      icon: NotepadText,
+      oauthUrl: buildOAuthUrl("notion", redirectUri, ""),
+      oauthConfigured: !!process.env.NEXT_PUBLIC_NOTION_CLIENT_ID,
+      features: ["Pages", "Databases", "Blocks"],
+      color: "#ffb8ff",
+      borderColor: "rgba(255,184,255,0.3)",
+    },
+    {
+      id: "microsoft",
+      name: "Microsoft 365",
+      description: "Import from OneDrive, SharePoint, and Outlook via Microsoft Graph OAuth.",
+      icon: Briefcase,
+      oauthUrl: buildOAuthUrl("microsoft", redirectUri, "Files.Read openid profile email"),
+      oauthConfigured: !!process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID,
+      features: ["OneDrive", "SharePoint", "Outlook"],
+      color: "#ffb852",
+      borderColor: "rgba(255,184,82,0.3)",
+    },
+    {
+      id: "manual-url",
+      name: "Manual URL",
+      description: "Add a webpage or article by URL. The app will fetch and index the content.",
+      icon: LinkIcon,
+      oauthConfigured: true,
+      features: ["Webpages", "Articles", "Docs"],
+      color: "#4ade80",
+      borderColor: "rgba(74,222,128,0.3)",
+    },
+    {
+      id: "manual-text",
+      name: "Manual Paste",
+      description: "Paste raw text, notes, or copied content directly into your wiki.",
+      icon: Upload,
+      oauthConfigured: true,
+      features: ["Raw text", "Notes", "Snippets"],
+      color: "#ffca28",
+      borderColor: "rgba(255,202,40,0.3)",
+    },
+    {
+      id: "demo-dataset",
+      name: "Demo Dataset",
+      description: "Load a polished AI Agent Memory Encyclopedia demo with sample sources, pages, and contradictions.",
+      icon: Database,
+      oauthConfigured: true,
+      features: ["7 sources", "8 pages", "Graph", "Contradictions"],
+      color: "#ffeb3b",
+      borderColor: "rgba(255,235,59,0.3)",
+    },
+  ];
+}
+
+function getStoredConnections(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem("qyntra-connections") || "[]");
+  } catch {
+    return [];
+  }
+}
+
+function setStoredConnections(ids: string[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("qyntra-connections", JSON.stringify(ids));
+}
 
 export default function ConnectPage() {
+  const { data: session } = useSession();
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [consentGiven, setConsentGiven] = useState<Record<string, boolean>>({});
+  const [connectedIds, setConnectedIds] = useState<string[]>([]);
+  const [justConnected, setJustConnected] = useState<string | null>(null);
+  const connectors = getConnectors();
+
+  useEffect(() => {
+    setConnectedIds(getStoredConnections());
+  }, []);
+
+  // Check for OAuth callback in URL
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("code");
+    const state = url.searchParams.get("state");
+    if (code && state) {
+      // In a real app, exchange code for tokens via API
+      // For demo, we mark the connector as connected
+      const connectorId = state;
+      handleConnect(connectorId);
+      // Clean URL
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, []);
+
+  function handleConnect(id: string) {
+    const next = [...connectedIds, id];
+    setConnectedIds(next);
+    setStoredConnections(next);
+    setJustConnected(id);
+    setActiveModal(null);
+    setTimeout(() => setJustConnected(null), 3000);
+  }
+
+  function handleDisconnect(id: string) {
+    const next = connectedIds.filter((c) => c !== id);
+    setConnectedIds(next);
+    setStoredConnections(next);
+  }
 
   const activeConnector = connectors.find((c) => c.id === activeModal);
+  const connectedCount = connectedIds.length;
 
   return (
     <div className="min-h-screen bg-black">
       {/* Header */}
       <div className="px-6 sm:px-8 lg:px-10 pt-8 pb-6">
-        <h1 className="text-2xl font-bold text-[#f5f5f5]">Permission Center</h1>
-        <p className="mt-1 text-sm text-[#a0a0a0]">
-          Connect your sources with permission-first data import
-        </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="pixel-heading text-[12px] text-white">Permission Center</h1>
+            <p className="mt-1 text-sm text-[#a0a0a0]">
+              {connectedCount} of {connectors.length} sources connected
+            </p>
+          </div>
+          {session?.user?.email && (
+            <div className="pixel-badge pixel-badge-yellow text-[6px]">
+              {session.user.email}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="px-6 sm:px-8 lg:px-10 pb-10">
         {/* Trust banner */}
-        <div className="glass-panel rounded-lg p-4 mb-8 flex items-center gap-3">
-          <Shield className="w-5 h-5 text-[#ffeb3b] shrink-0" />
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="glass-panel p-4 mb-8 flex items-center gap-3 border-yellow-400/20"
+        >
+          <Shield className="w-5 h-5 text-yellow-400 shrink-0" />
           <div>
-            <p className="text-sm font-medium text-[#f5f5f5]">Permission-First Architecture</p>
+            <p className="text-sm font-medium text-white">Permission-First Architecture</p>
             <p className="text-xs text-[#a0a0a0]">
-              QyntraWiki never silently accesses your data. Every connector requires explicit consent. For restricted APIs (LinkedIn, Instagram), we only support export-import mode.
+              OAuth tokens stay in your browser session. No silent data access. Revoke anytime.
             </p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Connector grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {connectors.map((conn, idx) => {
             const Icon = conn.icon;
-            const isConnected = conn.status === "connected";
+            const isConnected = connectedIds.includes(conn.id);
+            const isJustConnected = justConnected === conn.id;
+
             return (
               <motion.div
                 key={conn.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.05 }}
-                className={cn(
-                  "connector-card rounded-lg p-5 relative overflow-hidden",
-                  isConnected && "connector-card.connected"
-                )}
+                className="pixel-card relative overflow-hidden"
+                style={{ borderColor: isConnected ? "#4ade80" : conn.borderColor }}
               >
                 {/* Status badge */}
                 <div className="absolute top-3 right-3">
                   {isConnected ? (
-                    <span className="badge badge-green">
-                      <Check className="w-3 h-3" /> Connected
+                    <span className="pixel-badge pixel-badge-green text-[6px]">
+                      <Check className="w-2.5 h-2.5" /> Connected
                     </span>
                   ) : (
-                    <span className="badge badge-amber">
-                      <AlertCircle className="w-3 h-3" /> Available
+                    <span className="pixel-badge pixel-badge-yellow text-[6px]">
+                      <AlertCircle className="w-2.5 h-2.5" /> Available
                     </span>
                   )}
                 </div>
 
                 {/* Icon */}
                 <div
-                  className={cn(
-                    "w-10 h-10 rounded-lg flex items-center justify-center mb-4 bg-gradient-to-br",
-                    conn.color
-                  )}
+                  className="w-10 h-10 flex items-center justify-center mb-4 border-4"
+                  style={{ borderColor: conn.color, backgroundColor: `${conn.color}15` }}
                 >
-                  <Icon className="w-5 h-5 text-white" />
+                  <Icon className="w-5 h-5" style={{ color: conn.color }} />
                 </div>
 
                 {/* Content */}
-                <h3 className="text-sm font-bold text-[#f5f5f5] mb-1">{conn.name}</h3>
-                <p className="text-xs text-[#a0a0a0] mb-4 leading-relaxed">{conn.description}</p>
+                <h3 className="pixel-heading text-[8px] text-white mb-1">{conn.name}</h3>
+                <p className="text-xs text-[#a0a0a0] mb-3 leading-relaxed">{conn.description}</p>
 
                 {/* Features */}
-                <div className="flex flex-wrap gap-1.5 mb-4">
+                <div className="flex flex-wrap gap-1.5 mb-3">
                   {conn.features.map((f) => (
                     <span
                       key={f}
-                      className="text-[10px] px-2 py-0.5 bg-[rgba(255,235,59,0.1)] text-[#ffeb3b] rounded"
+                      className="text-[8px] px-2 py-0.5 bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 font-[Press_Start_2P]"
                     >
                       {f}
                     </span>
                   ))}
                 </div>
 
-                {/* Permission text */}
-                <div className="flex items-start gap-2 mb-4 p-2.5 rounded bg-[rgba(107,101,96,0.08)]">
-                  <Shield className="w-3.5 h-3.5 text-[#666666] mt-0.5 shrink-0" />
-                  <p className="text-[10px] text-[#666666] leading-relaxed">{conn.permissionText}</p>
-                </div>
-
                 {/* Action */}
-                <button
-                  onClick={() => setActiveModal(conn.id)}
-                  className={cn(
-                    "w-full py-2.5 text-xs font-bold uppercase tracking-wider rounded transition-all",
-                    isConnected
-                      ? "bg-[rgba(34,197,94,0.15)] text-green-400 hover:bg-[rgba(34,197,94,0.25)]"
-                      : "btn-primary"
-                  )}
-                >
-                  {isConnected ? "Manage" : conn.actionLabel}
-                </button>
+                {isConnected ? (
+                  <button
+                    onClick={() => handleDisconnect(conn.id)}
+                    className="w-full pixel-btn pixel-btn-ghost text-[6px] py-2"
+                  >
+                    Disconnect
+                  </button>
+                ) : conn.oauthUrl ? (
+                  <div className="space-y-2">
+                    {conn.oauthConfigured ? (
+                      <a
+                        href={conn.oauthUrl}
+                        className="w-full pixel-btn pixel-btn-yellow text-[6px] py-2 flex items-center justify-center gap-2"
+                      >
+                        <ExternalLink className="w-3 h-3" />
+                        Connect with OAuth
+                      </a>
+                    ) : (
+                      <div className="p-2 bg-yellow-400/5 border-2 border-yellow-400/20">
+                        <div className="flex items-center gap-2 mb-1">
+                          <Key className="w-3 h-3 text-yellow-400" />
+                          <span className="text-[8px] text-yellow-400 font-[Press_Start_2P]">
+                            OAuth Not Configured
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-[#666666]">
+                          Add {conn.id.toUpperCase().replace("-", "_")}_CLIENT_ID to your .env file.
+                        </p>
+                      </div>
+                    )}
+                    <button
+                      onClick={() => setActiveModal(conn.id)}
+                      className="w-full pixel-btn pixel-btn-ghost text-[6px] py-2"
+                    >
+                      Manual Import
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setActiveModal(conn.id)}
+                    className="w-full pixel-btn pixel-btn-yellow text-[6px] py-2"
+                  >
+                    {conn.id === "demo-dataset" ? "Load Demo" : "Connect"}
+                  </button>
+                )}
+
+                {/* Just connected flash */}
+                {isJustConnected && (
+                  <motion.div
+                    initial={{ opacity: 1 }}
+                    animate={{ opacity: 0 }}
+                    transition={{ duration: 2 }}
+                    className="absolute inset-0 bg-green-400/20 pointer-events-none"
+                  />
+                )}
               </motion.div>
             );
           })}
@@ -238,16 +364,16 @@ export default function ConnectPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-panel rounded-lg max-w-md w-full p-6"
+            className="glass-panel max-w-md w-full p-6 border-yellow-400/20"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-[#f5f5f5]">
+              <h3 className="pixel-heading text-[10px] text-white">
                 Connect {activeConnector.name}
               </h3>
               <button
                 onClick={() => setActiveModal(null)}
-                className="text-[#666666] hover:text-[#f5f5f5]"
+                className="text-[#666666] hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -255,11 +381,17 @@ export default function ConnectPage() {
 
             <p className="text-sm text-[#a0a0a0] mb-4">{activeConnector.description}</p>
 
-            <div className="p-4 rounded-lg bg-[rgba(255,235,59,0.05)] border border-[rgba(255,235,59,0.15)] mb-4">
-              <h4 className="text-xs font-bold text-[#ffeb3b] uppercase tracking-wider mb-2">
+            <div className="p-4 mb-4 bg-yellow-400/5 border-4 border-yellow-400/15">
+              <h4 className="text-[8px] font-[Press_Start_2P] text-yellow-400 uppercase tracking-wider mb-2">
                 Permission Required
               </h4>
-              <p className="text-xs text-[#a0a0a0]">{activeConnector.permissionText}</p>
+              <p className="text-xs text-[#a0a0a0]">
+                {activeConnector.id === "local-folder"
+                  ? "Browser File System Access API permission. Files stay local."
+                  : activeConnector.id === "demo-dataset"
+                  ? "No permission needed. Loads public demo data into your wiki."
+                  : `OAuth access to ${activeConnector.name}. You can revoke this at any time in Settings.`}
+              </p>
             </div>
 
             <div className="flex items-start gap-3 mb-6">
@@ -283,14 +415,15 @@ export default function ConnectPage() {
 
             <button
               disabled={!consentGiven[activeConnector.id]}
+              onClick={() => handleConnect(activeConnector.id)}
               className={cn(
-                "w-full py-3 text-xs font-bold uppercase tracking-wider rounded transition-all flex items-center justify-center gap-2",
+                "w-full py-3 text-[8px] font-[Press_Start_2P] uppercase tracking-wider flex items-center justify-center gap-2",
                 consentGiven[activeConnector.id]
-                  ? "btn-primary"
-                  : "bg-[rgba(107,101,96,0.2)] text-[#666666] cursor-not-allowed"
+                  ? "pixel-btn pixel-btn-solid"
+                  : "bg-[#666666]/20 text-[#666666] cursor-not-allowed"
               )}
             >
-              {activeConnector.actionLabel}
+              {activeConnector.id === "demo-dataset" ? "Load Demo" : activeConnector.name === "Local Folder" ? "Open Folder Picker" : `Connect ${activeConnector.name}`}
               <ChevronRight className="w-4 h-4" />
             </button>
           </motion.div>

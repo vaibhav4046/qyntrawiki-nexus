@@ -1,16 +1,120 @@
 "use client";
-
-import React, { useEffect, useState, useRef } from "react";
-import { motion, useInView, useMotionValue, useSpring, useTransform, animate } from "framer-motion";
+import React, { useEffect, useState, useRef, useCallback } from "react";
+import { motion, useInView, useMotionValue, useTransform, animate, useScroll, useSpring } from "framer-motion";
 import Link from "next/link";
-import {
-  ArrowRight, Database, Sparkles, Shield, BookOpen,
-  FolderOpen, GitBranch, MessageSquare, Globe, FileText,
-  Check, X, Zap, Server, Users, Lock,
-} from "lucide-react";
+import { ArrowRight, Database, Sparkles, Shield, BookOpen, FolderOpen, GitBranch, MessageSquare, Globe, FileText, Check, X, Zap, Server, Users, Lock } from "lucide-react";
 import KnowledgeTree from "@/components/KnowledgeTree";
 
-/* ─── Animated Counter ─── */
+/* ─── TypewriterText ─── */
+function TypewriterText({ text, speed = 50, delay = 0, className = "" }: { text: string; speed?: number; delay?: number; className?: string }) {
+  const [displayed, setDisplayed] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setStarted(true), delay);
+    return () => clearTimeout(timer);
+  }, [delay]);
+
+  useEffect(() => {
+    if (!started) return;
+    if (displayed.length < text.length) {
+      const timer = setTimeout(() => {
+        setDisplayed(text.slice(0, displayed.length + 1));
+      }, speed);
+      return () => clearTimeout(timer);
+    }
+  }, [started, displayed, text, speed]);
+
+  useEffect(() => {
+    const interval = setInterval(() => setShowCursor((p) => !p), 500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <span className={className}>
+      {displayed}
+      <span className={`inline-block w-[4px] h-[1em] bg-yellow-400 ml-0.5 ${showCursor ? "opacity-100" : "opacity-0"}`} />
+    </span>
+  );
+}
+
+/* ─── GlitchText ─── */
+function GlitchText({ text, className = "" }: { text: string; className?: string }) {
+  return (
+    <span className={`glitch-text ${className}`} data-text={text}>
+      {text}
+    </span>
+  );
+}
+
+/* ─── WaveText ─── */
+function WaveText({ text, className = "" }: { text: string; className?: string }) {
+  return (
+    <span className={`wave-text ${className}`}>
+      {text.split("").map((char, i) => (
+        <span key={i} style={{ animationDelay: `${i * 0.05}s` }}>
+          {char === " " ? "\u00A0" : char}
+        </span>
+      ))}
+    </span>
+  );
+}
+
+/* ─── FloatingPellets ─── */
+function FloatingPellets() {
+  const pellets = Array.from({ length: 20 }, (_, i) => ({
+    id: i,
+    x: Math.random() * 100,
+    y: Math.random() * 100,
+    size: 2 + Math.random() * 3,
+    duration: 3 + Math.random() * 4,
+    delay: Math.random() * 3,
+  }));
+  return (
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+      {pellets.map((p) => (
+        <motion.div
+          key={p.id}
+          className="absolute rounded-full bg-yellow-400/30"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: p.size,
+            height: p.size,
+          }}
+          animate={{
+            y: [0, -30, 0],
+            opacity: [0.2, 0.6, 0.2],
+          }}
+          transition={{
+            duration: p.duration,
+            delay: p.delay,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+/* ─── GhostSprite ─── */
+function GhostSprite({ color, size = 32, className = "" }: { color: string; size?: number; className?: string }) {
+  return (
+    <div className={`ghost-float ${className}`} style={{ width: size, height: size }}>
+      <svg viewBox="0 0 24 24" fill={color} className="w-full h-full drop-shadow-lg">
+        <path d="M12 2C7.58 2 4 5.58 4 10v10c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-3h2v3c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-3h2v3c0 .55.45 1 1 1h2c.55 0 1-.45 1-1V10c0-4.42-3.58-8-8-8z" />
+        <circle cx="9" cy="9" r="2" fill="white" />
+        <circle cx="15" cy="9" r="2" fill="white" />
+        <circle cx="9" cy="9" r="1" fill="black" />
+        <circle cx="15" cy="9" r="1" fill="black" />
+      </svg>
+    </div>
+  );
+}
+
+/* ─── AnimatedCounter ─── */
 function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
@@ -30,19 +134,19 @@ function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number;
   }, [rounded]);
 
   if (!inView) return <span ref={ref}>{prefix}0{suffix}</span>;
-  return <span ref={ref}>{prefix}{display}{suffix}</span>;
+  return <span ref={ref} className="tabular-nums">{prefix}{display}{suffix}</span>;
 }
 
 /* ─── Section Reveal ─── */
-function SectionReveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+function SectionReveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+      transition={{ duration: 0.8, delay, ease: [0.4, 0, 0.2, 1] }}
       className={className}
     >
       {children}
@@ -50,7 +154,7 @@ function SectionReveal({ children, className = "" }: { children: React.ReactNode
   );
 }
 
-/* ─── Stats ─── */
+/* ─── Data ─── */
 const stats = [
   { value: 9, suffix: "+", label: "Connectors" },
   { value: 8, label: "Wiki Pages" },
@@ -109,6 +213,7 @@ export default function LandingPage() {
         <div className="absolute inset-0 z-0 opacity-50">
           <KnowledgeTree />
         </div>
+        <FloatingPellets />
         <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-t from-[#000] to-transparent z-[1] pointer-events-none" />
 
         {/* Nav */}
@@ -142,26 +247,20 @@ export default function LandingPage() {
             <span className="pixel-label mb-6">HydraDB WikiThon 2026</span>
           </motion.div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mb-6 max-w-4xl mx-auto text-[#f5f5f5]"
-          >
-            The Brain Behind Your{" "}
-            <span className="gradient-pixel">Personal Knowledge</span>
-          </motion.h1>
+          <h1 className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mb-6 max-w-4xl mx-auto text-[#f5f5f5]">
+            <TypewriterText text="The Brain Behind Your " speed={50} delay={300} />
+            <span className="gradient-pixel">
+              <TypewriterText text="Personal Knowledge" speed={50} delay={1400} />
+            </span>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto mb-10 leading-relaxed"
-          >
-            A unified context layer to capture your entire working knowledge:
-            files, notes, links, exports, cloud docs, and daily memory —
-            compiled into a cited, searchable, HydraDB-powered personal wiki.
-          </motion.p>
+          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto mb-10 leading-relaxed">
+            <TypewriterText
+              text="A unified context layer to capture your entire working knowledge: files, notes, links, exports, cloud docs, and daily memory — compiled into a cited, searchable, HydraDB-powered personal wiki."
+              speed={30}
+              delay={2200}
+            />
+          </p>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -169,12 +268,23 @@ export default function LandingPage() {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Link href="/app" className="pixel-btn pixel-btn-solid px-8 py-3.5">
+            <Link href="/app" className="pixel-btn pixel-btn-solid px-8 py-3.5 glow-pulse">
               Start Building <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/app" className="pixel-btn pixel-btn-yellow px-8 py-3.5">
+            <Link href="/app" className="pixel-btn pixel-btn-yellow px-8 py-3.5 glow-pulse">
               Load Demo <Database className="w-4 h-4" />
             </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 3, duration: 0.8 }}
+            className="mt-6"
+          >
+            <span className="coin-insert text-[#ffeb3b] pixel-heading text-[8px] tracking-widest uppercase">
+              INSERT COIN TO BEGIN
+            </span>
           </motion.div>
 
           {/* Stats row */}
@@ -194,6 +304,20 @@ export default function LandingPage() {
             ))}
           </motion.div>
         </div>
+
+        {/* Floating ghost sprites in corners */}
+        <div className="absolute top-28 left-8 z-10 hidden lg:block">
+          <GhostSprite color="#ff0000" size={40} />
+        </div>
+        <div className="absolute top-28 right-8 z-10 hidden lg:block">
+          <GhostSprite color="#ffb8ff" size={40} />
+        </div>
+        <div className="absolute bottom-28 left-12 z-10 hidden lg:block">
+          <GhostSprite color="#00ffff" size={40} />
+        </div>
+        <div className="absolute bottom-28 right-12 z-10 hidden lg:block">
+          <GhostSprite color="#ffb852" size={40} />
+        </div>
       </section>
 
       {/* ── WHY QYNTRAWIKI ── */}
@@ -201,20 +325,17 @@ export default function LandingPage() {
         <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
           <span className="pixel-label">Why QyntraWiki</span>
           <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
-            Similarity isn't relevance.<br />Give your knowledge the right context.
+            <GlitchText text="Similarity isn't relevance" />
           </h2>
           <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
-            Flat file storage returns what's close, not what's correct.
-            QyntraWiki connects your tools and data, builds a structured graph,
-            and delivers the exact context you need.
+            <WaveText text="Flat file storage returns what's close, not what's correct. QyntraWiki connects your tools and data, builds a structured graph, and delivers the exact context you need." />
           </p>
         </SectionReveal>
 
         {/* With / Without comparison */}
-        <SectionReveal className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Without */}
-            <div className="pixel-card p-8" style={{ borderColor: "rgba(255,0,0,0.3)" }}>
+        <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <SectionReveal delay={0.1}>
+            <div className="pixel-card flip-in p-8" style={{ borderColor: "rgba(255,0,0,0.3)" }}>
               <h3 className="pixel-heading text-[9px] text-[#ff0000] mb-6">Without QyntraWiki</h3>
               <div className="space-y-3">
                 {comparisonFeatures.map((f, i) => (
@@ -225,8 +346,9 @@ export default function LandingPage() {
                 ))}
               </div>
             </div>
-            {/* With */}
-            <div className="pixel-card p-8" style={{ borderColor: "rgba(255,235,59,0.6)" }}>
+          </SectionReveal>
+          <SectionReveal delay={0.2}>
+            <div className="pixel-card flip-in p-8 glow-pulse" style={{ borderColor: "rgba(255,235,59,0.6)" }}>
               <h3 className="pixel-heading text-[9px] text-[#ffeb3b] mb-6">With QyntraWiki</h3>
               <div className="space-y-3">
                 {comparisonFeatures.map((f, i) => (
@@ -237,8 +359,8 @@ export default function LandingPage() {
                 ))}
               </div>
             </div>
-          </div>
-        </SectionReveal>
+          </SectionReveal>
+        </div>
       </section>
 
       {/* ── CONNECTORS ── */}
@@ -257,8 +379,8 @@ export default function LandingPage() {
           {connectors.map((c, i) => {
             const Icon = c.icon;
             return (
-              <SectionReveal key={c.name}>
-                <div className="pixel-card p-5 h-full">
+              <SectionReveal key={c.name} delay={i * 0.1}>
+                <div className="pixel-card flip-in p-5 h-full" style={{ borderColor: "rgba(255,235,59,0.3)" }}>
                   <div className="w-9 h-9 bg-[rgba(255,235,59,0.1)] flex items-center justify-center mb-3 border-[4px] border-[rgba(255,235,59,0.2)]">
                     <Icon className="w-4 h-4 text-[#ffeb3b]" />
                   </div>
@@ -285,7 +407,7 @@ export default function LandingPage() {
 
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           {wikiPages.map((p, i) => (
-            <SectionReveal key={p.title}>
+            <SectionReveal key={p.title} delay={i * 0.15}>
               <div className="pixel-card p-6 h-full">
                 <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">{p.title}</h3>
                 <p className="text-[16px] text-[#666666] leading-relaxed mb-4">{p.summary}</p>
@@ -314,20 +436,24 @@ export default function LandingPage() {
         </SectionReveal>
 
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="pixel-card p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
-            <GitBranch className="w-10 h-10 text-[#ffeb3b] mb-4" />
-            <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">HydraDB Memory Graph</h3>
-            <p className="text-[16px] text-[#666666]">
-              Pages, files, entities, claims, and contradictions become visible graph context.
-            </p>
-          </div>
-          <div className="pixel-card p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
-            <MessageSquare className="w-10 h-10 text-[#00ffff] mb-4" />
-            <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">Ask Your Wiki</h3>
-            <p className="text-[16px] text-[#666666]">
-              Ask questions with citations, related files, and context used transparency.
-            </p>
-          </div>
+          <SectionReveal delay={0.1}>
+            <div className="pixel-card rainbow-border p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
+              <GitBranch className="w-10 h-10 text-[#ffeb3b] mb-4" />
+              <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">HydraDB Memory Graph</h3>
+              <p className="text-[16px] text-[#666666]">
+                Pages, files, entities, claims, and contradictions become visible graph context.
+              </p>
+            </div>
+          </SectionReveal>
+          <SectionReveal delay={0.2}>
+            <div className="pixel-card rainbow-border p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
+              <MessageSquare className="w-10 h-10 text-[#00ffff] mb-4" />
+              <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">Ask Your Wiki</h3>
+              <p className="text-[16px] text-[#666666]">
+                Ask questions with citations, related files, and context used transparency.
+              </p>
+            </div>
+          </SectionReveal>
         </div>
       </section>
 
@@ -345,17 +471,19 @@ export default function LandingPage() {
         </SectionReveal>
 
         <div className="max-w-4xl mx-auto">
-          <div className="pixel-card p-8 text-center">
-            <Globe className="w-10 h-10 text-[#ffeb3b] mx-auto mb-4" />
-            <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">One-click publish</h3>
-            <p className="text-[16px] text-[#666666] max-w-md mx-auto mb-6">
-              Public routes show generated article content and public-safe citation labels.
-              Raw private files stay hidden.
-            </p>
-            <Link href="/app/publish" className="pixel-btn pixel-btn-solid">
-              Go to Publish <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
+          <SectionReveal>
+            <div className="pixel-card p-8 text-center glow-pulse">
+              <Globe className="w-10 h-10 text-[#ffeb3b] mx-auto mb-4" />
+              <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">One-click publish</h3>
+              <p className="text-[16px] text-[#666666] max-w-md mx-auto mb-6">
+                Public routes show generated article content and public-safe citation labels.
+                Raw private files stay hidden.
+              </p>
+              <Link href="/app/publish" className="pixel-btn pixel-btn-solid">
+                Go to Publish <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </SectionReveal>
         </div>
       </section>
 
@@ -369,34 +497,60 @@ export default function LandingPage() {
         </SectionReveal>
 
         <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {trustItems.map((item) => {
+          {trustItems.map((item, i) => {
             const I = item.icon;
             return (
-              <div
-                key={item.title}
-                className="pixel-card p-5 text-center"
-                style={{ borderColor: item.border, backgroundColor: item.bg }}
-              >
-                <I className="w-7 h-7 mx-auto mb-3" style={{ color: item.color }} />
-                <h4 className="pixel-heading text-[8px] text-[#f5f5f5] mb-1">{item.title}</h4>
-                <p className="text-[14px] text-[#a0a0a0]">{item.desc}</p>
-              </div>
+              <SectionReveal key={item.title} delay={i * 0.1}>
+                <div className="relative pt-8">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
+                    <GhostSprite color={item.color} size={36} />
+                  </div>
+                  <div
+                    className="pixel-card p-5 text-center pt-10"
+                    style={{ borderColor: item.border, backgroundColor: item.bg }}
+                  >
+                    <I className="w-7 h-7 mx-auto mb-3" style={{ color: item.color }} />
+                    <h4 className="pixel-heading text-[8px] text-[#f5f5f5] mb-1">{item.title}</h4>
+                    <p className="text-[14px] text-[#a0a0a0]">{item.desc}</p>
+                  </div>
+                </div>
+              </SectionReveal>
             );
           })}
         </div>
       </section>
 
       {/* ── CTA ── */}
-      <section className="relative z-10 px-6 py-24 bg-[#000]">
+      <section className="relative z-10 px-6 py-24 bg-[#000] overflow-hidden">
         <SectionReveal className="max-w-4xl mx-auto text-center">
+          <div className="overflow-hidden mb-8">
+            <motion.div
+              className="flex whitespace-nowrap w-max"
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            >
+              <span className="text-[#ffeb3b] pixel-heading text-[8px] tracking-widest uppercase mx-4">
+                YOUR KNOWLEDGE DESERVES A WIKI *** BUILD YOUR BRAIN *** &nbsp;&nbsp;&nbsp;
+              </span>
+              <span className="text-[#ffeb3b] pixel-heading text-[8px] tracking-widest uppercase mx-4">
+                YOUR KNOWLEDGE DESERVES A WIKI *** BUILD YOUR BRAIN *** &nbsp;&nbsp;&nbsp;
+              </span>
+              <span className="text-[#ffeb3b] pixel-heading text-[8px] tracking-widest uppercase mx-4">
+                YOUR KNOWLEDGE DESERVES A WIKI *** BUILD YOUR BRAIN *** &nbsp;&nbsp;&nbsp;
+              </span>
+              <span className="text-[#ffeb3b] pixel-heading text-[8px] tracking-widest uppercase mx-4">
+                YOUR KNOWLEDGE DESERVES A WIKI *** BUILD YOUR BRAIN *** &nbsp;&nbsp;&nbsp;
+              </span>
+            </motion.div>
+          </div>
           <h2 className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mb-6 text-[#f5f5f5]">
             Ready to build your<br />personal Wikipedia?
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/app/connect" className="pixel-btn pixel-btn-solid px-8 py-3.5">
+            <Link href="/app/connect" className="pixel-btn pixel-btn-solid px-8 py-3.5 shake">
               Start Nexus Scan <Zap className="w-4 h-4" />
             </Link>
-            <Link href="/app" className="pixel-btn pixel-btn-yellow px-8 py-3.5">
+            <Link href="/app" className="pixel-btn pixel-btn-yellow px-8 py-3.5 shake">
               Load Demo <Database className="w-4 h-4" />
             </Link>
           </div>
