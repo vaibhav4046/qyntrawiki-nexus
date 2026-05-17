@@ -1,5 +1,7 @@
+"use client";
+
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {
   FileText,
@@ -16,237 +18,417 @@ import {
   FolderTree,
   ArrowRight,
   Zap,
+  Crosshair,
+  Heart,
+  Swords,
+  Target,
+  Shield,
+  Radar,
+  Flame,
+  ChevronRight,
+  Trophy,
+  Skull,
+  Lock,
+  Unlock,
 } from "lucide-react";
 
-export default async function AppDashboardPage() {
-  // For demo, we show the demo wiki stats
-  const wiki = await prisma.wiki.findFirst({ where: { slug: "ai-agent-memory" } });
-  const wikiId = (wiki?.id as string) || "demo-wiki";
+/* ─── Mock data that mirrors server results ─── */
+const wikiName = "AI Agent Memory";
+const lives = 3;
+const score = 124500;
+const highScore = 250000;
+const stage = 2;
+const weapon = "SPREAD";
 
-  const pageCount = await prisma.page.count({ where: { wikiId } });
-  const sourceCount = await prisma.source.count({ where: { wikiId } });
-  const fileCount = await prisma.fileItem.count({ where: { wikiId } });
-  const claimCount = await prisma.claim.count({ where: { wikiId } });
-  const contradictionCount = await prisma.claim.count({ where: { wikiId, status: "disputed" } });
-  const entityCount = await prisma.entity.count({ where: { wikiId } });
+const stats = [
+  { label: "PAGES", value: 9, icon: FileText, href: "/app/wiki", color: "#e63946", max: 20 },
+  { label: "SOURCES", value: 8, icon: Database, href: "/app/import", color: "#f77f00", max: 20 },
+  { label: "FILES", value: 7, icon: FolderOpen, href: "/app/files", color: "#a78bfa", max: 20 },
+  { label: "ENTITIES", value: 18, icon: Lightbulb, href: "/app/graph", color: "#00b4d8", max: 50 },
+  { label: "CLAIMS", value: 18, icon: MessageSquare, href: "/app/ask", color: "#34d399", max: 40 },
+  { label: "THREATS", value: 2, icon: AlertTriangle, href: "/app/contradictions", color: "#e63946", max: 10 },
+];
 
-  const recentPages = await prisma.page.findMany({
-    where: { wikiId },
-    orderBy: { updatedAt: "desc" },
-    take: 5,
-  });
+const stages = [
+  {
+    name: "JUNGLE ZONE",
+    desc: "Connect external intel feeds",
+    icon: Plug,
+    href: "/app/connect",
+    color: "#4a7c59",
+    locked: false,
+    cleared: true,
+    enemies: 0,
+  },
+  {
+    name: "WEAPON ROOM",
+    desc: "Armory — import raw data",
+    icon: Upload,
+    href: "/app/import",
+    color: "#f77f00",
+    locked: false,
+    cleared: true,
+    enemies: 0,
+  },
+  {
+    name: "INTEL ARCHIVES",
+    desc: "Browse compiled wiki pages",
+    icon: BookOpen,
+    href: "/app/wiki",
+    color: "#00b4d8",
+    locked: false,
+    cleared: false,
+    enemies: 3,
+  },
+  {
+    name: "TACTICAL MAP",
+    desc: "Visualize knowledge network",
+    icon: GitBranch,
+    href: "/app/graph",
+    color: "#e63946",
+    locked: false,
+    cleared: false,
+    enemies: 5,
+  },
+  {
+    name: "COMMS CENTER",
+    desc: "Query your knowledge base",
+    icon: MessageSquare,
+    href: "/app/ask",
+    color: "#ff69b4",
+    locked: false,
+    cleared: false,
+    enemies: 2,
+  },
+  {
+    name: "RECON SQUAD",
+    desc: "AI structure suggestions",
+    icon: FolderTree,
+    href: "/app/organize",
+    color: "#a78bfa",
+    locked: false,
+    cleared: false,
+    enemies: 1,
+  },
+];
 
-  const recentFiles = await prisma.fileItem.findMany({
-    where: { wikiId },
-    orderBy: { createdAt: "desc" },
-    take: 5,
-  });
+const missionLog = [
+  { title: "What are AI Agents?", status: "COMPLETE", xp: 500 },
+  { title: "Memory Types", status: "COMPLETE", xp: 750 },
+  { title: "Vector Databases", status: "IN PROGRESS", xp: 0 },
+  { title: "Agent Frameworks", status: "LOCKED", xp: 0 },
+  { title: "Deployment Patterns", status: "LOCKED", xp: 0 },
+];
 
-  const connectors = await prisma.connector.findMany({ where: { wikiId } });
-  const connectedCount = connectors.filter((c) => (c.status as string) === "connected").length;
+const squad = [
+  { name: "Google Drive", status: "ACTIVE", icon: Globe },
+  { name: "Notion", status: "ACTIVE", icon: Database },
+  { name: "Local", status: "STANDBY", icon: FolderOpen },
+  { name: "Slack", status: "OFFLINE", icon: MessageSquare },
+  { name: "GitHub", status: "OFFLINE", icon: GitBranch },
+  { name: "Microsoft", status: "OFFLINE", icon: Globe },
+];
 
-  const stats = [
-    { label: "Wiki Pages", value: pageCount, icon: FileText, href: "/app/wiki", color: "text-[#e63946]" },
-    { label: "Sources", value: sourceCount, icon: Database, href: "/app/import", color: "text-[#f77f00]" },
-    { label: "Files", value: fileCount, icon: FolderOpen, href: "/app/files", color: "text-[#a78bfa]" },
-    { label: "Entities", value: entityCount, icon: Lightbulb, href: "/app/graph", color: "text-[#00b4d8]" },
-    { label: "Claims", value: claimCount, icon: MessageSquare, href: "/app/ask", color: "text-[#34d399]" },
-    { label: "Contradictions", value: contradictionCount, icon: AlertTriangle, href: "/app/contradictions", color: "text-[#e63946]" },
-  ];
-
-  const quickActions = [
-    { label: "Connect Sources", desc: "Link Notion, Drive, local files", icon: Plug, href: "/app/connect", color: "from-red-500/20 to-orange-500/20" },
-    { label: "Import Data", desc: "Upload files, paste text, add URLs", icon: Upload, href: "/app/import", color: "from-orange-500/20 to-red-500/20" },
-    { label: "Browse Wiki", desc: "Read compiled articles", icon: BookOpen, href: "/app/wiki", color: "from-blue-500/20 to-purple-500/20" },
-    { label: "Explore Graph", desc: "Visualize knowledge network", icon: GitBranch, href: "/app/graph", color: "from-emerald-500/20 to-teal-500/20" },
-    { label: "Ask Questions", desc: "Query your knowledge base", icon: MessageSquare, href: "/app/ask", color: "from-violet-500/20 to-fuchsia-500/20" },
-    { label: "Organize", desc: "AI suggestions for structure", icon: FolderTree, href: "/app/organize", color: "from-pink-500/20 to-rose-500/20" },
-  ];
-
+/* ─── HUD Bar ─── */
+function HUD() {
   return (
-    <div className="min-h-screen bg-black">
-      {/* Header */}
-      <div className="px-6 sm:px-8 lg:px-10 pt-8 pb-6">
+    <div className="bg-[#080808] border-b-[3px] border-[#e63946] px-4 py-2 flex items-center justify-between gap-4 overflow-x-auto font-[VT323]">
+      <div className="flex items-center gap-4 min-w-fit">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] text-[#e63946] tracking-wider">SCORE</span>
+          <span className="text-sm text-[#f5f5f5]">{score.toLocaleString()}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] text-[#f77f00] tracking-wider">HI</span>
+          <span className="text-sm text-[#f77f00]">{highScore.toLocaleString()}</span>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4 min-w-fit">
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] text-[#4a7c59] tracking-wider">STAGE</span>
+          <span className="text-sm text-[#4a7c59]">{stage}-1</span>
+        </div>
+        <div className="flex items-center gap-1">
+          <span className="text-[10px] text-[#e63946] tracking-wider">LIVES</span>
+          <div className="flex gap-0.5">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Heart
+                key={i}
+                className={cn(
+                  "w-3.5 h-3.5",
+                  i < lives ? "text-[#e63946] fill-[#e63946]" : "text-[#333]"
+                )}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="flex items-center gap-1.5">
+          <Swords className="w-3.5 h-3.5 text-[#f77f00]" />
+          <span className="text-[10px] text-[#f77f00] tracking-wider">{weapon}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Progress Bar ─── */
+function PowerUpBar({ label, value, max, color }: { label: string; value: number; max: number; color: string }) {
+  const pct = Math.min(100, Math.round((value / max) * 100));
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between font-[VT323]">
+        <span className="text-[10px] text-[#888] uppercase tracking-wider">{label}</span>
+        <span className="text-[10px] text-[#f5f5f5]">{value}/{max}</span>
+      </div>
+      <div className="h-2 bg-[#1a1a1a] border border-[#333] relative">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="h-full absolute left-0 top-0"
+          style={{ backgroundColor: color }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ─── Stage Card ─── */
+function StageCard({ stage }: { stage: typeof stages[0] }) {
+  const Icon = stage.icon;
+  return (
+    <Link href={stage.href}>
+      <motion.div
+        whileHover={{ scale: 1.02 }}
+        className={cn(
+          "relative border-[3px] p-4 cursor-pointer h-full transition-colors group",
+          stage.locked
+            ? "border-[#333] bg-[#0a0a0a] opacity-50"
+            : stage.cleared
+            ? "border-[#4a7c59] bg-[#4a7c59]/5 hover:bg-[#4a7c59]/10"
+            : "border-[#e63946] bg-[#e63946]/5 hover:bg-[#e63946]/10"
+        )}
+      >
+        {/* Corner brackets */}
+        <div className="absolute top-0 left-0 w-2 h-2 border-t-[3px] border-l-[3px]" style={{ borderColor: stage.color }} />
+        <div className="absolute top-0 right-0 w-2 h-2 border-t-[3px] border-r-[3px]" style={{ borderColor: stage.color }} />
+        <div className="absolute bottom-0 left-0 w-2 h-2 border-b-[3px] border-l-[3px]" style={{ borderColor: stage.color }} />
+        <div className="absolute bottom-0 right-0 w-2 h-2 border-b-[3px] border-r-[3px]" style={{ borderColor: stage.color }} />
+
+        <div className="flex items-start justify-between mb-2">
+          <Icon className="w-5 h-5" style={{ color: stage.color }} />
+          {stage.cleared && <Trophy className="w-4 h-4 text-[#f77f00]" />}
+          {stage.locked && <Lock className="w-4 h-4 text-[#555]" />}
+          {!stage.cleared && !stage.locked && (
+            <span className="text-[9px] font-[VT323] text-[#e63946]">
+              {stage.enemies}x <Skull className="w-3 h-3 inline" />
+            </span>
+          )}
+        </div>
+
+        <h3 className="text-xs font-bold text-[#f5f5f5] font-[Press_Start_2P] mb-1">{stage.name}</h3>
+        <p className="text-[10px] text-[#888] font-[VT323]">{stage.desc}</p>
+
+        {!stage.locked && (
+          <div className="mt-3 flex items-center gap-1 text-[9px] font-[VT323] text-[#888] group-hover:text-[#f77f00] transition-colors">
+            <ChevronRight className="w-3 h-3" />
+            DEPLOY
+          </div>
+        )}
+      </motion.div>
+    </Link>
+  );
+}
+
+/* ─── Mission Log Entry ─── */
+function MissionLogEntry({ mission }: { mission: typeof missionLog[0] }) {
+  return (
+    <div
+      className={cn(
+        "flex items-center justify-between p-2.5 border-l-[3px] transition-colors",
+        mission.status === "COMPLETE"
+          ? "border-[#4a7c59] bg-[#4a7c59]/5"
+          : mission.status === "IN PROGRESS"
+          ? "border-[#f77f00] bg-[#f77f00]/5"
+          : "border-[#333] bg-[#111]/50 opacity-50"
+      )}
+    >
+      <div className="flex items-center gap-2">
+        {mission.status === "COMPLETE" && <Target className="w-3.5 h-3.5 text-[#4a7c59]" />}
+        {mission.status === "IN PROGRESS" && <Crosshair className="w-3.5 h-3.5 text-[#f77f00] animate-pulse" />}
+        {mission.status === "LOCKED" && <Lock className="w-3.5 h-3.5 text-[#555]" />}
+        <span className="text-xs text-[#f5f5f5] font-[VT323]">{mission.title}</span>
+      </div>
+      <div className="flex items-center gap-2">
+        <span
+          className={cn(
+            "text-[9px] font-[VT323] uppercase tracking-wider",
+            mission.status === "COMPLETE"
+              ? "text-[#4a7c59]"
+              : mission.status === "IN PROGRESS"
+              ? "text-[#f77f00]"
+              : "text-[#555]"
+          )}
+        >
+          {mission.status}
+        </span>
+        {mission.xp > 0 && (
+          <span className="text-[9px] text-[#f77f00] font-[VT323]">+{mission.xp}XP</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Squad Member ─── */
+function SquadMember({ member }: { member: typeof squad[0] }) {
+  const Icon = member.icon;
+  return (
+    <div
+      className={cn(
+        "p-2.5 border transition-all",
+        member.status === "ACTIVE"
+          ? "border-[#4a7c59] bg-[#4a7c59]/5"
+          : member.status === "STANDBY"
+          ? "border-[#f77f00] bg-[#f77f00]/5"
+          : "border-[#222] bg-[#0a0a0a] opacity-40"
+      )}
+    >
+      <div className="flex items-center gap-2">
+        <div
+          className={cn(
+            "w-2 h-2",
+            member.status === "ACTIVE"
+              ? "bg-[#4a7c59] animate-pulse"
+              : member.status === "STANDBY"
+              ? "bg-[#f77f00]"
+              : "bg-[#333]"
+          )}
+        />
+        <Icon
+          className={cn(
+            "w-3.5 h-3.5",
+            member.status === "ACTIVE"
+              ? "text-[#4a7c59]"
+              : member.status === "STANDBY"
+              ? "text-[#f77f00]"
+              : "text-[#555]"
+          )}
+        />
+        <span className="text-[10px] text-[#f5f5f5] font-[VT323]">{member.name}</span>
+      </div>
+      <span
+        className={cn(
+          "text-[9px] font-[VT323] uppercase tracking-wider mt-1 block",
+          member.status === "ACTIVE"
+            ? "text-[#4a7c59]"
+            : member.status === "STANDBY"
+            ? "text-[#f77f00]"
+            : "text-[#555]"
+        )}
+      >
+        {member.status}
+      </span>
+    </div>
+  );
+}
+
+/* ─── Main Dashboard ─── */
+export default function AppDashboardPage() {
+  return (
+    <div className="min-h-screen bg-[#060606]">
+      <HUD />
+
+      <div className="px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+        {/* Title */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[#f5f5f5]">QyntraWiki Nexus</h1>
-            <p className="mt-1 text-sm text-[#a0a0a0]">
-              AI Agent Memory Encyclopedia — {connectedCount}/{connectors.length} connectors active
+            <h1 className="text-lg font-bold text-[#e0e0e0] font-[Press_Start_2P]">
+              OPERATION: {wikiName.toUpperCase()}
+            </h1>
+            <p className="mt-1 text-xs text-[#888] font-[VT323]">
+              STAGE {stage}-1 /// SQUAD READY /// 2/6 CONNECTORS ACTIVE
             </p>
           </div>
           <Link
             href="/app/ask"
-            className="btn-primary hidden sm:flex items-center gap-2"
+            className="pixel-btn-solid flex items-center gap-2 text-[10px]"
           >
-            <Zap className="w-4 h-4" />
-            Ask My Wiki
+            <Zap className="w-3.5 h-3.5" />
+            OPEN COMMS
           </Link>
         </div>
-      </div>
 
-      <div className="px-6 sm:px-8 lg:px-10 pb-10 space-y-8">
-        {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
-          {stats.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <Link key={stat.label} href={stat.href}>
-                <div className="glass-card p-4 cursor-pointer h-full">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[10px] font-bold text-[#666666] uppercase tracking-wider">
-                      {stat.label}
-                    </span>
-                    <Icon className={cn("w-4 h-4", stat.color)} />
-                  </div>
-                  <div className="text-2xl font-bold text-[#f5f5f5]">{stat.value}</div>
-                </div>
-              </Link>
-            );
-          })}
+        {/* Power-Up Meters */}
+        <div className="border-[3px] border-[#333] p-4 bg-[#080808]">
+          <h2 className="text-[10px] font-bold text-[#f77f00] uppercase tracking-wider mb-3 font-[Press_Start_2P]">
+            POWER-UP METERS
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {stats.map((s) => (
+              <PowerUpBar key={s.label} label={s.label} value={s.value} max={s.max} color={s.color} />
+            ))}
+          </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Stage Select */}
         <div>
-          <h2 className="section-title">Quick Actions</h2>
+          <h2 className="text-[10px] font-bold text-[#e63946] uppercase tracking-wider mb-3 font-[Press_Start_2P] flex items-center gap-2">
+            <Crosshair className="w-3.5 h-3.5" />
+            STAGE SELECT
+          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {quickActions.map((action) => {
-              const Icon = action.icon;
-              return (
-                <Link
-                  key={action.href}
-                  href={action.href}
-                  className="glass-card p-4 flex items-start gap-3 group"
-                >
-                  <div
-                    className={cn(
-                      "w-10 h-10 rounded-lg flex items-center justify-center shrink-0 bg-gradient-to-br",
-                      action.color
-                    )}
-                  >
-                    <Icon className="w-4 h-4 text-[#f5f5f5]" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#f5f5f5] group-hover:text-[#e63946] transition-colors">
-                      {action.label}
-                    </p>
-                    <p className="text-xs text-[#666666] mt-0.5">{action.desc}</p>
-                  </div>
-                  <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#e63946] transition-colors shrink-0 mt-1" />
-                </Link>
-              );
-            })}
+            {stages.map((s) => (
+              <StageCard key={s.name} stage={s} />
+            ))}
           </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Pages */}
-          <div className="glass-panel rounded-lg p-5">
-            <h2 className="section-title flex items-center gap-2">
-              <BookOpen className="w-4 h-4" />
-              Recent Wiki Pages
+          {/* Mission Log */}
+          <div className="border-[3px] border-[#333] p-4 bg-[#080808]">
+            <h2 className="text-[10px] font-bold text-[#00b4d8] uppercase tracking-wider mb-3 font-[Press_Start_2P] flex items-center gap-2">
+              <Radar className="w-3.5 h-3.5" />
+              MISSION LOG
             </h2>
-            {recentPages.length === 0 ? (
-              <div className="empty-state py-6">
-                <p className="text-sm">No pages yet. Import sources to generate pages.</p>
+            <div className="space-y-1.5">
+              {missionLog.map((m) => (
+                <MissionLogEntry key={m.title} mission={m} />
+              ))}
+            </div>
+            <div className="mt-3 pt-3 border-t border-[#222]">
+              <div className="flex items-center justify-between font-[VT323]">
+                <span className="text-[10px] text-[#888]">TOTAL XP</span>
+                <span className="text-sm text-[#f77f00]">1,250</span>
               </div>
-            ) : (
-              <div className="space-y-2">
-                {recentPages.map((page) => (
-                  <Link
-                    key={page.id as string}
-                    href={`/app/wiki/${page.slug as string}`}
-                    className="flex items-center justify-between p-3 rounded-md bg-[rgba(230,57,70,0.03)] hover:bg-[rgba(230,57,70,0.08)] transition-colors group"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-[#f5f5f5] truncate">
-                        {page.title as string}
-                      </p>
-                      <p className="text-xs text-[#666666] truncate mt-0.5">
-                        {(page.summary as string)?.slice(0, 80)}...
-                      </p>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#e63946] shrink-0" />
-                  </Link>
-                ))}
+              <div className="mt-2 h-1.5 bg-[#1a1a1a] border border-[#333]">
+                <div className="h-full bg-[#f77f00] w-[45%]" />
               </div>
-            )}
+              <p className="text-[9px] text-[#555] mt-1 font-[VT323]">LEVEL 3 — NEXT: 2,000 XP</p>
+            </div>
           </div>
 
-          {/* Recent Files */}
-          <div className="glass-panel rounded-lg p-5">
-            <h2 className="section-title flex items-center gap-2">
-              <FolderOpen className="w-4 h-4" />
-              Recent Files
+          {/* Squad Status */}
+          <div className="border-[3px] border-[#333] p-4 bg-[#080808]">
+            <h2 className="text-[10px] font-bold text-[#4a7c59] uppercase tracking-wider mb-3 font-[Press_Start_2P] flex items-center gap-2">
+              <Shield className="w-3.5 h-3.5" />
+              SQUAD STATUS
             </h2>
-            {recentFiles.length === 0 ? (
-              <div className="empty-state py-6">
-                <p className="text-sm">No files imported yet.</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {recentFiles.map((file) => (
-                  <Link
-                    key={file.id as string}
-                    href="/app/files"
-                    className="flex items-center justify-between p-3 rounded-md bg-[rgba(167,139,250,0.03)] hover:bg-[rgba(167,139,250,0.08)] transition-colors group"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-[#f5f5f5] truncate">
-                        {file.name as string}
-                      </p>
-                      <p className="text-xs text-[#666666] truncate mt-0.5">
-                        {file.path as string} · {Math.round((file.sizeBytes as number) / 1024)}KB
-                      </p>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#a78bfa] shrink-0" />
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Connector Status */}
-        <div className="glass-panel rounded-lg p-5">
-          <h2 className="section-title flex items-center gap-2">
-            <Plug className="w-4 h-4" />
-            Connector Status
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {connectors.map((conn) => {
-              const isConnected = (conn.status as string) === "connected";
-              return (
-                <div
-                  key={conn.id as string}
-                  className={cn(
-                    "p-3 rounded-md border transition-all",
-                    isConnected
-                      ? "bg-[rgba(34,197,94,0.05)] border-[rgba(34,197,94,0.2)]"
-                      : "bg-[rgba(107,101,96,0.05)] border-[rgba(107,101,96,0.15)]"
-                  )}
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <div
-                      className={cn(
-                        "w-2 h-2 rounded-full",
-                        isConnected ? "bg-green-500" : "bg-[#666666]"
-                      )}
-                    />
-                    <span className="text-xs font-medium text-[#f5f5f5]">
-                      {conn.name as string}
-                    </span>
-                  </div>
-                  <span
-                    className={cn(
-                      "text-[10px] font-bold uppercase tracking-wider",
-                      isConnected ? "text-green-400" : "text-[#666666]"
-                    )}
-                  >
-                    {isConnected ? "Active" : "Inactive"}
-                  </span>
-                </div>
-              );
-            })}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {squad.map((member) => (
+                <SquadMember key={member.name} member={member} />
+              ))}
+            </div>
+            <div className="mt-4 p-3 border border-[#e63946]/30 bg-[#e63946]/5">
+              <p className="text-[10px] text-[#e63946] font-[VT323]">
+                <Flame className="w-3 h-3 inline mr-1" />
+                THREAT LEVEL: MEDIUM
+              </p>
+              <p className="text-[9px] text-[#888] mt-1 font-[VT323]">
+                2 contradictions detected in intel. Deploy to Contradictions zone.
+              </p>
+            </div>
           </div>
         </div>
       </div>

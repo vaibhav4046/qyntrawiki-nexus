@@ -82,13 +82,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen bg-black">
-      {/* Mobile toggle */}
+      {/* Mobile toggle — PAUSE button style */}
       <button
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="fixed top-4 left-4 z-50 lg:hidden glass-panel p-2.5 text-white"
+        className="fixed top-4 left-4 z-50 lg:hidden border-[3px] border-[#e63946] bg-[#080808] px-3 py-2 text-[#e63946] font-[Press_Start_2P] text-[9px] uppercase tracking-wider"
         aria-label="Toggle sidebar"
       >
-        {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        {mobileOpen ? "CLOSE" : "PAUSE"}
       </button>
 
       {mobileOpen && (
@@ -122,7 +122,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
 
-        {/* Nav */}
+        {/* Nav — NES Pause Menu style */}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -133,16 +133,24 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
                 className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 text-xs font-medium transition-all duration-200 font-[VT323]",
+                  "group flex items-center gap-3 px-3 py-2.5 text-xs font-medium transition-all duration-150 font-[VT323]",
                   active
                     ? "bg-[#e63946]/10 text-[#e63946] border-l-[3px] border-[#e63946]"
                     : "text-[#888] hover:text-[#e0e0e0] hover:bg-[#e63946]/5 border-l-[3px] border-transparent"
                 )}
               >
+                <span
+                  className={cn(
+                    "w-3 text-[10px] shrink-0 transition-opacity",
+                    active ? "opacity-100 text-[#e63946]" : "opacity-0 group-hover:opacity-100 text-[#f77f00]"
+                  )}
+                >
+                  ▶
+                </span>
                 <Icon
                   className={cn(
                     "w-4 h-4 shrink-0",
-                    active ? "text-red-500" : "text-gray-600"
+                    active ? "text-[#e63946]" : "text-[#555] group-hover:text-[#e0e0e0]"
                   )}
                 />
                 {item.label}
@@ -153,6 +161,15 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
         {/* User + Logout */}
         <div className="px-5 py-3 border-t-[3px] border-[#e63946] space-y-2">
+          {/* Lives display */}
+          <div className="flex items-center gap-1 mb-2">
+            <span className="text-[9px] text-[#e63946] font-[VT323] uppercase tracking-wider">Lives</span>
+            <div className="flex gap-0.5 ml-auto">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="w-2.5 h-2.5 bg-[#e63946]" />
+              ))}
+            </div>
+          </div>
           <AppUserSection />
           <Link
             href="/"
