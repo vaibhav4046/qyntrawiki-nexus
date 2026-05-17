@@ -19,19 +19,25 @@ import {
   X,
   ChevronLeft,
   Sparkles,
+  Brain,
+  Bot,
+  Settings,
 } from "lucide-react";
 
 const navItems = [
   { label: "Dashboard", href: "/app", icon: LayoutDashboard },
   { label: "Connect", href: "/app/connect", icon: Plug },
   { label: "Import", href: "/app/import", icon: Upload },
-  { label: "Wiki", href: "/app/wiki", icon: BookOpen },
   { label: "Files", href: "/app/files", icon: FolderOpen },
+  { label: "Wiki", href: "/app/wiki", icon: BookOpen },
   { label: "Graph", href: "/app/graph", icon: GitBranch },
   { label: "Ask", href: "/app/ask", icon: MessageSquare },
+  { label: "Study", href: "/app/study", icon: Brain },
   { label: "Organize", href: "/app/organize", icon: FolderTree },
+  { label: "Agents", href: "/app/agents", icon: Bot },
   { label: "Contradictions", href: "/app/contradictions", icon: AlertTriangle },
   { label: "Publish", href: "/app/publish", icon: Globe },
+  { label: "Settings", href: "/app/settings", icon: Settings },
 ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
