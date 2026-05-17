@@ -1,129 +1,138 @@
-/* ─── Pixel Fonts ─── */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=JetBrains+Mono:wght@400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 @import "tailwindcss";
 
 @theme inline {
   --font-sans: 'Inter', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
-  --font-pixel: 'Press Start 2P', monospace;
+  --font-mono: 'JetBrains Mono', monospace;
   --color-background: #060606;
   --color-foreground: #e0e0e0;
 }
 
 :root {
-  --contra-black: #060606;
-  --contra-dark: #0a0a0a;
-  --contra-card: #0d0d0d;
-  --contra-card-hover: #131313;
-  --contra-border: #1a1a1a;
-  --contra-border-hover: #2a2a2a;
-  --contra-red: #e63946;
-  --contra-red-bright: #ff2a3a;
-  --contra-red-dim: rgba(230,57,70,0.15);
-  --contra-orange: #f77f00;
-  --contra-orange-dim: rgba(247,127,0,0.15);
-  --contra-green: #4a7c59;
-  --contra-green-dim: rgba(74,124,89,0.15);
-  --contra-silver: #b8b8b8;
-  --contra-white: #e0e0e0;
-  --contra-gray: #888888;
-  --contra-gray-dim: #555555;
+  --bg-primary: #060606;
+  --bg-secondary: #0c0c0c;
+  --bg-tertiary: #111111;
+  --bg-hover: #181818;
+  --border-primary: #1a1a1a;
+  --border-hover: #2a2a2a;
+  --text-primary: #e0e0e0;
+  --text-secondary: #888888;
+  --text-tertiary: #555555;
+  --accent-red: #e63946;
+  --accent-red-hover: #ff2a3a;
+  --accent-orange: #f77f00;
+  --accent-green: #4a7c59;
+  --accent-blue: #00b4d8;
 }
 
-html { scroll-behavior: smooth; background: var(--contra-black); }
+html { scroll-behavior: smooth; background: var(--bg-primary); }
 
 body {
-  background: var(--contra-black);
-  color: var(--contra-white);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   font-family: 'Inter', system-ui, sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.55;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Clean Card (default app style) ─── */
-.q-card {
-  background: var(--contra-card);
-  border: 1px solid var(--contra-border);
-  border-radius: 6px;
-  padding: 20px;
+/* ─── Selection ─── */
+::selection { background: rgba(230,57,70,0.25); color: #fff; }
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #444; }
+
+/* ─── Premium Card ─── */
+.card {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: 8px;
   transition: border-color 0.15s ease, background 0.15s ease;
 }
 
-.q-card:hover {
-  border-color: var(--contra-border-hover);
-  background: var(--contra-card-hover);
+.card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-hover);
 }
 
-/* ─── Clean Button ─── */
-.q-btn {
+/* ─── Premium Button ─── */
+.btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  font-size: 14px;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
   font-weight: 600;
   border-radius: 6px;
-  border: 1px solid var(--contra-red);
-  background: var(--contra-red);
+  border: 1px solid var(--accent-red);
+  background: var(--accent-red);
   color: #fff;
   cursor: pointer;
   transition: all 0.15s ease;
 }
 
-.q-btn:hover {
-  background: var(--contra-red-bright);
-  border-color: var(--contra-red-bright);
+.btn:hover {
+  background: var(--accent-red-hover);
+  border-color: var(--accent-red-hover);
 }
 
-.q-btn-ghost {
+.btn-ghost {
   background: transparent;
-  color: var(--contra-red);
+  color: var(--accent-red);
 }
 
-.q-btn-ghost:hover {
-  background: var(--contra-red-dim);
+.btn-ghost:hover { background: rgba(230,57,70,0.08); }
+
+.btn-green {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
 }
 
-.q-btn-green {
-  background: var(--contra-green);
-  border-color: var(--contra-green);
+.btn-green:hover { background: #5a8c69; border-color: #5a8c69; }
+
+.btn-sm { padding: 6px 12px; font-size: 12px; }
+
+/* ─── Input ─── */
+.input {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.15s ease;
 }
 
-.q-btn-green:hover {
-  background: #5a8c69;
-  border-color: #5a8c69;
+.input:focus { border-color: var(--accent-red); }
+
+.input::placeholder { color: var(--text-tertiary); }
+
+/* ─── Status dots ─── */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
 }
 
-/* ─── Pixel accents (game pages) ─── */
-.pixel-accent {
-  font-family: 'Press Start 2P', monospace;
+.status-dot.active { background: var(--accent-green); box-shadow: 0 0 6px var(--accent-green); }
+.status-dot.standby { background: var(--accent-orange); }
+.status-dot.offline { background: var(--text-tertiary); }
+
+/* ─── Badge ─── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
   font-size: 11px;
-  line-height: 1.6;
-  letter-spacing: 0.5px;
+  font-weight: 600;
+  border-radius: 4px;
+  border: 1px solid;
 }
-
-/* ─── Animations ─── */
-@keyframes flame-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-@keyframes konami-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
-}
-
-/* ─── Selection ─── */
-::selection {
-  background: rgba(230,57,70,0.3);
-  color: #fff;
-}
-
-/* ─── Scrollbar ─── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--contra-black); }
-::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #444; }

@@ -40,7 +40,7 @@ const connectors: ConnectorConfig[] = [
   { id: "notion", name: "Notion", description: "Import pages and databases into your wiki via Notion OAuth.", icon: NotepadText, provider: "notion", oauthConfigured: true, features: ["Pages", "Databases"], color: "#f77f00" },
   { id: "microsoft", name: "Microsoft 365", description: "Import from OneDrive, SharePoint, and Outlook via Graph OAuth.", icon: Briefcase, provider: "microsoft", oauthConfigured: true, features: ["OneDrive", "SharePoint"], color: "#00b4d8" },
   { id: "manual-url", name: "Manual URL", description: "Add a webpage or article by URL. Content is fetched and indexed.", icon: LinkIcon, provider: "manual", oauthConfigured: true, features: ["Webpages", "Articles"], color: "#ff69b4" },
-  { id: "manual-text", name: "Manual Paste", description: "Paste raw text, notes, or copied content directly into your wiki.", icon: Upload, provider: "manual", oauthConfigured: true, features: ["Raw text", "Notes"], color: "#888888" },
+  { id: "manual-text", name: "Manual Paste", description: "Paste raw text, notes, or copied content directly into your wiki.", icon: Upload, provider: "manual", oauthConfigured: true, features: ["Raw text", "Notes"], color: "#888" },
   { id: "demo-dataset", name: "Demo Dataset", description: "Load a polished AI Agent Memory demo with sample sources and pages.", icon: Database, provider: "demo", oauthConfigured: true, features: ["7 sources", "8 pages", "Graph"], color: "#e63946" },
 ];
 
@@ -51,8 +51,6 @@ export default function ConnectPage() {
   const errorParam = searchParams.get("error");
 
   const [connectedIds, setConnectedIds] = useStoredConnections();
-  const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [consentGiven, setConsentGiven] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState<string | null>(null);
   const [syncing, setSyncing] = useState<string | null>(null);
   const [syncResult, setSyncResult] = useState<{ synced: number; files: string[] } | null>(null);
@@ -60,8 +58,7 @@ export default function ConnectPage() {
 
   useEffect(() => {
     if (successParam) {
-      const next = [...connectedIds, successParam];
-      setConnectedIds(next);
+      setConnectedIds([...connectedIds, successParam]);
       setToast({ message: `${successParam} connected!`, type: "success" });
       window.history.replaceState({}, "", window.location.pathname);
     }
@@ -98,17 +95,10 @@ export default function ConnectPage() {
   }
 
   function handleDisconnect(id: string) {
-    const next = connectedIds.filter((c) => c !== id);
-    setConnectedIds(next);
+    setConnectedIds(connectedIds.filter((c) => c !== id));
     setToast({ message: `${id} disconnected`, type: "success" });
   }
 
-  function handleConnect(id: string) {
-    if (id === "demo-dataset") { setConnectedIds([...connectedIds, id]); setToast({ message: "Demo data loaded!", type: "success" }); }
-    setActiveModal(null);
-  }
-
-  const activeConnector = connectors.find((c) => c.id === activeModal);
   const connectedCount = connectedIds.length;
 
   return (
@@ -117,7 +107,7 @@ export default function ConnectPage() {
       <AnimatePresence>
         {toast && (
           <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
-            className={cn("fixed top-4 right-4 z-50 px-4 py-3 rounded-sm max-w-sm border text-[13px] font-medium",
+            className={cn("fixed top-4 right-4 z-50 px-4 py-3 rounded-lg max-w-sm border text-[13px] font-medium",
               toast.type === "success" ? "bg-[#4a7c59]/10 border-[#4a7c59]/30 text-[#4a7c59]" : "bg-[#e63946]/10 border-[#e63946]/30 text-[#e63946]")}>
             {toast.message}
           </motion.div>
@@ -127,20 +117,20 @@ export default function ConnectPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-[16px] font-bold text-white font-[VT323] uppercase tracking-wider">ARMORY</h1>
-          <p className="text-[13px] text-[#888] font-[VT323] mt-1">{connectedCount} of {connectors.length} weapons equipped</p>
+          <h1 className="text-xl font-semibold text-white">Connect Sources</h1>
+          <p className="text-[13px] text-[#888] mt-1">{connectedCount} of {connectors.length} sources connected</p>
         </div>
         {session?.user?.email && (
-          <span className="text-[12px] text-[#555] bg-[#111] px-3 py-1.5 rounded-sm border border-[#1a1a1a] font-[VT323]">{session.user.email}</span>
+          <span className="text-[12px] text-[#555] bg-[#111] px-3 py-1.5 rounded-lg border border-[#1a1a1a]">{session.user.email}</span>
         )}
       </div>
 
       {/* Trust banner */}
-      <div className="border border-[#e63946]/20 bg-[#e63946]/5 rounded-sm p-4 flex items-center gap-3">
+      <div className="card flex items-center gap-3 p-4">
         <Shield className="w-5 h-5 text-[#e63946] shrink-0" />
         <div>
-          <p className="text-[14px] font-medium text-white font-[VT323]">Real OAuth Connections</p>
-          <p className="text-[13px] text-[#888] font-[VT323]">Tokens exchanged server-side. Files fetched via real APIs. No silent access.</p>
+          <p className="text-[14px] font-medium text-white">Real OAuth Connections</p>
+          <p className="text-[13px] text-[#888]">Tokens are exchanged server-side. Files are fetched via real APIs. No silent access.</p>
         </div>
       </div>
 
@@ -148,11 +138,11 @@ export default function ConnectPage() {
       <AnimatePresence>
         {syncResult && (
           <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-            className="border border-[#4a7c59]/30 bg-[#4a7c59]/5 rounded-sm p-4">
-            <p className="text-[13px] text-[#4a7c59] font-[VT323] font-medium mb-2">SYNC COMPLETE: {syncResult.synced} files</p>
+            className="card border-[#4a7c59]/30 bg-[#4a7c59]/5 p-4">
+            <p className="text-[13px] text-[#4a7c59] font-medium mb-2">Sync complete: {syncResult.synced} files</p>
             <div className="flex flex-wrap gap-2">
               {syncResult.files.map((name) => (
-                <span key={name} className="text-[12px] px-2 py-1 bg-[#4a7c59]/10 text-[#4a7c59] rounded-sm border border-[#4a7c59]/20 font-[VT323]">{name}</span>
+                <span key={name} className="text-[12px] px-2 py-1 bg-[#4a7c59]/10 text-[#4a7c59] rounded border border-[#4a7c59]/20">{name}</span>
               ))}
             </div>
           </motion.div>
@@ -170,35 +160,35 @@ export default function ConnectPage() {
 
           return (
             <motion.div key={conn.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.04 }}
-              className={cn("border rounded-sm p-5 relative transition-colors",
-                isConnected ? "border-l-2 bg-[#0a0a0a]" : "border-[#222] bg-[#0a0a0a] hover:border-[#333]"
-              )} style={isConnected ? { borderLeftColor: conn.color } : {}}>
+              className={cn("card p-5 relative",
+                isConnected && "border-l-2 border-l-[#4a7c59]"
+              )}>
               <div className="absolute top-4 right-4">
                 {isConnected ? (
-                  <span className="flex items-center gap-1 text-[12px] font-[VT323] font-semibold text-[#4a7c59]">
-                    <Check className="w-3.5 h-3.5" /> EQUIPPED
+                  <span className="flex items-center gap-1 text-[12px] font-semibold text-[#4a7c59]">
+                    <Check className="w-3.5 h-3.5" /> Connected
                   </span>
                 ) : (
-                  <span className="flex items-center gap-1 text-[12px] font-[VT323] font-semibold text-[#555]">
-                    <AlertCircle className="w-3.5 h-3.5" /> UNEQUIPPED
+                  <span className="flex items-center gap-1 text-[12px] font-semibold text-[#666]">
+                    <AlertCircle className="w-3.5 h-3.5" /> Not connected
                   </span>
                 )}
               </div>
 
               <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-sm flex items-center justify-center shrink-0" style={{ backgroundColor: `${conn.color}15` }}>
+                <div className="w-12 h-12 rounded-lg flex items-center justify-center shrink-0" style={{ backgroundColor: `${conn.color}10` }}>
                   <Icon className="w-5 h-5" style={{ color: conn.color }} />
                 </div>
                 <div className="flex-1 min-w-0 pr-20">
-                  <h3 className="text-[15px] font-semibold text-white font-[VT323] uppercase tracking-wide">{conn.name}</h3>
-                  <p className="text-[13px] text-[#888] font-[VT323] mt-1 leading-relaxed">{conn.description}</p>
+                  <h3 className="text-[15px] font-semibold text-white">{conn.name}</h3>
+                  <p className="text-[13px] text-[#888] mt-1">{conn.description}</p>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-1.5 mt-4">
                 {conn.features.map((f) => (
-                  <span key={f} className="text-[11px] px-2 py-1 rounded-sm border font-[VT323] font-medium"
-                    style={{ color: conn.color, borderColor: `${conn.color}25`, backgroundColor: `${conn.color}08` }}>{f}</span>
+                  <span key={f} className="text-[11px] px-2 py-1 rounded border font-medium"
+                    style={{ color: conn.color, borderColor: `${conn.color}20`, backgroundColor: `${conn.color}08` }}>{f}</span>
                 ))}
               </div>
 
@@ -207,28 +197,27 @@ export default function ConnectPage() {
                   <>
                     {isOAuth && (
                       <button onClick={() => handleSync(conn.provider)} disabled={isSyncing}
-                        className="flex-1 inline-flex items-center justify-center gap-2 bg-[#4a7c59] hover:bg-[#5a8c69] text-white px-4 py-2.5 rounded-sm text-[13px] font-semibold font-[VT323] transition-colors disabled:opacity-50">
+                        className="flex-1 inline-flex items-center justify-center gap-2 bg-[#4a7c59] hover:bg-[#5a8c69] text-white px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-colors disabled:opacity-50">
                         {isSyncing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5" />}
-                        {isSyncing ? "SYNCING..." : "SYNC"}
+                        {isSyncing ? "Syncing..." : "Sync"}
                       </button>
                     )}
                     <button onClick={() => handleDisconnect(conn.provider)}
-                      className="inline-flex items-center justify-center gap-2 border border-[#333] text-[#888] hover:text-white hover:border-[#555] px-4 py-2.5 rounded-sm text-[13px] font-[VT323] transition-colors">
-                      UNEQUIP
+                      className="inline-flex items-center justify-center gap-2 border border-[#333] text-[#888] hover:text-white hover:border-[#555] px-4 py-2.5 rounded-lg text-[13px] transition-colors">
+                      Disconnect
                     </button>
                   </>
                 ) : isOAuth ? (
                   <button onClick={() => handleOAuthConnect(conn.provider)} disabled={isLoading}
-                    className="flex-1 inline-flex items-center justify-center gap-2 text-white px-4 py-2.5 rounded-sm text-[13px] font-semibold font-[VT323] transition-colors disabled:opacity-50"
-                    style={{ backgroundColor: conn.color, border: `1px solid ${conn.color}` }}>
+                    className="flex-1 inline-flex items-center justify-center gap-2 text-white px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-colors disabled:opacity-50"
+                    style={{ backgroundColor: conn.color }}>
                     {isLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
-                    {isLoading ? "LINKING..." : "EQUIP"}
+                    {isLoading ? "Connecting..." : "Connect"}
                   </button>
                 ) : (
-                  <button onClick={() => setActiveModal(conn.id)}
-                    className="flex-1 inline-flex items-center justify-center gap-2 text-white px-4 py-2.5 rounded-sm text-[13px] font-semibold font-[VT323] transition-colors"
-                    style={{ backgroundColor: conn.color, border: `1px solid ${conn.color}` }}>
-                    {conn.id === "demo-dataset" ? "LOAD SIM" : "EQUIP"}
+                  <button className="flex-1 inline-flex items-center justify-center gap-2 text-white px-4 py-2.5 rounded-lg text-[13px] font-semibold transition-colors"
+                    style={{ backgroundColor: conn.color }}>
+                    {conn.id === "demo-dataset" ? "Load Demo" : "Connect"}
                   </button>
                 )}
               </div>
@@ -236,38 +225,6 @@ export default function ConnectPage() {
           );
         })}
       </div>
-
-      {/* Consent Modal */}
-      {activeConnector && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4" onClick={() => setActiveModal(null)}>
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-            className="border border-[#222] bg-[#0d0d0d] rounded-sm p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[16px] font-bold text-white font-[VT323]">EQUIP {activeConnector.name.toUpperCase()}</h3>
-              <button onClick={() => setActiveModal(null)} className="text-[#555] hover:text-white"><X className="w-5 h-5" /></button>
-            </div>
-            <p className="text-[14px] text-[#888] font-[VT323] mb-4">{activeConnector.description}</p>
-            <div className="p-4 mb-4 bg-[#f77f00]/5 border border-[#f77f00]/15 rounded-sm">
-              <h4 className="text-[12px] font-semibold text-[#f77f00] uppercase tracking-wider mb-2 font-[VT323]">Permission Required</h4>
-              <p className="text-[13px] text-[#888] font-[VT323]">I consent to QyntraWiki accessing my {activeConnector.name} data for building my personal wiki.</p>
-            </div>
-            <div className="flex items-start gap-3 mb-6">
-              <input type="checkbox" id="consent" checked={consentGiven[activeConnector.id] || false}
-                onChange={(e) => setConsentGiven((prev) => ({ ...prev, [activeConnector.id]: e.target.checked }))}
-                className="mt-1 w-4 h-4 accent-[#e63946]" />
-              <label htmlFor="consent" className="text-[13px] text-[#888] leading-relaxed font-[VT323]">
-                I consent to QyntraWiki accessing my {activeConnector.name} data.
-              </label>
-            </div>
-            <button disabled={!consentGiven[activeConnector.id]} onClick={() => handleConnect(activeConnector.id)}
-              className={cn("w-full py-3 text-[14px] font-semibold rounded-sm flex items-center justify-center gap-2 transition-colors",
-                consentGiven[activeConnector.id] ? "bg-[#e63946] text-white hover:bg-[#ff2a3a]" : "bg-[#222] text-[#555] cursor-not-allowed")}>
-              {activeConnector.id === "demo-dataset" ? "LOAD DEMO DATA" : `EQUIP ${activeConnector.name.toUpperCase()}`}
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </motion.div>
-        </div>
-      )}
     </div>
   );
 }
