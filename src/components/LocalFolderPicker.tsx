@@ -82,7 +82,8 @@ export default function LocalFolderPicker() {
   const [consentGiven, setConsentGiven] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const isAPISupported = typeof window !== "undefined" && "showDirectoryPicker" in window;
+  const isAPISupported = typeof window !== "undefined" && ("showDirectoryPicker" in window || "__TAURI__" in window);
+  const isTauri = typeof window !== "undefined" && "__TAURI__" in window;
 
   async function handlePickFolder() {
     if (!consentGiven) return;
@@ -91,6 +92,40 @@ export default function LocalFolderPicker() {
     setScanning(true);
     setFiles([]);
 
+    // Tauri desktop: use native folder picker
+    if (isTauri) {
+      try {
+        const tauriWindow = window as unknown as { __TAURI__: { invoke: (cmd: string, args?: Record<string, unknown>) => Promise<unknown> } };
+        const folderPath = await tauriWindow.__TAURI__.invoke("pick_folder") as string;
+        if (!folderPath) {
+          setError("No folder selected");
+          setScanning(false);
+          return;
+        }
+        setSelectedDir(folderPath.split(/[/\\]/).pop() || folderPath);
+
+        const result = await tauriWindow.__TAURI__.invoke("scan_folder", { folderPath }) as {
+          files: ScannedFile[];
+          folder_name: string;
+          total_files: number;
+        };
+
+        setFiles(result.files.map((f) => ({
+          name: f.name,
+          path: f.path,
+          extension: f.extension,
+          sizeBytes: f.sizeBytes,
+          type: getFileType(f.name),
+        })));
+      } catch (err: unknown) {
+        setError((err as Error).message || "Tauri folder scan failed");
+      } finally {
+        setScanning(false);
+      }
+      return;
+    }
+
+    // Browser: File System Access API
     try {
       // @ts-expect-error - File System Access API
       const dirHandle = await window.showDirectoryPicker({ mode: "read" });
