@@ -137,6 +137,84 @@ function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number;
   return <span ref={ref} className="tabular-nums">{prefix}{display}{suffix}</span>;
 }
 
+/* ─── PacManEatingText ─── */
+function PacManEatingText({ text, className = "" }: { text: string; className?: string }) {
+  const [eatenCount, setEatenCount] = useState(0);
+  const [isResetting, setIsResetting] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const totalTime = 4000; // 4 seconds for Pac-Man to cross
+
+  useEffect(() => {
+    let raf: number;
+    let startTime: number;
+
+    function animate(timestamp: number) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = Math.min(elapsed / totalTime, 1);
+
+      if (containerRef.current) {
+        const containerWidth = containerRef.current.offsetWidth;
+        const letters = containerRef.current.querySelectorAll(".pac-letter");
+        const pacPos = progress * (containerWidth + 40) - 20;
+        let newEaten = 0;
+
+        letters.forEach((letter) => {
+          const rect = letter.getBoundingClientRect();
+          const containerRect = containerRef.current!.getBoundingClientRect();
+          const letterCenter = rect.left - containerRect.left + rect.width / 2;
+          if (pacPos > letterCenter && progress < 1) {
+            newEaten++;
+            letter.classList.add("eaten");
+            letter.classList.remove("appear");
+          } else if (progress >= 1 || isResetting) {
+            letter.classList.remove("eaten");
+            letter.classList.add("appear");
+          }
+        });
+
+        setEatenCount(newEaten);
+      }
+
+      if (progress >= 1 && !isResetting) {
+        setTimeout(() => {
+          setIsResetting(true);
+          setTimeout(() => {
+            setIsResetting(false);
+            startTime = 0;
+            raf = requestAnimationFrame(animate);
+          }, 500);
+        }, 200);
+        return;
+      }
+
+      if (!isResetting) {
+        raf = requestAnimationFrame(animate);
+      }
+    }
+
+    raf = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(raf);
+  }, [isResetting]);
+
+  return (
+    <div ref={containerRef} className={`pac-eating-text-container ${className}`}>
+      <div className="pac-man-eater" />
+      <span className="inline-flex flex-wrap">
+        {text.split("").map((char, i) => (
+          <span
+            key={i}
+            className="pac-letter"
+            style={{ display: "inline-block", minWidth: char === " " ? "0.5em" : undefined }}
+          >
+            {char === " " ? "\u00A0" : char}
+          </span>
+        ))}
+      </span>
+    </div>
+  );
+}
+
 /* ─── Section Reveal ─── */
 function SectionReveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
   const ref = useRef(null);
@@ -210,9 +288,6 @@ export default function LandingPage() {
     <main className="relative min-h-screen bg-[#000] text-[#f5f5f5] overflow-x-hidden font-[family-name:var(--font-sans)]">
       {/* ── HERO ── */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6 py-24 bg-[#000] overflow-hidden border-b-[4px] border-[#2121de]">
-        <div className="absolute inset-0 z-0 opacity-50">
-          <KnowledgeTree />
-        </div>
         <FloatingPellets />
         <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-t from-[#000] to-transparent z-[1] pointer-events-none" />
 
@@ -287,12 +362,25 @@ export default function LandingPage() {
             </span>
           </motion.div>
 
+          {/* Pac-Man eating text animation */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 2.5, duration: 0.8 }}
+            className="mt-10 mb-2"
+          >
+            <PacManEatingText
+              text="EAT YOUR KNOWLEDGE - BUILD YOUR BRAIN"
+              className="text-[14px] sm:text-[18px] text-yellow-400 font-[Press_Start_2P] tracking-wider"
+            />
+          </motion.div>
+
           {/* Stats row */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.5 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-3xl mx-auto"
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-3xl mx-auto"
           >
             {stats.map((s) => (
               <div key={s.label} className="pixel-stat">
@@ -360,6 +448,41 @@ export default function LandingPage() {
               </div>
             </div>
           </SectionReveal>
+        </div>
+      </section>
+
+      {/* ── LIVE KNOWLEDGE GRAPH ── */}
+      <section className="relative z-10 px-6 py-16 bg-[#000] knowledge-tree-section overflow-hidden">
+        <SectionReveal className="max-w-7xl mx-auto text-center mb-8">
+          <span className="pixel-label">Live Graph</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mt-4 mb-2 text-[#f5f5f5]">
+            Watch Your Knowledge Grow
+          </h2>
+          <p className="text-[18px] text-[#a0a0a0] max-w-xl mx-auto">
+            Real-time animated graph of your wiki pages, sources, and entities.
+          </p>
+        </SectionReveal>
+        <SectionReveal delay={0.2}>
+          <div className="max-w-5xl mx-auto h-[400px] border-4 border-[#2121de] relative bg-[#050505]">
+            <KnowledgeTree />
+            {/* Overlay label */}
+            <div className="absolute bottom-3 right-3 pixel-badge pixel-badge-yellow text-[6px]">
+              Interactive Canvas
+            </div>
+          </div>
+        </SectionReveal>
+        <div className="max-w-5xl mx-auto mt-6 grid grid-cols-4 gap-2 text-center">
+          {[
+            { label: "Pages", color: "#ffeb3b", count: "8" },
+            { label: "Sources", color: "#00e5ff", count: "7" },
+            { label: "Entities", color: "#ffb8ff", count: "12" },
+            { label: "Claims", color: "#ff0000", count: "24" },
+          ].map((item) => (
+            <div key={item.label} className="pixel-card py-3" style={{ borderColor: `${item.color}40` }}>
+              <div className="pixel-heading text-[10px]" style={{ color: item.color }}>{item.count}</div>
+              <div className="text-[10px] text-[#666666] font-[VT323]">{item.label}</div>
+            </div>
+          ))}
         </div>
       </section>
 

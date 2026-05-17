@@ -142,6 +142,7 @@ const db = {
   ingestJob: createStore("ingest_jobs"),
   askSession: createStore("ask_sessions"),
   publishSettings: createStore("publish_settings"),
+  oauthToken: createStore("oauth_tokens"),
 };
 
 function seedIfEmpty() {

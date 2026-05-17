@@ -584,6 +584,109 @@ input::placeholder, textarea::placeholder { color: var(--pac-gray-dim); }
   animation: power-pellet 1s steps(3) infinite;
 }
 
+/* ─── Pac-Man eating text ─── */
+@keyframes pac-eat-move {
+  0% { left: -5%; }
+  100% { left: 105%; }
+}
+
+@keyframes letter-eaten {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+  100% { opacity: 0; transform: scale(0); }
+}
+
+@keyframes letter-appear {
+  0% { opacity: 0; transform: scale(0); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+.pac-eating-text-container {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+.pac-man-eater {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  background: #ffeb3b;
+  border-radius: 50%;
+  z-index: 10;
+  animation: pac-eat-move 4s linear infinite;
+  box-shadow: 0 0 15px #ffeb3b, 0 0 30px rgba(255,235,59,0.5);
+}
+
+.pac-man-eater::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: #000;
+  clip-path: polygon(0 0, 100% 35%, 50% 50%, 100% 65%, 0 100%);
+  animation: pac-chomp 0.2s steps(2) infinite;
+}
+
+.pac-man-eater::after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 4px;
+  height: 4px;
+  background: #000;
+  border-radius: 50%;
+  z-index: 11;
+}
+
+.pac-letter {
+  display: inline-block;
+  transition: all 0.1s;
+}
+
+.pac-letter.eaten {
+  animation: letter-eaten 0.15s steps(3) forwards;
+}
+
+.pac-letter.appear {
+  animation: letter-appear 0.3s steps(3) forwards;
+}
+
+/* ─── Ghost chasing text ─── */
+@keyframes ghost-chase {
+  0% { transform: translateX(-100%) translateY(0); }
+  25% { transform: translateX(-50%) translateY(-5px); }
+  50% { transform: translateX(0%) translateY(0); }
+  75% { transform: translateX(50%) translateY(-3px); }
+  100% { transform: translateX(100%) translateY(0); }
+}
+
+/* ─── Maze walls ─── */
+.maze-wall-h {
+  height: 4px;
+  background: #2121de;
+  box-shadow: 0 0 8px rgba(33,33,222,0.4);
+}
+
+.maze-wall-v {
+  width: 4px;
+  background: #2121de;
+  box-shadow: 0 0 8px rgba(33,33,222,0.4);
+}
+
+/* ─── Knowledge tree section ─── */
+.knowledge-tree-section {
+  position: relative;
+  min-height: 500px;
+  border-top: 4px solid #2121de;
+  border-bottom: 4px solid #2121de;
+}
+
 /* ─── CRT turn-on ─── */
 @keyframes crt-on {
   0% { transform: scaleY(0.001); opacity: 0; filter: brightness(30); }

@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useSession } from "next-auth/react";
+import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   FolderOpen,
   HardDrive,
   NotepadText,
   Briefcase,
-  Camera,
   Link as LinkIcon,
   Database,
   Upload,
@@ -18,9 +18,9 @@ import {
   AlertCircle,
   Shield,
   ChevronRight,
-  Settings,
   ExternalLink,
-  Key,
+  RefreshCw,
+  Loader2,
 } from "lucide-react";
 
 interface ConnectorConfig {
@@ -28,178 +28,197 @@ interface ConnectorConfig {
   name: string;
   description: string;
   icon: React.ElementType;
-  oauthUrl?: string;
+  provider: string;
   oauthConfigured: boolean;
   features: string[];
   color: string;
   borderColor: string;
 }
 
-function buildOAuthUrl(provider: string, redirectUri: string, scope: string): string | undefined {
-  const clientId =
-    provider === "google"
-      ? process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID
-      : provider === "microsoft"
-      ? process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID
-      : provider === "notion"
-      ? process.env.NEXT_PUBLIC_NOTION_CLIENT_ID
-      : undefined;
-
-  if (!clientId) return undefined;
-
-  const params = new URLSearchParams({
-    client_id: clientId,
-    redirect_uri: redirectUri,
-    response_type: "code",
-    scope,
-    access_type: "offline",
-    prompt: "consent",
-  });
-
-  const urls: Record<string, string> = {
-    google: `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`,
-    microsoft: `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${params.toString()}`,
-    notion: `https://api.notion.com/v1/oauth/authorize?${params.toString()}`,
-  };
-
-  return urls[provider];
-}
-
-function getConnectors(): ConnectorConfig[] {
-  const redirectUri = typeof window !== "undefined" ? `${window.location.origin}/app/connect/callback` : "";
-
-  return [
-    {
-      id: "local-folder",
-      name: "Local Folder",
-      description: "Select a folder and build a private wiki from local files. Uses File System Access API or Tauri native bridge.",
-      icon: FolderOpen,
-      oauthConfigured: true,
-      features: [".txt", ".md", ".json", ".csv", ".html"],
-      color: "#ffeb3b",
-      borderColor: "rgba(255,235,59,0.3)",
-    },
-    {
-      id: "google-drive",
-      name: "Google Drive",
-      description: "Import docs, PDFs, notes, and files from Google Drive via OAuth.",
-      icon: HardDrive,
-      oauthUrl: buildOAuthUrl("google", redirectUri, "https://www.googleapis.com/auth/drive.readonly"),
-      oauthConfigured: !!process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-      features: ["Docs", "Sheets", "PDFs", "Slides"],
-      color: "#00ffff",
-      borderColor: "rgba(0,255,255,0.3)",
-    },
-    {
-      id: "notion",
-      name: "Notion",
-      description: "Import pages and databases into your personal wiki via Notion OAuth integration.",
-      icon: NotepadText,
-      oauthUrl: buildOAuthUrl("notion", redirectUri, ""),
-      oauthConfigured: !!process.env.NEXT_PUBLIC_NOTION_CLIENT_ID,
-      features: ["Pages", "Databases", "Blocks"],
-      color: "#ffb8ff",
-      borderColor: "rgba(255,184,255,0.3)",
-    },
-    {
-      id: "microsoft",
-      name: "Microsoft 365",
-      description: "Import from OneDrive, SharePoint, and Outlook via Microsoft Graph OAuth.",
-      icon: Briefcase,
-      oauthUrl: buildOAuthUrl("microsoft", redirectUri, "Files.Read openid profile email"),
-      oauthConfigured: !!process.env.NEXT_PUBLIC_MICROSOFT_CLIENT_ID,
-      features: ["OneDrive", "SharePoint", "Outlook"],
-      color: "#ffb852",
-      borderColor: "rgba(255,184,82,0.3)",
-    },
-    {
-      id: "manual-url",
-      name: "Manual URL",
-      description: "Add a webpage or article by URL. The app will fetch and index the content.",
-      icon: LinkIcon,
-      oauthConfigured: true,
-      features: ["Webpages", "Articles", "Docs"],
-      color: "#4ade80",
-      borderColor: "rgba(74,222,128,0.3)",
-    },
-    {
-      id: "manual-text",
-      name: "Manual Paste",
-      description: "Paste raw text, notes, or copied content directly into your wiki.",
-      icon: Upload,
-      oauthConfigured: true,
-      features: ["Raw text", "Notes", "Snippets"],
-      color: "#ffca28",
-      borderColor: "rgba(255,202,40,0.3)",
-    },
-    {
-      id: "demo-dataset",
-      name: "Demo Dataset",
-      description: "Load a polished AI Agent Memory Encyclopedia demo with sample sources, pages, and contradictions.",
-      icon: Database,
-      oauthConfigured: true,
-      features: ["7 sources", "8 pages", "Graph", "Contradictions"],
-      color: "#ffeb3b",
-      borderColor: "rgba(255,235,59,0.3)",
-    },
-  ];
-}
-
-function getStoredConnections(): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    return JSON.parse(localStorage.getItem("qyntra-connections") || "[]");
-  } catch {
-    return [];
-  }
-}
-
-function setStoredConnections(ids: string[]) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("qyntra-connections", JSON.stringify(ids));
-}
-
-export default function ConnectPage() {
-  const { data: session } = useSession();
-  const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [consentGiven, setConsentGiven] = useState<Record<string, boolean>>({});
-  const [connectedIds, setConnectedIds] = useState<string[]>([]);
-  const [justConnected, setJustConnected] = useState<string | null>(null);
-  const connectors = getConnectors();
+function useStoredConnections(): [string[], (ids: string[]) => void] {
+  const [connected, setConnected] = useState<string[]>([]);
 
   useEffect(() => {
-    setConnectedIds(getStoredConnections());
-  }, []);
-
-  // Check for OAuth callback in URL
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const url = new URL(window.location.href);
-    const code = url.searchParams.get("code");
-    const state = url.searchParams.get("state");
-    if (code && state) {
-      // In a real app, exchange code for tokens via API
-      // For demo, we mark the connector as connected
-      const connectorId = state;
-      handleConnect(connectorId);
-      // Clean URL
-      window.history.replaceState({}, "", window.location.pathname);
+    try {
+      const stored = JSON.parse(localStorage.getItem("qyntra-connections") || "[]");
+      setConnected(stored);
+    } catch {
+      setConnected([]);
     }
   }, []);
 
-  function handleConnect(id: string) {
-    const next = [...connectedIds, id];
-    setConnectedIds(next);
-    setStoredConnections(next);
-    setJustConnected(id);
-    setActiveModal(null);
-    setTimeout(() => setJustConnected(null), 3000);
+  const save = (ids: string[]) => {
+    localStorage.setItem("qyntra-connections", JSON.stringify(ids));
+    setConnected(ids);
+  };
+
+  return [connected, save];
+}
+
+const connectors: ConnectorConfig[] = [
+  {
+    id: "local-folder",
+    name: "Local Folder",
+    description: "Select a folder and build a private wiki from local files. Uses File System Access API or Tauri native bridge.",
+    icon: FolderOpen,
+    provider: "local",
+    oauthConfigured: true,
+    features: [".txt", ".md", ".json", ".csv", ".html"],
+    color: "#ffeb3b",
+    borderColor: "rgba(255,235,59,0.3)",
+  },
+  {
+    id: "google-drive",
+    name: "Google Drive",
+    description: "Import docs, PDFs, notes, and files from Google Drive via real OAuth.",
+    icon: HardDrive,
+    provider: "google-drive",
+    oauthConfigured: true,
+    features: ["Docs", "Sheets", "PDFs", "Slides"],
+    color: "#00ffff",
+    borderColor: "rgba(0,255,255,0.3)",
+  },
+  {
+    id: "notion",
+    name: "Notion",
+    description: "Import pages and databases into your personal wiki via Notion OAuth integration.",
+    icon: NotepadText,
+    provider: "notion",
+    oauthConfigured: true,
+    features: ["Pages", "Databases", "Blocks"],
+    color: "#ffb8ff",
+    borderColor: "rgba(255,184,255,0.3)",
+  },
+  {
+    id: "microsoft",
+    name: "Microsoft 365",
+    description: "Import from OneDrive, SharePoint, and Outlook via Microsoft Graph OAuth.",
+    icon: Briefcase,
+    provider: "microsoft",
+    oauthConfigured: true,
+    features: ["OneDrive", "SharePoint", "Outlook"],
+    color: "#ffb852",
+    borderColor: "rgba(255,184,82,0.3)",
+  },
+  {
+    id: "manual-url",
+    name: "Manual URL",
+    description: "Add a webpage or article by URL. The app will fetch and index the content.",
+    icon: LinkIcon,
+    provider: "manual",
+    oauthConfigured: true,
+    features: ["Webpages", "Articles", "Docs"],
+    color: "#4ade80",
+    borderColor: "rgba(74,222,128,0.3)",
+  },
+  {
+    id: "manual-text",
+    name: "Manual Paste",
+    description: "Paste raw text, notes, or copied content directly into your wiki.",
+    icon: Upload,
+    provider: "manual",
+    oauthConfigured: true,
+    features: ["Raw text", "Notes", "Snippets"],
+    color: "#ffca28",
+    borderColor: "rgba(255,202,40,0.3)",
+  },
+  {
+    id: "demo-dataset",
+    name: "Demo Dataset",
+    description: "Load a polished AI Agent Memory Encyclopedia demo with sample sources, pages, and contradictions.",
+    icon: Database,
+    provider: "demo",
+    oauthConfigured: true,
+    features: ["7 sources", "8 pages", "Graph", "Contradictions"],
+    color: "#ffeb3b",
+    borderColor: "rgba(255,235,59,0.3)",
+  },
+];
+
+export default function ConnectPage() {
+  const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const successParam = searchParams.get("success");
+  const errorParam = searchParams.get("error");
+
+  const [connectedIds, setConnectedIds] = useStoredConnections();
+  const [activeModal, setActiveModal] = useState<string | null>(null);
+  const [consentGiven, setConsentGiven] = useState<Record<string, boolean>>({});
+  const [loading, setLoading] = useState<string | null>(null);
+  const [syncing, setSyncing] = useState<string | null>(null);
+  const [syncResult, setSyncResult] = useState<{ synced: number; files: string[] } | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+
+  // Handle OAuth callback success/error
+  useEffect(() => {
+    if (successParam) {
+      const next = [...connectedIds, successParam];
+      setConnectedIds(next);
+      setToast({ message: `${successParam} connected successfully!`, type: "success" });
+      // Clear URL params
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+    if (errorParam) {
+      setToast({ message: `Connection failed: ${errorParam}`, type: "error" });
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, [successParam, errorParam]);
+
+  // Auto-dismiss toast
+  useEffect(() => {
+    if (!toast) return;
+    const timer = setTimeout(() => setToast(null), 5000);
+    return () => clearTimeout(timer);
+  }, [toast]);
+
+  async function handleOAuthConnect(providerId: string) {
+    setLoading(providerId);
+    try {
+      const res = await fetch(`/api/oauth/start?provider=${providerId}&redirect=/app/connect`);
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setToast({ message: data.error || "OAuth URL generation failed", type: "error" });
+      }
+    } catch {
+      setToast({ message: "Failed to start OAuth flow", type: "error" });
+    } finally {
+      setLoading(null);
+    }
+  }
+
+  async function handleSync(providerId: string) {
+    setSyncing(providerId);
+    try {
+      const res = await fetch(`/api/connectors/${providerId}/sync`, { method: "POST" });
+      const data = await res.json();
+      if (data.success) {
+        setSyncResult({ synced: data.synced, files: data.files.map((f: { name: string }) => f.name) });
+        setToast({ message: `Synced ${data.synced} files from ${providerId}`, type: "success" });
+      } else {
+        setToast({ message: data.error || "Sync failed", type: "error" });
+      }
+    } catch {
+      setToast({ message: "Sync request failed", type: "error" });
+    } finally {
+      setSyncing(null);
+    }
   }
 
   function handleDisconnect(id: string) {
     const next = connectedIds.filter((c) => c !== id);
     setConnectedIds(next);
-    setStoredConnections(next);
+    setToast({ message: `${id} disconnected`, type: "success" });
+  }
+
+  function handleConnect(id: string) {
+    if (id === "demo-dataset") {
+      const next = [...connectedIds, id];
+      setConnectedIds(next);
+      setToast({ message: "Demo data loaded!", type: "success" });
+    }
+    setActiveModal(null);
   }
 
   const activeConnector = connectors.find((c) => c.id === activeModal);
@@ -207,6 +226,22 @@ export default function ConnectPage() {
 
   return (
     <div className="min-h-screen bg-black">
+      {/* Toast */}
+      {toast && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          className={`fixed top-4 right-4 z-50 pixel-card px-4 py-3 max-w-sm ${
+            toast.type === "success" ? "border-green-400/50" : "border-red-400/50"
+          }`}
+        >
+          <p className={`text-xs ${toast.type === "success" ? "text-green-400" : "text-red-400"}`}>
+            {toast.message}
+          </p>
+        </motion.div>
+      )}
+
       {/* Header */}
       <div className="px-6 sm:px-8 lg:px-10 pt-8 pb-6">
         <div className="flex items-center justify-between">
@@ -233,19 +268,41 @@ export default function ConnectPage() {
         >
           <Shield className="w-5 h-5 text-yellow-400 shrink-0" />
           <div>
-            <p className="text-sm font-medium text-white">Permission-First Architecture</p>
+            <p className="text-sm font-medium text-white">Real OAuth Connections</p>
             <p className="text-xs text-[#a0a0a0]">
-              OAuth tokens stay in your browser session. No silent data access. Revoke anytime.
+              Tokens are exchanged server-side. Files are fetched via real APIs and stored in your wiki. No silent access.
             </p>
           </div>
         </motion.div>
+
+        {/* Sync result */}
+        {syncResult && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="pixel-card border-green-400/30 p-4 mb-6"
+          >
+            <p className="text-xs text-green-400 font-[Press_Start_2P] mb-2">
+              SYNC COMPLETE: {syncResult.synced} files
+            </p>
+            <div className="flex flex-wrap gap-2">
+              {syncResult.files.map((name) => (
+                <span key={name} className="text-[8px] px-2 py-1 bg-green-400/10 text-green-400 border border-green-400/20">
+                  {name}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Connector grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {connectors.map((conn, idx) => {
             const Icon = conn.icon;
-            const isConnected = connectedIds.includes(conn.id);
-            const isJustConnected = justConnected === conn.id;
+            const isConnected = connectedIds.includes(conn.provider);
+            const isOAuth = ["google-drive", "microsoft", "notion"].includes(conn.provider);
+            const isLoading = loading === conn.provider;
+            const isSyncing = syncing === conn.provider;
 
             return (
               <motion.div
@@ -277,60 +334,54 @@ export default function ConnectPage() {
                   <Icon className="w-5 h-5" style={{ color: conn.color }} />
                 </div>
 
-                {/* Content */}
                 <h3 className="pixel-heading text-[8px] text-white mb-1">{conn.name}</h3>
                 <p className="text-xs text-[#a0a0a0] mb-3 leading-relaxed">{conn.description}</p>
 
-                {/* Features */}
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {conn.features.map((f) => (
-                    <span
-                      key={f}
-                      className="text-[8px] px-2 py-0.5 bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 font-[Press_Start_2P]"
-                    >
+                    <span key={f} className="text-[8px] px-2 py-0.5 bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 font-[Press_Start_2P]">
                       {f}
                     </span>
                   ))}
                 </div>
 
-                {/* Action */}
+                {/* Actions */}
                 {isConnected ? (
-                  <button
-                    onClick={() => handleDisconnect(conn.id)}
-                    className="w-full pixel-btn pixel-btn-ghost text-[6px] py-2"
-                  >
-                    Disconnect
-                  </button>
-                ) : conn.oauthUrl ? (
-                  <div className="space-y-2">
-                    {conn.oauthConfigured ? (
-                      <a
-                        href={conn.oauthUrl}
-                        className="w-full pixel-btn pixel-btn-yellow text-[6px] py-2 flex items-center justify-center gap-2"
+                  <div className="flex gap-2">
+                    {isOAuth && (
+                      <button
+                        onClick={() => handleSync(conn.provider)}
+                        disabled={isSyncing}
+                        className="flex-1 pixel-btn pixel-btn-yellow text-[6px] py-2 flex items-center justify-center gap-1"
                       >
-                        <ExternalLink className="w-3 h-3" />
-                        Connect with OAuth
-                      </a>
-                    ) : (
-                      <div className="p-2 bg-yellow-400/5 border-2 border-yellow-400/20">
-                        <div className="flex items-center gap-2 mb-1">
-                          <Key className="w-3 h-3 text-yellow-400" />
-                          <span className="text-[8px] text-yellow-400 font-[Press_Start_2P]">
-                            OAuth Not Configured
-                          </span>
-                        </div>
-                        <p className="text-[10px] text-[#666666]">
-                          Add {conn.id.toUpperCase().replace("-", "_")}_CLIENT_ID to your .env file.
-                        </p>
-                      </div>
+                        {isSyncing ? (
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                        ) : (
+                          <RefreshCw className="w-3 h-3" />
+                        )}
+                        {isSyncing ? "Syncing..." : "Sync Files"}
+                      </button>
                     )}
                     <button
-                      onClick={() => setActiveModal(conn.id)}
-                      className="w-full pixel-btn pixel-btn-ghost text-[6px] py-2"
+                      onClick={() => handleDisconnect(conn.provider)}
+                      className="pixel-btn pixel-btn-ghost text-[6px] py-2"
                     >
-                      Manual Import
+                      Disconnect
                     </button>
                   </div>
+                ) : isOAuth ? (
+                  <button
+                    onClick={() => handleOAuthConnect(conn.provider)}
+                    disabled={isLoading}
+                    className="w-full pixel-btn pixel-btn-yellow text-[6px] py-2 flex items-center justify-center gap-2"
+                  >
+                    {isLoading ? (
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                    ) : (
+                      <ExternalLink className="w-3 h-3" />
+                    )}
+                    {isLoading ? "Connecting..." : `Connect ${conn.name}`}
+                  </button>
                 ) : (
                   <button
                     onClick={() => setActiveModal(conn.id)}
@@ -338,16 +389,6 @@ export default function ConnectPage() {
                   >
                     {conn.id === "demo-dataset" ? "Load Demo" : "Connect"}
                   </button>
-                )}
-
-                {/* Just connected flash */}
-                {isJustConnected && (
-                  <motion.div
-                    initial={{ opacity: 1 }}
-                    animate={{ opacity: 0 }}
-                    transition={{ duration: 2 }}
-                    className="absolute inset-0 bg-green-400/20 pointer-events-none"
-                  />
                 )}
               </motion.div>
             );
@@ -357,10 +398,7 @@ export default function ConnectPage() {
 
       {/* Consent Modal */}
       {activeConnector && (
-        <div
-          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setActiveModal(null)}
-        >
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => setActiveModal(null)}>
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -368,62 +406,32 @@ export default function ConnectPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="pixel-heading text-[10px] text-white">
-                Connect {activeConnector.name}
-              </h3>
-              <button
-                onClick={() => setActiveModal(null)}
-                className="text-[#666666] hover:text-white"
-              >
+              <h3 className="pixel-heading text-[10px] text-white">Connect {activeConnector.name}</h3>
+              <button onClick={() => setActiveModal(null)} className="text-[#666666] hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
-
             <p className="text-sm text-[#a0a0a0] mb-4">{activeConnector.description}</p>
-
             <div className="p-4 mb-4 bg-yellow-400/5 border-4 border-yellow-400/15">
-              <h4 className="text-[8px] font-[Press_Start_2P] text-yellow-400 uppercase tracking-wider mb-2">
-                Permission Required
-              </h4>
-              <p className="text-xs text-[#a0a0a0]">
-                {activeConnector.id === "local-folder"
-                  ? "Browser File System Access API permission. Files stay local."
-                  : activeConnector.id === "demo-dataset"
-                  ? "No permission needed. Loads public demo data into your wiki."
-                  : `OAuth access to ${activeConnector.name}. You can revoke this at any time in Settings.`}
-              </p>
+              <h4 className="text-[8px] font-[Press_Start_2P] text-yellow-400 uppercase tracking-wider mb-2">Permission Required</h4>
+              <p className="text-xs text-[#a0a0a0]">I consent to QyntraWiki accessing my {activeConnector.name} data for building my personal wiki.</p>
             </div>
-
             <div className="flex items-start gap-3 mb-6">
               <input
                 type="checkbox"
                 id="consent"
                 checked={consentGiven[activeConnector.id] || false}
-                onChange={(e) =>
-                  setConsentGiven((prev) => ({
-                    ...prev,
-                    [activeConnector.id]: e.target.checked,
-                  }))
-                }
+                onChange={(e) => setConsentGiven((prev) => ({ ...prev, [activeConnector.id]: e.target.checked }))}
                 className="mt-0.5 w-4 h-4 accent-yellow-400"
               />
-              <label htmlFor="consent" className="text-xs text-[#a0a0a0] leading-relaxed">
-                I consent to QyntraWiki accessing my {activeConnector.name} data for the purpose of
-                building my personal wiki. I understand I can revoke this access at any time.
-              </label>
+              <label htmlFor="consent" className="text-xs text-[#a0a0a0] leading-relaxed">I consent to QyntraWiki accessing my {activeConnector.name} data.</label>
             </div>
-
             <button
               disabled={!consentGiven[activeConnector.id]}
               onClick={() => handleConnect(activeConnector.id)}
-              className={cn(
-                "w-full py-3 text-[8px] font-[Press_Start_2P] uppercase tracking-wider flex items-center justify-center gap-2",
-                consentGiven[activeConnector.id]
-                  ? "pixel-btn pixel-btn-solid"
-                  : "bg-[#666666]/20 text-[#666666] cursor-not-allowed"
-              )}
+              className={cn("w-full py-3 text-[8px] font-[Press_Start_2P] uppercase tracking-wider flex items-center justify-center gap-2", consentGiven[activeConnector.id] ? "pixel-btn pixel-btn-solid" : "bg-[#666666]/20 text-[#666666] cursor-not-allowed")}
             >
-              {activeConnector.id === "demo-dataset" ? "Load Demo" : activeConnector.name === "Local Folder" ? "Open Folder Picker" : `Connect ${activeConnector.name}`}
+              {activeConnector.id === "demo-dataset" ? "Load Demo" : `Connect ${activeConnector.name}`}
               <ChevronRight className="w-4 h-4" />
             </button>
           </motion.div>

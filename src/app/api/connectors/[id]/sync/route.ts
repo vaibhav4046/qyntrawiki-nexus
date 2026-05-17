@@ -1,114 +1,129 @@
-import { NextRequest, NextResponse } from "next/server";
-import { connectorStore, getConnectorImpl } from "@/lib/connectors";
+import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { SyncItem } from "@/lib/connectors/types";
+import { googleProvider } from "@/lib/oauth/google";
+import { microsoftProvider } from "@/lib/oauth/microsoft";
+import { notionProvider } from "@/lib/oauth/notion";
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-): Promise<NextResponse> {
-  try {
-    const { id } = await params;
+export async function POST(request: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
 
-    const connector = connectorStore.findById(id);
-    if (!connector) {
-      return NextResponse.json(
-        { error: "Connector not found" },
-        { status: 404 }
-      );
-    }
+  // Find stored token
+  const tokenRecord = await prisma.oauthToken.findFirst({
+    where: { provider: id },
+  });
 
-    if (!connector.connected) {
-      return NextResponse.json(
-        {
-          success: false,
-          added: 0,
-          message: "Connector is not connected",
-        },
-        { status: 400 }
-      );
-    }
+  if (!tokenRecord) {
+    return NextResponse.json({ error: "Not connected. Please authenticate first." }, { status: 401 });
+  }
 
-    const impl = getConnectorImpl(connector.type);
-    if (!impl) {
-      return NextResponse.json(
-        {
-          success: false,
-          added: 0,
-          message: `No implementation found for connector type: ${connector.type}`,
-        },
-        { status: 400 }
-      );
-    }
+  const tokens = {
+    accessToken: tokenRecord.accessToken as string,
+    refreshToken: tokenRecord.refreshToken as string | undefined,
+    expiresAt: tokenRecord.expiresAt ? new Date(tokenRecord.expiresAt as string).getTime() : undefined,
+  };
 
-    const items: SyncItem[] = await impl.sync(
-      connector.config,
-      connector.credentials
-    );
-
-    const body = (await req.json().catch(() => ({}))) as Record<string, unknown>;
-    let wikiId: string | undefined;
-    if (typeof body.wikiId === "string" && body.wikiId.trim()) {
-      wikiId = body.wikiId.trim();
-    }
-
-    if (!wikiId) {
-      const url = new URL(req.url);
-      const queryWikiId = url.searchParams.get("wikiId");
-      if (queryWikiId) {
-        wikiId = queryWikiId;
+  // Refresh if expired
+  let freshTokens = tokens;
+  if (tokens.expiresAt && Date.now() > tokens.expiresAt) {
+    try {
+      if (id === "google-drive") {
+        freshTokens = await googleProvider.refreshToken(tokens);
+      } else if (id === "microsoft") {
+        freshTokens = await microsoftProvider.refreshToken(tokens);
       }
-    }
-
-    if (!wikiId) {
-      return NextResponse.json(
-        {
-          success: false,
-          added: 0,
-          message: "wikiId is required (provide in body or query param)",
-        },
-        { status: 400 }
-      );
-    }
-
-    const wiki = prisma.wiki.findUnique({ where: { id: wikiId } });
-    if (!wiki) {
-      return NextResponse.json(
-        { error: "Wiki not found" },
-        { status: 404 }
-      );
-    }
-
-    let added = 0;
-    for (const item of items) {
-      prisma.source.create({
+      // Update stored token
+      await prisma.oauthToken.update({
+        where: { id: tokenRecord.id as string },
         data: {
-          wikiId: wiki.id as string,
-          type: item.type || "text",
-          title: item.title,
-          rawText: item.rawText,
-          url: item.url || "",
-          status: "pending",
+          accessToken: freshTokens.accessToken,
+          refreshToken: freshTokens.refreshToken,
+          expiresAt: freshTokens.expiresAt ? new Date(freshTokens.expiresAt).toISOString() : undefined,
         },
       });
-      added++;
+    } catch {
+      return NextResponse.json({ error: "Token refresh failed. Please reconnect." }, { status: 401 });
+    }
+  }
+
+  try {
+    let files: Array<{ id: string; name: string; mimeType?: string; content?: string }> = [];
+
+    if (id === "google-drive") {
+      const driveFiles = await googleProvider.listFiles(freshTokens);
+      files = await Promise.all(
+        driveFiles.slice(0, 5).map(async (f) => {
+          let content = "";
+          try {
+            content = await googleProvider.downloadFile(freshTokens, f.id);
+          } catch {
+            // Some files may not be downloadable
+          }
+          return { id: f.id, name: f.name, mimeType: f.mimeType, content };
+        })
+      );
+    } else if (id === "microsoft") {
+      const msFiles = await microsoftProvider.listFiles(freshTokens);
+      files = await Promise.all(
+        msFiles.slice(0, 5).map(async (f) => {
+          let content = "";
+          try {
+            content = await microsoftProvider.downloadFile(freshTokens, f.id);
+          } catch {
+            // Some files may not be downloadable
+          }
+          return { id: f.id, name: f.name, content };
+        })
+      );
+    } else if (id === "notion") {
+      const pages = await notionProvider.listPages(freshTokens);
+      files = await Promise.all(
+        pages.slice(0, 5).map(async (p) => {
+          const content = await notionProvider.getPageContent(freshTokens, p.id);
+          return { id: p.id, name: p.name, content };
+        })
+      );
     }
 
-    return NextResponse.json(
-      {
-        success: true,
-        added,
-        message: `Synced ${added} items from ${connector.name}`,
-      },
-      { status: 200 }
-    );
-  } catch (error: unknown) {
-    console.error("POST /api/connectors/[id]/sync error:", error);
-    const message =
-      error instanceof Error ? error.message : "Internal server error";
-    return NextResponse.json(
-      { success: false, added: 0, message },
-      { status: 500 }
-    );
+    // Create file items and sources
+    const results = [];
+    for (const file of files) {
+      if (!file.content) continue;
+
+      const source = await prisma.source.create({
+        data: {
+          wikiId: "demo-wiki",
+          name: file.name,
+          url: `${id}://${file.id}`,
+          type: id,
+          status: "ready",
+          rawText: file.content.slice(0, 10000),
+          meta: JSON.stringify({ mimeType: file.mimeType, syncedAt: new Date().toISOString() }),
+        },
+      });
+
+      await prisma.fileItem.create({
+        data: {
+          wikiId: "demo-wiki",
+          name: file.name,
+          path: `${id}://${file.id}`,
+          extension: file.mimeType || "txt",
+          mimeType: file.mimeType || "text/plain",
+          sizeBytes: file.content.length,
+          summary: file.content.slice(0, 200),
+          sourceId: source.id as string,
+        },
+      });
+
+      results.push({ name: file.name, size: file.content.length });
+    }
+
+    return NextResponse.json({
+      success: true,
+      synced: results.length,
+      files: results,
+    });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Sync failed";
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
