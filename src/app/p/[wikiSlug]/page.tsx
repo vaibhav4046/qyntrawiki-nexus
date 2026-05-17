@@ -58,7 +58,7 @@ export default async function PublicWikiHomePage({
 
   return (
     <div className="flex flex-col min-h-screen bg-black">
-      <header className="border-b border-[rgba(255,235,59,0.12)] px-6 py-6">
+      <header className="border-b border-[rgba(230,57,70,0.12)] px-6 py-6">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
@@ -72,7 +72,7 @@ export default async function PublicWikiHomePage({
               )}
             </div>
             <div className="hidden sm:flex items-center gap-2 text-xs text-[#666666]">
-              <Sparkles className="w-3.5 h-3.5 text-[#ffca28]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#f77f00]" />
               <span>QyntraWiki</span>
             </div>
           </div>
@@ -86,7 +86,7 @@ export default async function PublicWikiHomePage({
         </div>
       </header>
 
-      <div className="border-b border-[rgba(255,235,59,0.08)] px-6 py-2.5">
+      <div className="border-b border-[rgba(230,57,70,0.08)] px-6 py-2.5">
         <div className="max-w-4xl mx-auto flex items-center gap-6 text-xs text-[#666666]">
           <span className="flex items-center gap-1.5">
             <BookOpen className="w-3.5 h-3.5" />
@@ -120,12 +120,12 @@ export default async function PublicWikiHomePage({
                 href={`/p/${wikiSlug}/${page.slug}`}
                 className={cn(
                   "group block p-5 rounded-lg border border-[rgba(107,101,96,0.15)]",
-                  "hover:border-[rgba(255,235,59,0.25)] hover:bg-[rgba(255,235,59,0.02)]",
+                  "hover:border-[rgba(230,57,70,0.25)] hover:bg-[rgba(230,57,70,0.02)]",
                   "transition-all duration-200"
                 )}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <h2 className="text-lg font-semibold text-[#f5f5f5] group-hover:text-[#ffeb3b] transition-colors">
+                  <h2 className="text-lg font-semibold text-[#f5f5f5] group-hover:text-[#e63946] transition-colors">
                     {page.title}
                   </h2>
                   <div className="flex items-center gap-2 flex-shrink-0">
@@ -135,13 +135,13 @@ export default async function PublicWikiHomePage({
                         page.healthScore >= 0.7
                           ? "bg-emerald-500/10 text-emerald-400"
                           : page.healthScore >= 0.4
-                          ? "bg-yellow-400/10 text-yellow-400"
+                          ? "bg-red-500/10 text-red-500"
                           : "bg-red-500/10 text-red-400"
                       )}
                     >
                       {(page.healthScore * 100).toFixed(0)}%
                     </span>
-                    <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#ffeb3b] group-hover:translate-x-0.5 transition-all" />
+                    <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#e63946] group-hover:translate-x-0.5 transition-all" />
                   </div>
                 </div>
                 {page.summary && (
@@ -159,10 +159,10 @@ export default async function PublicWikiHomePage({
         )}
       </main>
 
-      <footer className="border-t border-[rgba(255,235,59,0.08)] px-6 py-8 mt-auto">
+      <footer className="border-t border-[rgba(230,57,70,0.08)] px-6 py-8 mt-auto">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#666666]">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#ffca28]" />
+            <Sparkles className="w-4 h-4 text-[#f77f00]" />
             <span>Powered by QyntraWiki</span>
           </div>
           <span>

@@ -111,7 +111,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
           <aside className="order-2 lg:order-1 lg:col-span-3">
             <div className="glass-card sticky top-24 rounded-2xl p-5">
               <div className="mb-4 flex items-center gap-2 text-[#f5f5f5]">
-                <BookOpen className="h-4 w-4 text-yellow-400" />
+                <BookOpen className="h-4 w-4 text-red-500" />
                 <span className="text-sm font-semibold uppercase tracking-wider">Contents</span>
               </div>
               {headings.length === 0 ? (
@@ -171,7 +171,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                   a: ({ href, children }) => (
                     <a
                       href={href}
-                      className="font-medium text-yellow-400 underline underline-offset-4 transition-colors hover:text-orange-500"
+                      className="font-medium text-red-500 underline underline-offset-4 transition-colors hover:text-orange-500"
                       target={href?.startsWith("http") ? "_blank" : undefined}
                       rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
                     >
@@ -218,7 +218,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
               <section className="mt-8">
                 <div className="glass-card rounded-2xl p-6">
                   <div className="mb-4 flex items-center gap-2">
-                    <LinkIcon className="h-5 w-5 text-yellow-400" />
+                    <LinkIcon className="h-5 w-5 text-red-500" />
                     <h2 className="text-lg font-semibold text-[#f5f5f5]">Citations</h2>
                   </div>
                   <ul className="space-y-3">
@@ -227,7 +227,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                         key={c.id}
                         className="flex items-start gap-3 rounded-xl bg-white/5 p-3 text-sm text-[#a0a0a0]"
                       >
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-400/10 text-xs font-bold text-yellow-400">
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-400/10 text-xs font-bold text-red-500">
                           {idx + 1}
                         </span>
                         <div className="flex-1">
@@ -237,7 +237,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                               href={c.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="mt-1 inline-flex items-center gap-1 text-xs text-yellow-400 hover:text-orange-500"
+                              className="mt-1 inline-flex items-center gap-1 text-xs text-red-500 hover:text-orange-500"
                             >
                               <ExternalLink className="h-3 w-3" />
                               {c.url}
@@ -322,7 +322,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
               <section className="mt-8">
                 <div className="glass-card rounded-2xl p-6">
                   <div className="mb-4 flex items-center gap-2">
-                    <Users className="h-5 w-5 text-yellow-400" />
+                    <Users className="h-5 w-5 text-red-500" />
                     <h2 className="text-lg font-semibold text-[#f5f5f5]">Related Pages</h2>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -334,7 +334,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                           href={`/app/wiki/${rp.slug}`}
                           className="group flex items-center gap-3 rounded-xl bg-white/5 p-3 transition-colors hover:bg-white/10"
                         >
-                          <FileText className="h-4 w-4 shrink-0 text-[#666666] group-hover:text-yellow-400" />
+                          <FileText className="h-4 w-4 shrink-0 text-[#666666] group-hover:text-red-500" />
                           <span className="text-sm font-medium text-[#a0a0a0] group-hover:text-[#f5f5f5]">
                             {rp.title}
                           </span>
@@ -350,7 +350,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
           <aside className="order-3 lg:col-span-3">
             <div className="glass-card sticky top-24 rounded-2xl p-5">
               <div className="mb-4 flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-yellow-400" />
+                <Sparkles className="h-4 w-4 text-red-500" />
                 <span className="text-sm font-semibold uppercase tracking-wider text-[#f5f5f5]">
                   Infobox
                 </span>

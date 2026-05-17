@@ -2,8 +2,20 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { motion, useInView, useMotionValue, useTransform, animate, useScroll, useSpring } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Database, Sparkles, Shield, BookOpen, FolderOpen, GitBranch, MessageSquare, Globe, FileText, Check, X, Zap, Server, Users, Lock } from "lucide-react";
+import { ArrowRight, Database, Sparkles, Shield, BookOpen, FolderOpen, GitBranch, MessageSquare, Globe, FileText, Check, X, Zap, Server, Users, Lock, Crosshair, Target, Flame, Swords, Gamepad2, ChevronRight } from "lucide-react";
 import KnowledgeTree from "@/components/KnowledgeTree";
+
+/* ─── ScrollProgress ─── */
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  return (
+    <motion.div
+      className="fixed top-0 left-0 right-0 h-1 bg-[#e63946] origin-left z-50"
+      style={{ scaleX }}
+    />
+  );
+}
 
 /* ─── TypewriterText ─── */
 function TypewriterText({ text, speed = 50, delay = 0, className = "" }: { text: string; speed?: number; delay?: number; className?: string }) {
@@ -34,88 +46,35 @@ function TypewriterText({ text, speed = 50, delay = 0, className = "" }: { text:
   return (
     <span className={className}>
       {displayed}
-      <span className={`inline-block w-[4px] h-[1em] bg-yellow-400 ml-0.5 ${showCursor ? "opacity-100" : "opacity-0"}`} />
+      <span className={`inline-block w-[4px] h-[1em] bg-[#e63946] ml-0.5 align-middle ${showCursor ? "opacity-100" : "opacity-0"}`} />
     </span>
   );
 }
 
-/* ─── GlitchText ─── */
-function GlitchText({ text, className = "" }: { text: string; className?: string }) {
-  return (
-    <span className={`glitch-text ${className}`} data-text={text}>
-      {text}
-    </span>
-  );
+/* ─── FlameText ─── */
+function FlameText({ text, className = "" }: { text: string; className?: string }) {
+  return <span className={`gradient-flame ${className}`}>{text}</span>;
 }
 
-/* ─── WaveText ─── */
-function WaveText({ text, className = "" }: { text: string; className?: string }) {
+/* ─── SectionReveal ─── */
+function SectionReveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-80px" });
   return (
-    <span className={`wave-text ${className}`}>
-      {text.split("").map((char, i) => (
-        <span key={i} style={{ animationDelay: `${i * 0.05}s` }}>
-          {char === " " ? "\u00A0" : char}
-        </span>
-      ))}
-    </span>
-  );
-}
-
-/* ─── FloatingPellets ─── */
-function FloatingPellets() {
-  const pellets = Array.from({ length: 20 }, (_, i) => ({
-    id: i,
-    x: Math.random() * 100,
-    y: Math.random() * 100,
-    size: 2 + Math.random() * 3,
-    duration: 3 + Math.random() * 4,
-    delay: Math.random() * 3,
-  }));
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
-      {pellets.map((p) => (
-        <motion.div
-          key={p.id}
-          className="absolute rounded-full bg-yellow-400/30"
-          style={{
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            width: p.size,
-            height: p.size,
-          }}
-          animate={{
-            y: [0, -30, 0],
-            opacity: [0.2, 0.6, 0.2],
-          }}
-          transition={{
-            duration: p.duration,
-            delay: p.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
-/* ─── GhostSprite ─── */
-function GhostSprite({ color, size = 32, className = "" }: { color: string; size?: number; className?: string }) {
-  return (
-    <div className={`ghost-float ${className}`} style={{ width: size, height: size }}>
-      <svg viewBox="0 0 24 24" fill={color} className="w-full h-full drop-shadow-lg">
-        <path d="M12 2C7.58 2 4 5.58 4 10v10c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-3h2v3c0 .55.45 1 1 1h2c.55 0 1-.45 1-1v-3h2v3c0 .55.45 1 1 1h2c.55 0 1-.45 1-1V10c0-4.42-3.58-8-8-8z" />
-        <circle cx="9" cy="9" r="2" fill="white" />
-        <circle cx="15" cy="9" r="2" fill="white" />
-        <circle cx="9" cy="9" r="1" fill="black" />
-        <circle cx="15" cy="9" r="1" fill="black" />
-      </svg>
-    </div>
+    <motion.div
+      ref={ref}
+      initial={{ opacity: 0, y: 40 }}
+      animate={inView ? { opacity: 1, y: 0 } : {}}
+      transition={{ duration: 0.8, delay, ease: [0.4, 0, 0.2, 1] }}
+      className={className}
+    >
+      {children}
+    </motion.div>
   );
 }
 
 /* ─── AnimatedCounter ─── */
-function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number; suffix?: string; prefix?: string }) {
+function AnimatedCounter({ target, suffix = "", prefix = "", className = "" }: { target: number; suffix?: string; prefix?: string; className?: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true });
   const count = useMotionValue(0);
@@ -133,102 +92,64 @@ function AnimatedCounter({ target, suffix = "", prefix = "" }: { target: number;
     return unsub;
   }, [rounded]);
 
-  if (!inView) return <span ref={ref}>{prefix}0{suffix}</span>;
-  return <span ref={ref} className="tabular-nums">{prefix}{display}{suffix}</span>;
+  if (!inView) return <span ref={ref} className={className}>{prefix}0{suffix}</span>;
+  return <span ref={ref} className={`tabular-nums ${className}`}>{prefix}{display}{suffix}</span>;
 }
 
-/* ─── PacManEatingText ─── */
-function PacManEatingText({ text, className = "" }: { text: string; className?: string }) {
-  const [eatenCount, setEatenCount] = useState(0);
-  const [isResetting, setIsResetting] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const totalTime = 4000; // 4 seconds for Pac-Man to cross
+/* ─── NESMenuSelect ─── */
+function NESMenuSelect({ options }: { options: string[] }) {
+  const [selected, setSelected] = useState(0);
+  const [blink, setBlink] = useState(true);
 
   useEffect(() => {
-    let raf: number;
-    let startTime: number;
+    const interval = setInterval(() => {
+      setSelected((prev) => (prev + 1) % options.length);
+    }, 1800);
+    return () => clearInterval(interval);
+  }, [options.length]);
 
-    function animate(timestamp: number) {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = Math.min(elapsed / totalTime, 1);
-
-      if (containerRef.current) {
-        const containerWidth = containerRef.current.offsetWidth;
-        const letters = containerRef.current.querySelectorAll(".pac-letter");
-        const pacPos = progress * (containerWidth + 40) - 20;
-        let newEaten = 0;
-
-        letters.forEach((letter) => {
-          const rect = letter.getBoundingClientRect();
-          const containerRect = containerRef.current!.getBoundingClientRect();
-          const letterCenter = rect.left - containerRect.left + rect.width / 2;
-          if (pacPos > letterCenter && progress < 1) {
-            newEaten++;
-            letter.classList.add("eaten");
-            letter.classList.remove("appear");
-          } else if (progress >= 1 || isResetting) {
-            letter.classList.remove("eaten");
-            letter.classList.add("appear");
-          }
-        });
-
-        setEatenCount(newEaten);
-      }
-
-      if (progress >= 1 && !isResetting) {
-        setTimeout(() => {
-          setIsResetting(true);
-          setTimeout(() => {
-            setIsResetting(false);
-            startTime = 0;
-            raf = requestAnimationFrame(animate);
-          }, 500);
-        }, 200);
-        return;
-      }
-
-      if (!isResetting) {
-        raf = requestAnimationFrame(animate);
-      }
-    }
-
-    raf = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(raf);
-  }, [isResetting]);
+  useEffect(() => {
+    const interval = setInterval(() => setBlink((p) => !p), 350);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div ref={containerRef} className={`pac-eating-text-container ${className}`}>
-      <div className="pac-man-eater" />
-      <span className="inline-flex flex-wrap">
-        {text.split("").map((char, i) => (
-          <span
-            key={i}
-            className="pac-letter"
-            style={{ display: "inline-block", minWidth: char === " " ? "0.5em" : undefined }}
-          >
-            {char === " " ? "\u00A0" : char}
-          </span>
-        ))}
-      </span>
+    <div className="nes-select inline-flex flex-col gap-2 text-left">
+      {options.map((opt, i) => (
+        <div key={opt} className="flex items-center gap-2">
+          <ChevronRight className={`w-4 h-4 text-[#e63946] transition-opacity ${i === selected && blink ? "opacity-100" : "opacity-0"}`} />
+          <span className={`pixel-heading text-[8px] tracking-widest ${i === selected ? "text-[#e0e0e0]" : "text-[#555]"}`}>{opt}</span>
+        </div>
+      ))}
     </div>
   );
 }
 
-/* ─── Section Reveal ─── */
-function SectionReveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+/* ─── PowerUpFloat ─── */
+function PowerUpFloat({ icon: Icon, color, className = "", size = 24 }: { icon: React.ElementType; color: string; className?: string; size?: number }) {
   return (
     <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, delay, ease: [0.4, 0, 0.2, 1] }}
-      className={className}
+      className={`pointer-events-none ${className}`}
+      animate={{ y: [0, -18, 0], rotate: [0, 8, -8, 0] }}
+      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
     >
-      {children}
+      <Icon className="drop-shadow-lg" style={{ width: size, height: size, color }} />
     </motion.div>
+  );
+}
+
+/* ─── SoldierSilhouette ─── */
+function SoldierSilhouette({ direction = "left" }: { direction?: "left" | "right" }) {
+  const transform = direction === "right" ? "scaleX(-1)" : undefined;
+  return (
+    <svg width="80" height="120" viewBox="0 0 80 120" className="opacity-80" style={{ transform }}>
+      <circle cx="40" cy="18" r="10" fill="#4a7c59" />
+      <rect x="25" y="30" width="30" height="35" rx="2" fill="#2d4a3e" />
+      <rect x="10" y="40" width="28" height="6" fill="#1a1a1a" />
+      <rect x="5" y="36" width="8" height="14" fill="#1a1a1a" />
+      <rect x="28" y="65" width="10" height="45" fill="#2d4a3e" />
+      <rect x="42" y="65" width="10" height="45" fill="#2d4a3e" />
+    </svg>
   );
 }
 
@@ -261,187 +182,178 @@ const comparisonFeatures = [
 ];
 
 const wikiPages = [
-  { title: "HydraDB", summary: "Graph-first context infrastructure for AI agents — replaces vector-only retrieval with intelligent recall pipeline.", tags: ["Product", "AI"], color: "text-yellow-400" },
+  { title: "HydraDB", summary: "Graph-first context infrastructure for AI agents — replaces vector-only retrieval with intelligent recall pipeline.", tags: ["Product", "AI"], color: "text-red-500" },
   { title: "Context Graph", summary: "Persistent, evolving knowledge structure tracking entities, relationships, and temporal signals across documents.", tags: ["Concept"], color: "text-blue-400" },
   { title: "LLM Wiki", summary: "AI-maintained wiki that builds structured, interlinked articles with cross-references and automatic updates.", tags: ["Concept", "Pattern"], color: "text-green-400" },
 ];
 
 const trustItems = [
-  { icon: Shield, title: "Permission-first", desc: "Every connector requires explicit consent before accessing data.", color: "#ff0000", bg: "rgba(255,0,0,0.15)", border: "rgba(255,0,0,0.3)" },
-  { icon: Server, title: "Local-first", desc: "Files stay local unless you enable HydraDB sync.", color: "#ffb8ff", bg: "rgba(255,184,255,0.15)", border: "rgba(255,184,255,0.3)" },
-  { icon: Lock, title: "No scraping", desc: "LinkedIn & Instagram use export-import mode — never silent access.", color: "#00ffff", bg: "rgba(0,255,255,0.15)", border: "rgba(0,255,255,0.3)" },
-  { icon: Check, title: "No data sold", desc: "Your data is yours. Zero third-party sharing.", color: "#ffb852", bg: "rgba(255,184,82,0.15)", border: "rgba(255,184,82,0.3)" },
+  { icon: Shield, title: "Perimeter Shield", desc: "Explicit consent before any data access.", color: "#e63946", bg: "rgba(230,57,70,0.15)", border: "rgba(230,57,70,0.3)", badge: "ARMOR +1" },
+  { icon: Server, title: "Local Base", desc: "Files stay on-site unless sync is enabled.", color: "#4a7c59", bg: "rgba(74,124,89,0.15)", border: "rgba(74,124,89,0.3)", badge: "DEF +2" },
+  { icon: Lock, title: "Lockdown", desc: "Export-only mode for sensitive networks.", color: "#f77f00", bg: "rgba(247,127,0,0.15)", border: "rgba(247,127,0,0.3)", badge: "SECURE" },
+  { icon: Check, title: "Zero Leak", desc: "No third-party sharing. Ever.", color: "#00b4d8", bg: "rgba(0,180,216,0.15)", border: "rgba(0,180,216,0.3)", badge: "CLEAR" },
 ];
 
 function getBadgeClass(tag: string) {
   switch (tag) {
-    case "Product": return "pixel-badge pixel-badge-yellow";
-    case "AI": return "pixel-badge pixel-badge-blue";
+    case "Product": return "pixel-badge pixel-badge-red";
+    case "AI": return "pixel-badge pixel-badge-spread";
     case "Concept": return "pixel-badge pixel-badge-green";
-    case "Pattern": return "pixel-badge pixel-badge-pink";
-    default: return "pixel-badge pixel-badge-yellow";
+    case "Pattern": return "pixel-badge pixel-badge-laser";
+    default: return "pixel-badge pixel-badge-red";
   }
 }
 
 export default function LandingPage() {
   return (
-    <main className="relative min-h-screen bg-[#000] text-[#f5f5f5] overflow-x-hidden font-[family-name:var(--font-sans)]">
-      {/* ── HERO ── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 py-24 bg-[#000] overflow-hidden border-b-[4px] border-[#2121de]">
-        <FloatingPellets />
-        <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-t from-[#000] to-transparent z-[1] pointer-events-none" />
+    <main className="relative min-h-screen bg-[#060606] text-[#e0e0e0] overflow-x-hidden font-[family-name:var(--font-sans)]">
+      <ScrollProgress />
 
+      {/* ── HERO ── */}
+      <section className="relative min-h-screen flex flex-col items-center justify-center bg-[#060606] overflow-hidden border-b-4 border-[#4a7c59]">
         {/* Nav */}
-        <div className="absolute top-0 left-0 right-0 z-20 px-6 py-5">
+        <nav className="absolute top-0 left-0 right-0 z-20 px-6 py-5">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <Link href="/" className="flex items-center gap-2.5">
-              <Database className="w-5 h-5 text-[#ffeb3b]" />
-              <span className="text-[20px] font-bold tracking-tight text-[#f5f5f5]">QyntraWiki</span>
+            <Link href="/" className="flex items-center gap-2">
+              <Flame className="w-6 h-6 text-[#e63946]" />
+              <span className="text-[20px] font-bold tracking-tight text-[#e0e0e0]">QYNTRA</span>
             </Link>
-            <div className="flex items-center gap-3">
-              <Link href="/app" className="pixel-btn pixel-btn-ghost py-2.5 px-5">Open App</Link>
-              <Link href="/app/connect" className="pixel-btn pixel-btn-yellow py-2.5 px-5">Start Now</Link>
+            <div className="flex items-center gap-4">
+              <Link href="/app" className="pixel-btn pixel-btn-ghost text-[#e0e0e0]">START</Link>
+              <Link href="/app/connect" className="pixel-btn pixel-btn-red text-[#e0e0e0]">OPTIONS</Link>
             </div>
           </div>
+        </nav>
+
+        {/* Soldiers */}
+        <div className="absolute left-6 top-1/2 -translate-y-1/2 hidden lg:block z-10">
+          <SoldierSilhouette direction="right" />
+        </div>
+        <div className="absolute right-6 top-1/2 -translate-y-1/2 hidden lg:block z-10">
+          <SoldierSilhouette direction="left" />
         </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto text-center pt-16">
-          {/* Pac-Man chomp */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6 }}
-            className="w-20 h-20 bg-[#ffeb3b] pac-chomp mx-auto mb-8"
-          />
+        {/* Floating power-ups */}
+        <PowerUpFloat icon={Target} color="#e63946" className="absolute top-24 left-[15%] z-10" size={28} />
+        <PowerUpFloat icon={Crosshair} color="#f77f00" className="absolute top-32 right-[15%] z-10" size={28} />
+        <PowerUpFloat icon={Swords} color="#00b4d8" className="absolute bottom-32 left-[25%] z-10" size={28} />
+        <PowerUpFloat icon={Zap} color="#ff69b4" className="absolute bottom-24 right-[25%] z-10" size={28} />
 
+        <div className="relative z-10 max-w-5xl mx-auto text-center pt-20 px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="pixel-label mb-6">HydraDB WikiThon 2026</span>
+            <h1 className="gradient-metal pixel-heading text-[12px] sm:text-[14px] leading-relaxed mb-2">
+              QYNTRA WIKI
+            </h1>
           </motion.div>
 
-          <h1 className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mb-6 max-w-4xl mx-auto text-[#f5f5f5]">
-            <TypewriterText text="The Brain Behind Your " speed={50} delay={300} />
-            <span className="gradient-pixel">
-              <TypewriterText text="Personal Knowledge" speed={50} delay={1400} />
-            </span>
-          </h1>
+          {/* Flame swoosh */}
+          <svg viewBox="0 0 240 24" className="mx-auto w-72 h-10 mb-6">
+            <defs>
+              <linearGradient id="flameSwoosh" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stopColor="#ffeb3b" />
+                <stop offset="50%" stopColor="#f77f00" />
+                <stop offset="100%" stopColor="#e63946" />
+              </linearGradient>
+            </defs>
+            <path d="M10,20 Q60,2 120,20 T230,20" stroke="url(#flameSwoosh)" strokeWidth="4" fill="none" strokeLinecap="round" />
+          </svg>
 
-          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto mb-10 leading-relaxed">
-            <TypewriterText
-              text="A unified context layer to capture your entire working knowledge: files, notes, links, exports, cloud docs, and daily memory — compiled into a cited, searchable, HydraDB-powered personal wiki."
-              speed={30}
-              delay={2200}
-            />
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <h2 className="pixel-heading text-[8px] sm:text-[10px] text-[#e0e0e0] mb-8 tracking-widest">
+              OPERATION: PERSONAL KNOWLEDGE
+            </h2>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            transition={{ duration: 0.7, delay: 0.4 }}
           >
-            <Link href="/app" className="pixel-btn pixel-btn-solid px-8 py-3.5 glow-pulse">
-              Start Building <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link href="/app" className="pixel-btn pixel-btn-yellow px-8 py-3.5 glow-pulse">
-              Load Demo <Database className="w-4 h-4" />
+            <Link href="/app" className="pixel-btn pixel-btn-solid px-10 py-4 flame-flicker inline-flex items-center gap-2 text-[#060606]">
+              PRESS START <Gamepad2 className="w-5 h-5" />
             </Link>
           </motion.div>
 
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 3, duration: 0.8 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
             className="mt-6"
           >
-            <span className="coin-insert text-[#ffeb3b] pixel-heading text-[8px] tracking-widest uppercase">
+            <span className="konami-blink pixel-heading text-[8px] text-[#e63946] tracking-widest uppercase block">
               INSERT COIN TO BEGIN
             </span>
           </motion.div>
 
-          {/* Pac-Man eating text animation */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 2.5, duration: 0.8 }}
-            className="mt-10 mb-2"
+            transition={{ delay: 1.6, duration: 0.8 }}
+            className="mt-6 flex justify-center"
           >
-            <PacManEatingText
-              text="EAT YOUR KNOWLEDGE - BUILD YOUR BRAIN"
-              className="text-[14px] sm:text-[18px] text-yellow-400 font-[Press_Start_2P] tracking-wider"
-            />
+            <NESMenuSelect options={["1 PLAYER", "2 PLAYERS"]} />
           </motion.div>
 
           {/* Stats row */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
+            transition={{ duration: 0.7, delay: 0.6 }}
             className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 max-w-3xl mx-auto"
           >
             {stats.map((s) => (
               <div key={s.label} className="pixel-stat">
-                <div className="pixel-stat-value">
-                  <AnimatedCounter target={s.value} suffix={s.suffix || ""} />
+                <div className="pixel-stat-value text-[#e63946]">
+                  <AnimatedCounter target={s.value} suffix={s.suffix || ""} className="text-[#e63946]" />
                 </div>
-                <div className="pixel-stat-label">{s.label}</div>
+                <div className="pixel-stat-label text-[#4a7c59]">{s.label}</div>
               </div>
             ))}
           </motion.div>
         </div>
-
-        {/* Floating ghost sprites in corners */}
-        <div className="absolute top-28 left-8 z-10 hidden lg:block">
-          <GhostSprite color="#ff0000" size={40} />
-        </div>
-        <div className="absolute top-28 right-8 z-10 hidden lg:block">
-          <GhostSprite color="#ffb8ff" size={40} />
-        </div>
-        <div className="absolute bottom-28 left-12 z-10 hidden lg:block">
-          <GhostSprite color="#00ffff" size={40} />
-        </div>
-        <div className="absolute bottom-28 right-12 z-10 hidden lg:block">
-          <GhostSprite color="#ffb852" size={40} />
-        </div>
       </section>
 
-      {/* ── WHY QYNTRAWIKI ── */}
-      <section className="relative z-10 px-6 py-24 bg-[#000]">
+      {/* ── MISSION BRIEFING ── */}
+      <section className="relative z-10 px-6 py-24 bg-[#060606]">
         <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
-          <span className="pixel-label">Why QyntraWiki</span>
-          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
-            <GlitchText text="Similarity isn't relevance" />
+          <span className="pixel-label">Mission Briefing</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#e0e0e0]">
+            <FlameText text="INTEL REQUIRED" />
           </h2>
-          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
-            <WaveText text="Flat file storage returns what's close, not what's correct. QyntraWiki connects your tools and data, builds a structured graph, and delivers the exact context you need." />
+          <p className="text-[20px] text-[#888] max-w-2xl mx-auto leading-relaxed">
+            Without proper intel, you&apos;re walking into the jungle blind. With QyntraWiki, every operation is backed by verified data.
           </p>
         </SectionReveal>
 
-        {/* With / Without comparison */}
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
           <SectionReveal delay={0.1}>
-            <div className="pixel-card flip-in p-8" style={{ borderColor: "rgba(255,0,0,0.3)" }}>
-              <h3 className="pixel-heading text-[9px] text-[#ff0000] mb-6">Without QyntraWiki</h3>
+            <div className="pixel-card p-8 pixel-border-red">
+              <h3 className="pixel-heading text-[9px] text-[#e63946] mb-6">NO BACKUP</h3>
               <div className="space-y-3">
                 {comparisonFeatures.map((f, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <X className="w-4 h-4 text-[#666666] shrink-0" />
-                    <span className="text-[18px] text-[#666666]">{f.label}</span>
+                    <X className="w-4 h-4 text-[#666] shrink-0" />
+                    <span className="text-[18px] text-[#666]">{f.label}</span>
                   </div>
                 ))}
               </div>
             </div>
           </SectionReveal>
           <SectionReveal delay={0.2}>
-            <div className="pixel-card flip-in p-8 glow-pulse" style={{ borderColor: "rgba(255,235,59,0.6)" }}>
-              <h3 className="pixel-heading text-[9px] text-[#ffeb3b] mb-6">With QyntraWiki</h3>
+            <div className="pixel-card p-8 pixel-border-orange flame-flicker">
+              <h3 className="pixel-heading text-[9px] text-[#f77f00] mb-6">QYNTRA SQUAD</h3>
               <div className="space-y-3">
                 {comparisonFeatures.map((f, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <Check className="w-4 h-4 text-[#4ade80] shrink-0" />
+                    <Check className="w-4 h-4 text-[#4a7c59] shrink-0" />
                     <span className="text-[18px] text-[#a0a0a0]">{f.label}</span>
                   </div>
                 ))}
@@ -451,50 +363,15 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── LIVE KNOWLEDGE GRAPH ── */}
-      <section className="relative z-10 px-6 py-16 bg-[#000] knowledge-tree-section overflow-hidden">
-        <SectionReveal className="max-w-7xl mx-auto text-center mb-8">
-          <span className="pixel-label">Live Graph</span>
-          <h2 className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mt-4 mb-2 text-[#f5f5f5]">
-            Watch Your Knowledge Grow
-          </h2>
-          <p className="text-[18px] text-[#a0a0a0] max-w-xl mx-auto">
-            Real-time animated graph of your wiki pages, sources, and entities.
-          </p>
-        </SectionReveal>
-        <SectionReveal delay={0.2}>
-          <div className="max-w-5xl mx-auto h-[400px] border-4 border-[#2121de] relative bg-[#050505]">
-            <KnowledgeTree />
-            {/* Overlay label */}
-            <div className="absolute bottom-3 right-3 pixel-badge pixel-badge-yellow text-[6px]">
-              Interactive Canvas
-            </div>
-          </div>
-        </SectionReveal>
-        <div className="max-w-5xl mx-auto mt-6 grid grid-cols-4 gap-2 text-center">
-          {[
-            { label: "Pages", color: "#ffeb3b", count: "8" },
-            { label: "Sources", color: "#00e5ff", count: "7" },
-            { label: "Entities", color: "#ffb8ff", count: "12" },
-            { label: "Claims", color: "#ff0000", count: "24" },
-          ].map((item) => (
-            <div key={item.label} className="pixel-card py-3" style={{ borderColor: `${item.color}40` }}>
-              <div className="pixel-heading text-[10px]" style={{ color: item.color }}>{item.count}</div>
-              <div className="text-[10px] text-[#666666] font-[VT323]">{item.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── CONNECTORS ── */}
+      {/* ── ARSENAL ── */}
       <section className="relative z-10 px-6 py-24 bg-[#0a0a0a]">
         <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
-          <span className="pixel-label">Connectors</span>
-          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
-            Permission-first source connections
+          <span className="pixel-label">Arsenal</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#e0e0e0]">
+            LOADOUT SELECTION
           </h2>
-          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
-            Native connectors for your entire digital life. Every connector requires explicit consent.
+          <p className="text-[20px] text-[#888] max-w-2xl mx-auto leading-relaxed">
+            Choose your gear. Every connector is a new weapon in your knowledge war.
           </p>
         </SectionReveal>
 
@@ -503,12 +380,12 @@ export default function LandingPage() {
             const Icon = c.icon;
             return (
               <SectionReveal key={c.name} delay={i * 0.1}>
-                <div className="pixel-card flip-in p-5 h-full" style={{ borderColor: "rgba(255,235,59,0.3)" }}>
-                  <div className="w-9 h-9 bg-[rgba(255,235,59,0.1)] flex items-center justify-center mb-3 border-[4px] border-[rgba(255,235,59,0.2)]">
-                    <Icon className="w-4 h-4 text-[#ffeb3b]" />
+                <div className="pixel-card pixel-border-green p-5 h-full">
+                  <div className="w-10 h-10 bg-[#2d4a3e] flex items-center justify-center mb-3 border-2 border-[#4a7c59]">
+                    <Icon className="w-5 h-5 text-[#e63946]" />
                   </div>
-                  <h3 className="pixel-heading text-[8px] text-[#f5f5f5] mb-1">{c.name}</h3>
-                  <p className="text-[16px] text-[#666666] leading-relaxed">{c.desc}</p>
+                  <h3 className="pixel-heading text-[8px] text-[#e0e0e0] mb-1">{c.name}</h3>
+                  <p className="text-[16px] text-[#888] leading-relaxed">{c.desc}</p>
                 </div>
               </SectionReveal>
             );
@@ -516,24 +393,65 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── WIKI PAGES ── */}
-      <section className="relative z-10 px-6 py-24 bg-[#000]">
-        <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
-          <span className="pixel-label">Personal Wiki</span>
-          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
-            Auto-generated, cited encyclopedia
+      {/* ── TACTICAL MAP ── */}
+      <section className="relative z-10 px-6 py-16 bg-[#080808] overflow-hidden">
+        <SectionReveal className="max-w-7xl mx-auto text-center mb-8">
+          <span className="pixel-label">Tactical Map</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mt-4 mb-2 text-[#e0e0e0]">
+            SITUATION REPORT
           </h2>
-          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
-            Sources become Wikipedia-style articles with infoboxes, citations, backlinks, and contradiction tracking.
+          <p className="text-[18px] text-[#888] max-w-xl mx-auto">
+            Real-time battlefield intelligence on your knowledge network.
+          </p>
+        </SectionReveal>
+        <SectionReveal delay={0.2}>
+          <div className="max-w-5xl mx-auto h-[400px] border-4 border-[#4a7c59] relative bg-[#050505]">
+            <KnowledgeTree />
+            <div className="absolute bottom-3 right-3 pixel-badge pixel-badge-red text-[6px]">
+              INTERACTIVE
+            </div>
+          </div>
+        </SectionReveal>
+        <div className="max-w-5xl mx-auto mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[
+            { label: "Pages", value: 8 },
+            { label: "Sources", value: 7 },
+            { label: "Entities", value: 12 },
+            { label: "Claims", value: 24 },
+          ].map((item) => (
+            <div key={item.label} className="pixel-card pixel-border-green py-3 text-center">
+              <div className="pixel-stat-value text-[#e63946]">
+                <AnimatedCounter target={item.value} className="text-[#e63946]" />
+              </div>
+              <div className="pixel-stat-label text-[#4a7c59]">{item.label}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── INTEL REPORTS ── */}
+      <section className="relative z-10 px-6 py-24 bg-[#060606]">
+        <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
+          <span className="pixel-label flex items-center justify-center gap-2">
+            <BookOpen className="w-4 h-4 text-[#4a7c59]" /> Intel Reports
+          </span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#e0e0e0]">
+            CLASSIFIED DOSSIERS
+          </h2>
+          <p className="text-[20px] text-[#888] max-w-2xl mx-auto leading-relaxed">
+            Auto-generated field reports with citations, cross-references, and contradiction alerts.
           </p>
         </SectionReveal>
 
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           {wikiPages.map((p, i) => (
             <SectionReveal key={p.title} delay={i * 0.15}>
-              <div className="pixel-card p-6 h-full">
-                <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">{p.title}</h3>
-                <p className="text-[16px] text-[#666666] leading-relaxed mb-4">{p.summary}</p>
+              <div className="pixel-card p-6 h-full pixel-border-green relative">
+                <div className="absolute top-2 right-2">
+                  <FolderOpen className="w-5 h-5 text-[#4a7c59]" />
+                </div>
+                <h3 className="pixel-heading text-[9px] text-[#e0e0e0] mb-2">{p.title}</h3>
+                <p className="text-[16px] text-[#888] leading-relaxed mb-4">{p.summary}</p>
                 <div className="flex gap-2 flex-wrap">
                   {p.tags.map((t) => (
                     <span key={t} className={getBadgeClass(t)}>{t}</span>
@@ -545,77 +463,46 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── GRAPH + ASK ── */}
+      {/* ── COMMS & RECON ── */}
       <section className="relative z-10 px-6 py-24 bg-[#0a0a0a]">
         <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
-          <span className="pixel-label">Memory Graph</span>
-          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
-            Visualize your knowledge network
+          <span className="pixel-label">Comms & Recon</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#e0e0e0]">
+            BATTLEFIELD AWARENESS
           </h2>
-          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
-            Explore pages, sources, entities, claims, and their relationships in an interactive graph.
-            Ask natural language questions with cited answers.
+          <p className="text-[20px] text-[#888] max-w-2xl mx-auto leading-relaxed">
+            Visualize the tactical network and send field inquiries with cited intel.
           </p>
         </SectionReveal>
 
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
           <SectionReveal delay={0.1}>
-            <div className="pixel-card rainbow-border p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
-              <GitBranch className="w-10 h-10 text-[#ffeb3b] mb-4" />
-              <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">HydraDB Memory Graph</h3>
-              <p className="text-[16px] text-[#666666]">
-                Pages, files, entities, claims, and contradictions become visible graph context.
+            <div className="pixel-card pixel-border-green p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
+              <GitBranch className="w-10 h-10 text-[#e63946] mb-4" />
+              <h3 className="pixel-heading text-[9px] text-[#e0e0e0] mb-2">Tactical Network</h3>
+              <p className="text-[16px] text-[#888]">
+                Pages, files, entities, claims, and contradictions mapped in real-time.
               </p>
             </div>
           </SectionReveal>
           <SectionReveal delay={0.2}>
-            <div className="pixel-card rainbow-border p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
-              <MessageSquare className="w-10 h-10 text-[#00ffff] mb-4" />
-              <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">Ask Your Wiki</h3>
-              <p className="text-[16px] text-[#666666]">
-                Ask questions with citations, related files, and context used transparency.
+            <div className="pixel-card pixel-border-green p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
+              <MessageSquare className="w-10 h-10 text-[#00b4d8] mb-4" />
+              <h3 className="pixel-heading text-[9px] text-[#e0e0e0] mb-2">Field Inquiry</h3>
+              <p className="text-[16px] text-[#888]">
+                Ask questions with citations, related files, and full context transparency.
               </p>
             </div>
           </SectionReveal>
         </div>
       </section>
 
-      {/* ── PUBLISH ── */}
-      <section className="relative z-10 px-6 py-24 bg-[#000]">
-        <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
-          <span className="pixel-label">Publish</span>
-          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
-            Share your knowledge publicly
-          </h2>
-          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
-            Publish selected pages while keeping private sources hidden.
-            Share what you want, keep the rest private.
-          </p>
-        </SectionReveal>
-
-        <div className="max-w-4xl mx-auto">
-          <SectionReveal>
-            <div className="pixel-card p-8 text-center glow-pulse">
-              <Globe className="w-10 h-10 text-[#ffeb3b] mx-auto mb-4" />
-              <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">One-click publish</h3>
-              <p className="text-[16px] text-[#666666] max-w-md mx-auto mb-6">
-                Public routes show generated article content and public-safe citation labels.
-                Raw private files stay hidden.
-              </p>
-              <Link href="/app/publish" className="pixel-btn pixel-btn-solid">
-                Go to Publish <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </SectionReveal>
-        </div>
-      </section>
-
-      {/* ── TRUST ── */}
-      <section className="relative z-10 px-6 py-24 bg-[#0a0a0a]">
+      {/* ── PERIMETER DEFENSE ── */}
+      <section className="relative z-10 px-6 py-24 bg-[#080808]">
         <SectionReveal className="max-w-7xl mx-auto text-center mb-12">
-          <span className="pixel-label">Trust</span>
-          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
-            Built with privacy first
+          <span className="pixel-label">Perimeter Defense</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#e0e0e0]">
+            BASE SECURITY
           </h2>
         </SectionReveal>
 
@@ -625,16 +512,16 @@ export default function LandingPage() {
             return (
               <SectionReveal key={item.title} delay={i * 0.1}>
                 <div className="relative pt-8">
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-10">
-                    <GhostSprite color={item.color} size={36} />
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
+                    <span className="pixel-badge pixel-badge-red text-[6px]">{item.badge}</span>
                   </div>
                   <div
-                    className="pixel-card p-5 text-center pt-10"
-                    style={{ borderColor: item.border, backgroundColor: item.bg }}
+                    className="pixel-card p-5 text-center pt-10 pixel-border-green"
+                    style={{ backgroundColor: item.bg, borderColor: item.border }}
                   >
                     <I className="w-7 h-7 mx-auto mb-3" style={{ color: item.color }} />
-                    <h4 className="pixel-heading text-[8px] text-[#f5f5f5] mb-1">{item.title}</h4>
-                    <p className="text-[14px] text-[#a0a0a0]">{item.desc}</p>
+                    <h4 className="pixel-heading text-[8px] text-[#e0e0e0] mb-1">{item.title}</h4>
+                    <p className="text-[14px] text-[#888]">{item.desc}</p>
                   </div>
                 </div>
               </SectionReveal>
@@ -643,8 +530,8 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="relative z-10 px-6 py-24 bg-[#000] overflow-hidden">
+      {/* ── DEPLOY NOW ── */}
+      <section className="relative z-10 px-6 py-24 bg-[#060606] overflow-hidden">
         <SectionReveal className="max-w-4xl mx-auto text-center">
           <div className="overflow-hidden mb-8">
             <motion.div
@@ -652,48 +539,48 @@ export default function LandingPage() {
               animate={{ x: ["0%", "-50%"] }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             >
-              <span className="text-[#ffeb3b] pixel-heading text-[8px] tracking-widest uppercase mx-4">
-                YOUR KNOWLEDGE DESERVES A WIKI *** BUILD YOUR BRAIN *** &nbsp;&nbsp;&nbsp;
+              <span className="text-[#f77f00] pixel-heading text-[8px] tracking-widest uppercase mx-4">
+                SPREAD GUN POWERED *** KNOWLEDGE IS AMMO *** &nbsp;&nbsp;&nbsp;
               </span>
-              <span className="text-[#ffeb3b] pixel-heading text-[8px] tracking-widest uppercase mx-4">
-                YOUR KNOWLEDGE DESERVES A WIKI *** BUILD YOUR BRAIN *** &nbsp;&nbsp;&nbsp;
+              <span className="text-[#f77f00] pixel-heading text-[8px] tracking-widest uppercase mx-4">
+                SPREAD GUN POWERED *** KNOWLEDGE IS AMMO *** &nbsp;&nbsp;&nbsp;
               </span>
-              <span className="text-[#ffeb3b] pixel-heading text-[8px] tracking-widest uppercase mx-4">
-                YOUR KNOWLEDGE DESERVES A WIKI *** BUILD YOUR BRAIN *** &nbsp;&nbsp;&nbsp;
+              <span className="text-[#f77f00] pixel-heading text-[8px] tracking-widest uppercase mx-4">
+                SPREAD GUN POWERED *** KNOWLEDGE IS AMMO *** &nbsp;&nbsp;&nbsp;
               </span>
-              <span className="text-[#ffeb3b] pixel-heading text-[8px] tracking-widest uppercase mx-4">
-                YOUR KNOWLEDGE DESERVES A WIKI *** BUILD YOUR BRAIN *** &nbsp;&nbsp;&nbsp;
+              <span className="text-[#f77f00] pixel-heading text-[8px] tracking-widest uppercase mx-4">
+                SPREAD GUN POWERED *** KNOWLEDGE IS AMMO *** &nbsp;&nbsp;&nbsp;
               </span>
             </motion.div>
           </div>
-          <h2 className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mb-6 text-[#f5f5f5]">
-            Ready to build your<br />personal Wikipedia?
+          <h2 className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mb-6 text-[#e0e0e0]">
+            READY FOR DEPLOYMENT?
           </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/app/connect" className="pixel-btn pixel-btn-solid px-8 py-3.5 shake">
-              Start Nexus Scan <Zap className="w-4 h-4" />
+            <Link href="/app/connect" className="pixel-btn pixel-btn-solid px-10 py-4 flame-flicker inline-flex items-center gap-2">
+              PRESS START <Gamepad2 className="w-5 h-5" />
             </Link>
-            <Link href="/app" className="pixel-btn pixel-btn-yellow px-8 py-3.5 shake">
-              Load Demo <Database className="w-4 h-4" />
+            <Link href="/app" className="pixel-btn pixel-btn-red px-8 py-3.5 inline-flex items-center gap-2">
+              LOAD DEMO <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </SectionReveal>
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="border-t-[4px] border-[#2121de] px-6 py-10 bg-[#000]">
+      <footer className="border-t-4 border-[#4a7c59] px-6 py-10 bg-[#060606]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <Database className="w-5 h-5 text-[#ffeb3b]" />
-            <span className="text-[16px] font-bold text-[#f5f5f5]">QyntraWiki</span>
-            <span className="text-[12px] text-[#666666]">Built for HydraDB WikiThon</span>
+            <Flame className="w-5 h-5 text-[#e63946]" />
+            <span className="text-[16px] font-bold text-[#e0e0e0]">QyntraWiki</span>
+            <span className="text-[12px] text-[#555]">Built for HydraDB WikiThon</span>
           </div>
-          <div className="flex items-center gap-6 text-[12px] text-[#666666]">
-            <Link href="/app" className="hover:text-[#ffeb3b] transition-colors">App</Link>
-            <a href="https://hydradb.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#ffeb3b] transition-colors">HydraDB</a>
-            <a href="https://github.com/vaibhav4046/qyntrawiki-nexus" target="_blank" rel="noopener noreferrer" className="hover:text-[#ffeb3b] transition-colors">GitHub</a>
+          <div className="flex items-center gap-6 text-[12px] text-[#555]">
+            <Link href="/app" className="hover:text-[#e63946] transition-colors">App</Link>
+            <a href="https://hydradb.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#e63946] transition-colors">HydraDB</a>
+            <a href="https://github.com/vaibhav4046/qyntrawiki-nexus" target="_blank" rel="noopener noreferrer" className="hover:text-[#e63946] transition-colors">GitHub</a>
           </div>
-          <span className="text-[12px] text-[#666666]">© 2026 QyntraWiki Nexus</span>
+          <span className="text-[12px] text-[#555]">© 1988-2026 KONAMI...just kidding. QyntraWiki for HydraDB WikiThon</span>
         </div>
       </footer>
     </main>

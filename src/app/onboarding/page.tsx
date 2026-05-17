@@ -23,10 +23,10 @@ import {
 type Step = "welcome" | "connect" | "wiki" | "done";
 
 const connectors = [
-  { id: "local-folder", name: "Local Folder", icon: FolderOpen, color: "#ffeb3b", desc: "Scan local files" },
+  { id: "local-folder", name: "Local Folder", icon: FolderOpen, color: "#e63946", desc: "Scan local files" },
   { id: "google-drive", name: "Google Drive", icon: HardDrive, color: "#00ffff", desc: "Import Drive files" },
-  { id: "notion", name: "Notion", icon: NotepadText, color: "#ffb8ff", desc: "Import Notion pages" },
-  { id: "demo", name: "Demo Data", icon: Database, color: "#ffb852", desc: "Load sample wiki" },
+  { id: "notion", name: "Notion", icon: NotepadText, color: "#ff69b4", desc: "Import Notion pages" },
+  { id: "demo", name: "Demo Data", icon: Database, color: "#f77f00", desc: "Load sample wiki" },
 ];
 
 export default function OnboardingPage() {
@@ -90,7 +90,7 @@ export default function OnboardingPage() {
                 </div>
                 <span
                   className={`text-[8px] font-[Press_Start_2P] hidden sm:inline ${
-                    steps.findIndex((x) => x.id === step) >= i ? "text-yellow-400" : "text-[#666666]"
+                    steps.findIndex((x) => x.id === step) >= i ? "text-red-500" : "text-[#666666]"
                   }`}
                 >
                   {s.label}
@@ -111,14 +111,14 @@ export default function OnboardingPage() {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
-              className="pixel-card border-yellow-400/30 p-8 text-center"
+              className="pixel-card border-red-500/30 p-8 text-center"
             >
               <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
                 className="w-20 h-20 bg-yellow-400 mx-auto mb-6 pac-chomp"
               />
-              <h2 className="pixel-heading text-[12px] text-yellow-400 mb-4">
+              <h2 className="pixel-heading text-[12px] text-red-500 mb-4">
                 Welcome, {userName}!
               </h2>
               <p className="text-[#a0a0a0] text-lg mb-6 leading-relaxed">
@@ -147,9 +147,9 @@ export default function OnboardingPage() {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
-              className="pixel-card border-yellow-400/30 p-8"
+              className="pixel-card border-red-500/30 p-8"
             >
-              <h2 className="pixel-heading text-[12px] text-yellow-400 mb-2 text-center">
+              <h2 className="pixel-heading text-[12px] text-red-500 mb-2 text-center">
                 Connect Your Sources
               </h2>
               <p className="text-[#a0a0a0] text-sm text-center mb-6">
@@ -170,7 +170,7 @@ export default function OnboardingPage() {
                       className={`pixel-card p-4 text-left flex items-center gap-3 transition-all ${
                         isConnected
                           ? "border-green-400/50 bg-green-400/5"
-                          : "border-yellow-400/20 hover:border-yellow-400/50"
+                          : "border-red-500/20 hover:border-yellow-400/50"
                       }`}
                     >
                       <div
@@ -207,7 +207,7 @@ export default function OnboardingPage() {
                   onClick={() => setStep("wiki")}
                   disabled={connected.length === 0}
                   className={`pixel-btn ${
-                    connected.length > 0 ? "pixel-btn-yellow" : "opacity-50 cursor-not-allowed"
+                    connected.length > 0 ? "pixel-btn-red" : "opacity-50 cursor-not-allowed"
                   }`}
                 >
                   Continue <ChevronRight className="w-4 h-4" />
@@ -222,9 +222,9 @@ export default function OnboardingPage() {
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
-              className="pixel-card border-yellow-400/30 p-8"
+              className="pixel-card border-red-500/30 p-8"
             >
-              <h2 className="pixel-heading text-[12px] text-yellow-400 mb-2 text-center">
+              <h2 className="pixel-heading text-[12px] text-red-500 mb-2 text-center">
                 Name Your Wiki
               </h2>
               <p className="text-[#a0a0a0] text-sm text-center mb-6">
@@ -240,7 +240,7 @@ export default function OnboardingPage() {
                   value={wikiName}
                   onChange={(e) => setWikiName(e.target.value)}
                   placeholder="e.g. AI Agent Memory Encyclopedia"
-                  className="w-full px-4 py-3 bg-[#0a0a0a] border-4 border-yellow-400/20 text-white placeholder-[#666666] focus:border-yellow-400 outline-none"
+                  className="w-full px-4 py-3 bg-[#0a0a0a] border-4 border-red-500/20 text-white placeholder-[#666666] focus:border-yellow-400 outline-none"
                 />
               </div>
 
@@ -293,7 +293,7 @@ export default function OnboardingPage() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="pixel-card border-yellow-400/30 p-8 text-center"
+              className="pixel-card border-red-500/30 p-8 text-center"
             >
               <motion.div
                 animate={{ rotate: [0, 10, -10, 0] }}
@@ -302,7 +302,7 @@ export default function OnboardingPage() {
               >
                 <Check className="w-12 h-12 text-black" />
               </motion.div>
-              <h2 className="pixel-heading text-[14px] text-yellow-400 mb-4">
+              <h2 className="pixel-heading text-[14px] text-red-500 mb-4">
                 WIKI READY!
               </h2>
               <p className="text-[#a0a0a0] text-lg mb-2">
@@ -326,9 +326,9 @@ export default function OnboardingPage() {
 
 function FeatureBadge({ icon: Icon, text }: { icon: React.ElementType; text: string }) {
   return (
-    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-yellow-400/10 border-2 border-yellow-400/20">
-      <Icon className="w-3 h-3 text-yellow-400" />
-      <span className="text-[10px] text-yellow-400 font-[Press_Start_2P]">{text}</span>
+    <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-500/10 border-2 border-red-500/20">
+      <Icon className="w-3 h-3 text-red-500" />
+      <span className="text-[10px] text-red-500 font-[Press_Start_2P]">{text}</span>
     </div>
   );
 }

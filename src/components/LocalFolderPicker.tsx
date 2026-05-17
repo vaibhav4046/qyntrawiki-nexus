@@ -191,7 +191,7 @@ export default function LocalFolderPicker() {
     return (
       <div className="glass-card rounded-lg p-6">
         <div className="text-center py-6">
-          <Shield className="w-10 h-10 text-[#ffeb3b] mx-auto mb-4" />
+          <Shield className="w-10 h-10 text-[#e63946] mx-auto mb-4" />
           <h3 className="text-sm font-bold text-[#f5f5f5] mb-2">
             Local Folder Access
           </h3>
@@ -244,7 +244,7 @@ export default function LocalFolderPicker() {
             id="local-consent"
             checked={consentGiven}
             onChange={(e) => setConsentGiven(e.target.checked)}
-            className="mt-0.5 w-4 h-4 accent-yellow-400"
+            className="mt-0.5 w-4 h-4 accent-red-500"
           />
           <label htmlFor="local-consent" className="text-xs text-[#a0a0a0] leading-relaxed">
             I consent to QyntraWiki scanning my selected folder for readable files. Files are only indexed for wiki compilation. Raw files stay local unless explicitly synced.
@@ -308,7 +308,7 @@ export default function LocalFolderPicker() {
             {files.map((file) => (
               <div
                 key={file.path}
-                className="flex items-center justify-between px-3 py-2 rounded border border-[rgba(107,101,96,0.1)] hover:bg-[rgba(255,235,59,0.03)] transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded border border-[rgba(107,101,96,0.1)] hover:bg-[rgba(230,57,70,0.03)] transition-colors"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <FileText className="w-4 h-4 text-[#666666] shrink-0" />
@@ -327,8 +327,8 @@ export default function LocalFolderPicker() {
                     imported.has(file.path)
                       ? "bg-[rgba(34,197,94,0.15)] text-green-400"
                       : importing.has(file.path)
-                      ? "bg-[rgba(59,130,246,0.1)] text-[#00e5ff]"
-                      : "btn-ghost hover:text-[#ffeb3b]"
+                      ? "bg-[rgba(59,130,246,0.1)] text-[#00b4d8]"
+                      : "btn-ghost hover:text-[#e63946]"
                   )}
                 >
                   {importing.has(file.path) ? (

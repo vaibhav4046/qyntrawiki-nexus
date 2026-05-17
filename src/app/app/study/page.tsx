@@ -81,8 +81,8 @@ export default function StudyPage() {
                 className={cn(
                   "text-xs px-3 py-2 rounded-lg border transition-all text-left",
                   topic === t
-                    ? "bg-[rgba(255,235,59,0.15)] border-[rgba(255,235,59,0.3)] text-[#ffeb3b]"
-                    : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] text-[#a0a0a0] hover:border-[rgba(255,235,59,0.2)]"
+                    ? "bg-[rgba(230,57,70,0.15)] border-[rgba(230,57,70,0.3)] text-[#e63946]"
+                    : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] text-[#a0a0a0] hover:border-[rgba(230,57,70,0.2)]"
                 )}
               >
                 {t}
@@ -107,11 +107,11 @@ export default function StudyPage() {
                   className={cn(
                     "p-4 rounded-lg border transition-all text-left",
                     mode === m
-                      ? "bg-[rgba(255,235,59,0.1)] border-[rgba(255,235,59,0.3)]"
-                      : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] hover:border-[rgba(255,235,59,0.2)]"
+                      ? "bg-[rgba(230,57,70,0.1)] border-[rgba(230,57,70,0.3)]"
+                      : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] hover:border-[rgba(230,57,70,0.2)]"
                   )}
                 >
-                  <Icon className={cn("w-5 h-5 mb-2", mode === m ? "text-[#ffeb3b]" : "text-[#666666]")} />
+                  <Icon className={cn("w-5 h-5 mb-2", mode === m ? "text-[#e63946]" : "text-[#666666]")} />
                   <p className={cn("text-xs font-bold", mode === m ? "text-[#f5f5f5]" : "text-[#a0a0a0]")}>
                     {cfg.label}
                   </p>

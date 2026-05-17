@@ -114,7 +114,7 @@ export default function CommandPalette({ slug }: { slug: string }) {
         onClick={() => setOpen(true)}
         className={cn(
           "fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 text-xs font-bold uppercase tracking-wider transition-all duration-300",
-          "bg-[#8b5cf6] text-white border border-dotted border-[#00e5ff] shadow-lg hover:bg-[#a78bfa]"
+          "bg-[#8b5cf6] text-white border border-dotted border-[#00b4d8] shadow-lg hover:bg-[#a78bfa]"
         )}
       >
         <Sparkles className="w-4 h-4" />
@@ -185,7 +185,7 @@ export default function CommandPalette({ slug }: { slug: string }) {
                       ))}
                       {loading && (
                         <div className="flex items-center gap-2 text-sm text-[#6b5b8a]">
-                          <Loader2 className="w-3.5 h-3.5 animate-spin text-[#00e5ff]" />
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-[#00b4d8]" />
                           Thinking...
                         </div>
                       )}
@@ -207,7 +207,7 @@ export default function CommandPalette({ slug }: { slug: string }) {
                             )}
                           >
                             <div className="w-8 h-8 bg-[#0a0512] border border-dotted border-[rgba(139,92,246,0.2)] flex items-center justify-center shrink-0">
-                              <ChevronRight className="w-4 h-4 text-[#00e5ff]" />
+                              <ChevronRight className="w-4 h-4 text-[#00b4d8]" />
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-sm font-medium text-[#e8d5f7]">{cmd.label}</p>

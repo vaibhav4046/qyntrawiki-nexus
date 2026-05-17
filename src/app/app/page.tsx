@@ -46,16 +46,16 @@ export default async function AppDashboardPage() {
   const connectedCount = connectors.filter((c) => (c.status as string) === "connected").length;
 
   const stats = [
-    { label: "Wiki Pages", value: pageCount, icon: FileText, href: "/app/wiki", color: "text-[#ffeb3b]" },
-    { label: "Sources", value: sourceCount, icon: Database, href: "/app/import", color: "text-[#ffca28]" },
+    { label: "Wiki Pages", value: pageCount, icon: FileText, href: "/app/wiki", color: "text-[#e63946]" },
+    { label: "Sources", value: sourceCount, icon: Database, href: "/app/import", color: "text-[#f77f00]" },
     { label: "Files", value: fileCount, icon: FolderOpen, href: "/app/files", color: "text-[#a78bfa]" },
-    { label: "Entities", value: entityCount, icon: Lightbulb, href: "/app/graph", color: "text-[#00e5ff]" },
+    { label: "Entities", value: entityCount, icon: Lightbulb, href: "/app/graph", color: "text-[#00b4d8]" },
     { label: "Claims", value: claimCount, icon: MessageSquare, href: "/app/ask", color: "text-[#34d399]" },
-    { label: "Contradictions", value: contradictionCount, icon: AlertTriangle, href: "/app/contradictions", color: "text-[#ff5252]" },
+    { label: "Contradictions", value: contradictionCount, icon: AlertTriangle, href: "/app/contradictions", color: "text-[#e63946]" },
   ];
 
   const quickActions = [
-    { label: "Connect Sources", desc: "Link Notion, Drive, local files", icon: Plug, href: "/app/connect", color: "from-yellow-400/20 to-yellow-600/20" },
+    { label: "Connect Sources", desc: "Link Notion, Drive, local files", icon: Plug, href: "/app/connect", color: "from-red-500/20 to-orange-500/20" },
     { label: "Import Data", desc: "Upload files, paste text, add URLs", icon: Upload, href: "/app/import", color: "from-orange-500/20 to-red-500/20" },
     { label: "Browse Wiki", desc: "Read compiled articles", icon: BookOpen, href: "/app/wiki", color: "from-blue-500/20 to-purple-500/20" },
     { label: "Explore Graph", desc: "Visualize knowledge network", icon: GitBranch, href: "/app/graph", color: "from-emerald-500/20 to-teal-500/20" },
@@ -126,12 +126,12 @@ export default async function AppDashboardPage() {
                     <Icon className="w-4 h-4 text-[#f5f5f5]" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#f5f5f5] group-hover:text-[#ffeb3b] transition-colors">
+                    <p className="text-sm font-semibold text-[#f5f5f5] group-hover:text-[#e63946] transition-colors">
                       {action.label}
                     </p>
                     <p className="text-xs text-[#666666] mt-0.5">{action.desc}</p>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#ffeb3b] transition-colors shrink-0 mt-1" />
+                  <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#e63946] transition-colors shrink-0 mt-1" />
                 </Link>
               );
             })}
@@ -155,7 +155,7 @@ export default async function AppDashboardPage() {
                   <Link
                     key={page.id as string}
                     href={`/app/wiki/${page.slug as string}`}
-                    className="flex items-center justify-between p-3 rounded-md bg-[rgba(255,235,59,0.03)] hover:bg-[rgba(255,235,59,0.08)] transition-colors group"
+                    className="flex items-center justify-between p-3 rounded-md bg-[rgba(230,57,70,0.03)] hover:bg-[rgba(230,57,70,0.08)] transition-colors group"
                   >
                     <div className="min-w-0 flex-1">
                       <p className="text-sm font-medium text-[#f5f5f5] truncate">
@@ -165,7 +165,7 @@ export default async function AppDashboardPage() {
                         {(page.summary as string)?.slice(0, 80)}...
                       </p>
                     </div>
-                    <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#ffeb3b] shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#e63946] shrink-0" />
                   </Link>
                 ))}
               </div>

@@ -135,7 +135,7 @@ export default function AskPage() {
                 onClick={() => {
                   setInput(q);
                 }}
-                className="text-xs px-3 py-1.5 rounded bg-[rgba(255,235,59,0.08)] text-[#a0a0a0] hover:bg-[rgba(255,235,59,0.15)] hover:text-[#ffeb3b] transition-all border border-[rgba(255,235,59,0.15)]"
+                className="text-xs px-3 py-1.5 rounded bg-[rgba(230,57,70,0.08)] text-[#a0a0a0] hover:bg-[rgba(230,57,70,0.15)] hover:text-[#e63946] transition-all border border-[rgba(230,57,70,0.15)]"
               >
                 {q}
               </button>
@@ -169,7 +169,7 @@ export default function AskPage() {
                 className={cn(
                   "max-w-2xl rounded-lg p-4",
                   msg.role === "user"
-                    ? "bg-[rgba(255,235,59,0.1)] border border-[rgba(255,235,59,0.2)]"
+                    ? "bg-[rgba(230,57,70,0.1)] border border-[rgba(230,57,70,0.2)]"
                     : "glass-card"
                 )}
               >
@@ -192,7 +192,7 @@ export default function AskPage() {
                       {msg.citations.map((cite, i) => (
                         <span
                           key={i}
-                          className="text-[10px] px-2 py-1 bg-[rgba(255,235,59,0.1)] text-[#ffeb3b] rounded flex items-center gap-1"
+                          className="text-[10px] px-2 py-1 bg-[rgba(230,57,70,0.1)] text-[#e63946] rounded flex items-center gap-1"
                         >
                           <BookOpen className="w-2.5 h-2.5" />
                           {cite.title || cite.sourceId}
@@ -234,7 +234,7 @@ export default function AskPage() {
                                 key={i}
                                 className="p-2 rounded bg-[rgba(107,101,96,0.05)] border border-[rgba(107,101,96,0.1)]"
                               >
-                                <p className="text-[10px] font-bold text-[#ffeb3b]">
+                                <p className="text-[10px] font-bold text-[#e63946]">
                                   {ctx.source}
                                 </p>
                                 <p className="text-[10px] text-[#666666] mt-0.5 italic">
@@ -265,7 +265,7 @@ export default function AskPage() {
             </div>
             <div className="glass-card p-4">
               <div className="flex items-center gap-2 text-sm text-[#a0a0a0]">
-                <Loader2 className="w-4 h-4 animate-spin text-[#ffeb3b]" />
+                <Loader2 className="w-4 h-4 animate-spin text-[#e63946]" />
                 Consulting your knowledge graph...
               </div>
             </div>

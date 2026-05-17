@@ -24,10 +24,10 @@ import {
 import { useState } from "react";
 
 const stats = [
-  { label: "Total Pages", value: 142, icon: FileText, color: "text-yellow-400" },
+  { label: "Total Pages", value: 142, icon: FileText, color: "text-red-500" },
   { label: "Uncategorized", value: 23, icon: FolderOpen, color: "text-orange-400" },
   { label: "Stale Files", value: 8, icon: Clock, color: "text-red-400" },
-  { label: "Weak Citations", value: 15, icon: AlertTriangle, color: "text-yellow-400" },
+  { label: "Weak Citations", value: 15, icon: AlertTriangle, color: "text-red-500" },
   { label: "Duplicate Risk", value: 4, icon: Copy, color: "text-orange-500" },
 ];
 
@@ -38,8 +38,8 @@ const suggestions = [
     description: "Groups HydraDB, Context Graph, LLM Wiki, and 6 other related pages.",
     confidence: 94,
     icon: Layers,
-    iconBg: "bg-yellow-400/20",
-    iconColor: "text-yellow-400",
+    iconBg: "bg-red-500/20",
+    iconColor: "text-red-500",
   },
   {
     id: 2,
@@ -65,8 +65,8 @@ const suggestions = [
     description: "Coverage score is low (32%). Add recent papers or documentation.",
     confidence: 82,
     icon: BookOpen,
-    iconBg: "bg-yellow-400/20",
-    iconColor: "text-yellow-400",
+    iconBg: "bg-red-500/20",
+    iconColor: "text-red-500",
   },
   {
     id: 5,
@@ -83,8 +83,8 @@ const suggestions = [
     description: "High confidence pages with strong citations. Ready for public visibility.",
     confidence: 96,
     icon: Globe,
-    iconBg: "bg-yellow-400/20",
-    iconColor: "text-yellow-400",
+    iconBg: "bg-red-500/20",
+    iconColor: "text-red-500",
   },
 ];
 
@@ -135,7 +135,7 @@ export default function OrganizePage() {
         {/* Suggestions */}
         <div className="mb-10">
           <h2 className="text-xl font-semibold text-[#f5f5f5] mb-5 flex items-center gap-2">
-            <Lightbulb className="w-5 h-5 text-yellow-400" />
+            <Lightbulb className="w-5 h-5 text-red-500" />
             Suggestions
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -152,7 +152,7 @@ export default function OrganizePage() {
                   <div className={`p-2.5 rounded-lg ${s.iconBg}`}>
                     <s.icon className={`w-5 h-5 ${s.iconColor}`} />
                   </div>
-                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-400/15 text-amber-300 border border-yellow-400/25">
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-500/15 text-amber-300 border border-yellow-400/25">
                     {s.confidence}% confidence
                   </span>
                 </div>
@@ -161,7 +161,7 @@ export default function OrganizePage() {
                   <p className="text-[#a0a0a0] text-sm leading-relaxed">{s.description}</p>
                 </div>
                 <div className="flex items-center gap-2 mt-auto pt-2">
-                  <button className="flex-1 px-3 py-2 text-sm font-medium rounded-lg bg-yellow-400/20 text-amber-300 hover:bg-yellow-400/30 transition-colors border border-yellow-400/25">
+                  <button className="flex-1 px-3 py-2 text-sm font-medium rounded-lg bg-red-500/20 text-amber-300 hover:bg-yellow-400/30 transition-colors border border-yellow-400/25">
                     Apply
                   </button>
                   <button className="flex-1 px-3 py-2 text-sm font-medium rounded-lg bg-white/5 text-[#a0a0a0] hover:bg-white/10 transition-colors border border-white/10">
@@ -185,8 +185,8 @@ export default function OrganizePage() {
           className="glass-panel rounded-xl p-6 md:p-8"
         >
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2.5 rounded-lg bg-yellow-400/20">
-              <Terminal className="w-5 h-5 text-yellow-400" />
+            <div className="p-2.5 rounded-lg bg-red-500/20">
+              <Terminal className="w-5 h-5 text-red-500" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-[#f5f5f5]">CLI Bridge Lite</h2>
@@ -196,8 +196,8 @@ export default function OrganizePage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             <button className="glass-card rounded-lg p-4 flex items-center gap-3 hover:bg-white/5 transition-colors text-left group">
-              <div className="p-2 rounded-md bg-yellow-400/15 group-hover:bg-yellow-400/25 transition-colors">
-                <Download className="w-4 h-4 text-yellow-400" />
+              <div className="p-2 rounded-md bg-red-500/15 group-hover:bg-yellow-400/25 transition-colors">
+                <Download className="w-4 h-4 text-red-500" />
               </div>
               <div>
                 <div className="text-sm font-medium text-[#f5f5f5]">Download context bundle</div>
@@ -205,8 +205,8 @@ export default function OrganizePage() {
               </div>
             </button>
             <button className="glass-card rounded-lg p-4 flex items-center gap-3 hover:bg-white/5 transition-colors text-left group">
-              <div className="p-2 rounded-md bg-yellow-400/15 group-hover:bg-yellow-400/25 transition-colors">
-                <FileCode className="w-4 h-4 text-yellow-400" />
+              <div className="p-2 rounded-md bg-red-500/15 group-hover:bg-yellow-400/25 transition-colors">
+                <FileCode className="w-4 h-4 text-red-500" />
               </div>
               <div>
                 <div className="text-sm font-medium text-[#f5f5f5]">Export as Markdown</div>
@@ -214,8 +214,8 @@ export default function OrganizePage() {
               </div>
             </button>
             <button className="glass-card rounded-lg p-4 flex items-center gap-3 hover:bg-white/5 transition-colors text-left group">
-              <div className="p-2 rounded-md bg-yellow-400/15 group-hover:bg-yellow-400/25 transition-colors">
-                <FileJson className="w-4 h-4 text-yellow-400" />
+              <div className="p-2 rounded-md bg-red-500/15 group-hover:bg-yellow-400/25 transition-colors">
+                <FileJson className="w-4 h-4 text-red-500" />
               </div>
               <div>
                 <div className="text-sm font-medium text-[#f5f5f5]">Export as JSON</div>
@@ -226,11 +226,11 @@ export default function OrganizePage() {
               onClick={handleCopy}
               className="glass-card rounded-lg p-4 flex items-center gap-3 hover:bg-white/5 transition-colors text-left group"
             >
-              <div className="p-2 rounded-md bg-yellow-400/15 group-hover:bg-yellow-400/25 transition-colors">
+              <div className="p-2 rounded-md bg-red-500/15 group-hover:bg-yellow-400/25 transition-colors">
                 {copied ? (
                   <CheckCircle2 className="w-4 h-4 text-green-400" />
                 ) : (
-                  <Copy className="w-4 h-4 text-yellow-400" />
+                  <Copy className="w-4 h-4 text-red-500" />
                 )}
               </div>
               <div>

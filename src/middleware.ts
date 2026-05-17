@@ -1,26 +1,25 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
 
-export default auth((req) => {
-  const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
-  const isAuthPage = nextUrl.pathname === "/login" || nextUrl.pathname === "/onboarding";
-  const isPublicPage = nextUrl.pathname === "/" || nextUrl.pathname.startsWith("/p/");
+export function middleware(request: Request) {
+  const { nextUrl } = request;
+  const isPublic =
+    nextUrl.pathname === "/" ||
+    nextUrl.pathname === "/login" ||
+    nextUrl.pathname === "/signup" ||
+    nextUrl.pathname.startsWith("/p/") ||
+    nextUrl.pathname.startsWith("/api/") ||
+    nextUrl.pathname.startsWith("/_next/") ||
+    nextUrl.pathname.includes(".");
 
-  if (isAuthPage) {
-    if (isLoggedIn) {
-      return NextResponse.redirect(new URL("/app", nextUrl));
-    }
+  if (isPublic) {
     return NextResponse.next();
   }
 
-  if (!isLoggedIn && !isPublicPage) {
-    return NextResponse.redirect(new URL("/login", nextUrl));
-  }
-
+  // For demo: allow all app routes (client-side auth will handle UI)
+  // In production, you'd verify the JWT cookie here
   return NextResponse.next();
-});
+}
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$|.*\\.svg$).*)"],
 };

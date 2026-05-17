@@ -91,7 +91,7 @@ export default function CreateWikiPage() {
                   disabled={loading}
                   className={cn(
                     "w-full bg-[#0a0512] border border-dotted border-[rgba(139,92,246,0.2)] px-4 py-2.5 text-sm text-[#e8d5f7] placeholder:text-[#4a3a6a]",
-                    "focus:outline-none focus:border-[#00e5ff] focus:border-solid transition-all",
+                    "focus:outline-none focus:border-[#00b4d8] focus:border-solid transition-all",
                     "disabled:opacity-50 disabled:cursor-not-allowed",
                     "font-mono"
                   )}
@@ -111,7 +111,7 @@ export default function CreateWikiPage() {
                   disabled={loading}
                   className={cn(
                     "w-full bg-[#0a0512] border border-dotted border-[rgba(139,92,246,0.2)] px-4 py-2.5 text-sm text-[#e8d5f7] placeholder:text-[#4a3a6a] resize-none",
-                    "focus:outline-none focus:border-[#00e5ff] focus:border-solid transition-all",
+                    "focus:outline-none focus:border-[#00b4d8] focus:border-solid transition-all",
                     "disabled:opacity-50 disabled:cursor-not-allowed",
                     "font-mono"
                   )}
@@ -131,7 +131,7 @@ export default function CreateWikiPage() {
                   disabled={loading}
                   className={cn(
                     "w-full bg-[#0a0512] border border-dotted border-[rgba(139,92,246,0.2)] px-4 py-2.5 text-sm text-[#e8d5f7] placeholder:text-[#4a3a6a]",
-                    "focus:outline-none focus:border-[#00e5ff] focus:border-solid transition-all",
+                    "focus:outline-none focus:border-[#00b4d8] focus:border-solid transition-all",
                     "disabled:opacity-50 disabled:cursor-not-allowed",
                     "font-mono"
                   )}

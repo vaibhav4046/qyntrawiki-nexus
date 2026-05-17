@@ -302,12 +302,12 @@ export default function IngestClient({ slug, data }: { slug: string; data: WikiD
       <AnimatePresence>
         {pipelineOpen && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.3 }}>
-            <Card className={cn("jules-card overflow-hidden", compileResult ? "border-[#00e5ff]/20" : "border-[rgba(139,92,246,0.15)]")}>
+            <Card className={cn("jules-card overflow-hidden", compileResult ? "border-[#00b4d8]/20" : "border-[rgba(139,92,246,0.15)]")}>
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  {compileResult ? <CheckCircle2 className="w-5 h-5 text-[#00e5ff]" /> : <Sparkles className="w-5 h-5 text-[#b794f6]" />}
+                  {compileResult ? <CheckCircle2 className="w-5 h-5 text-[#00b4d8]" /> : <Sparkles className="w-5 h-5 text-[#b794f6]" />}
                   Compilation Pipeline
-                  {compileResult && <span className="text-xs font-normal text-[#00e5ff] border-dotted border-[#00e5ff] bg-[rgba(0,229,255,0.1)] px-2 py-0.5 rounded-full ml-auto">Complete</span>}
+                  {compileResult && <span className="text-xs font-normal text-[#00b4d8] border-dotted border-[#00b4d8] bg-[rgba(0,229,255,0.1)] px-2 py-0.5 rounded-full ml-auto">Complete</span>}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
@@ -317,14 +317,14 @@ export default function IngestClient({ slug, data }: { slug: string; data: WikiD
                     className={cn(
                       "flex items-center gap-3 p-3 border transition-all",
                       step.status === "running" ? "bg-[#8b5cf6]/5 border-[#8b5cf6]/20" :
-                      step.status === "done" ? "bg-[#00e5ff]/5 border-[#00e5ff]/15" :
+                      step.status === "done" ? "bg-[#00b4d8]/5 border-[#00b4d8]/15" :
                       step.status === "error" ? "bg-[#ff2d92]/5 border-[#ff2d92]/15" :
                       "bg-[#0a0512] border-transparent opacity-60"
                     )}
                   >
                     <div className="w-6 h-6 flex items-center justify-center flex-shrink-0">
-                      {step.status === "running" && <Loader2 className="w-4 h-4 text-[#00e5ff] animate-spin" />}
-                      {step.status === "done" && <CheckCircle2 className="w-4 h-4 text-[#00e5ff]" />}
+                      {step.status === "running" && <Loader2 className="w-4 h-4 text-[#00b4d8] animate-spin" />}
+                      {step.status === "done" && <CheckCircle2 className="w-4 h-4 text-[#00b4d8]" />}
                       {step.status === "error" && <AlertCircle className="w-4 h-4 text-[#ff2d92]" />}
                       {step.status === "pending" && <span className="w-4 h-4 rounded-full border-2 border-[#6b5b8a]/30" />}
                     </div>
@@ -412,7 +412,7 @@ export default function IngestClient({ slug, data }: { slug: string; data: WikiD
                       {source.author && <span>By {source.author}</span>}
                       {source.date && <span>{source.date}</span>}
                       <span className="flex items-center gap-1">
-                        <span className={cn("w-1.5 h-1.5 rounded-full", source.credibilityScore >= 70 ? "bg-[#00e5ff]" : source.credibilityScore >= 40 ? "bg-[#8b5cf6]" : "bg-[#ff2d92]")} />
+                        <span className={cn("w-1.5 h-1.5 rounded-full", source.credibilityScore >= 70 ? "bg-[#00b4d8]" : source.credibilityScore >= 40 ? "bg-[#8b5cf6]" : "bg-[#ff2d92]")} />
                         Credibility {source.credibilityScore}%
                       </span>
                     </div>

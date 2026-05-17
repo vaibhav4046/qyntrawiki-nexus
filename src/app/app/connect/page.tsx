@@ -64,8 +64,8 @@ const connectors: ConnectorConfig[] = [
     provider: "local",
     oauthConfigured: true,
     features: [".txt", ".md", ".json", ".csv", ".html"],
-    color: "#ffeb3b",
-    borderColor: "rgba(255,235,59,0.3)",
+    color: "#e63946",
+    borderColor: "rgba(230,57,70,0.3)",
   },
   {
     id: "google-drive",
@@ -76,7 +76,7 @@ const connectors: ConnectorConfig[] = [
     oauthConfigured: true,
     features: ["Docs", "Sheets", "PDFs", "Slides"],
     color: "#00ffff",
-    borderColor: "rgba(0,255,255,0.3)",
+    borderColor: "rgba(0,180,216,0.3)",
   },
   {
     id: "notion",
@@ -86,8 +86,8 @@ const connectors: ConnectorConfig[] = [
     provider: "notion",
     oauthConfigured: true,
     features: ["Pages", "Databases", "Blocks"],
-    color: "#ffb8ff",
-    borderColor: "rgba(255,184,255,0.3)",
+    color: "#ff69b4",
+    borderColor: "rgba(255,105,180,0.3)",
   },
   {
     id: "microsoft",
@@ -97,8 +97,8 @@ const connectors: ConnectorConfig[] = [
     provider: "microsoft",
     oauthConfigured: true,
     features: ["OneDrive", "SharePoint", "Outlook"],
-    color: "#ffb852",
-    borderColor: "rgba(255,184,82,0.3)",
+    color: "#f77f00",
+    borderColor: "rgba(247,127,0,0.3)",
   },
   {
     id: "manual-url",
@@ -119,8 +119,8 @@ const connectors: ConnectorConfig[] = [
     provider: "manual",
     oauthConfigured: true,
     features: ["Raw text", "Notes", "Snippets"],
-    color: "#ffca28",
-    borderColor: "rgba(255,202,40,0.3)",
+    color: "#f77f00",
+    borderColor: "rgba(247,127,0,0.3)",
   },
   {
     id: "demo-dataset",
@@ -130,8 +130,8 @@ const connectors: ConnectorConfig[] = [
     provider: "demo",
     oauthConfigured: true,
     features: ["7 sources", "8 pages", "Graph", "Contradictions"],
-    color: "#ffeb3b",
-    borderColor: "rgba(255,235,59,0.3)",
+    color: "#e63946",
+    borderColor: "rgba(230,57,70,0.3)",
   },
 ];
 
@@ -252,7 +252,7 @@ export default function ConnectPage() {
             </p>
           </div>
           {session?.user?.email && (
-            <div className="pixel-badge pixel-badge-yellow text-[6px]">
+            <div className="pixel-badge pixel-badge-red text-[6px]">
               {session.user.email}
             </div>
           )}
@@ -264,9 +264,9 @@ export default function ConnectPage() {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="glass-panel p-4 mb-8 flex items-center gap-3 border-yellow-400/20"
+          className="glass-panel p-4 mb-8 flex items-center gap-3 border-red-500/20"
         >
-          <Shield className="w-5 h-5 text-yellow-400 shrink-0" />
+          <Shield className="w-5 h-5 text-red-500 shrink-0" />
           <div>
             <p className="text-sm font-medium text-white">Real OAuth Connections</p>
             <p className="text-xs text-[#a0a0a0]">
@@ -320,7 +320,7 @@ export default function ConnectPage() {
                       <Check className="w-2.5 h-2.5" /> Connected
                     </span>
                   ) : (
-                    <span className="pixel-badge pixel-badge-yellow text-[6px]">
+                    <span className="pixel-badge pixel-badge-red text-[6px]">
                       <AlertCircle className="w-2.5 h-2.5" /> Available
                     </span>
                   )}
@@ -339,7 +339,7 @@ export default function ConnectPage() {
 
                 <div className="flex flex-wrap gap-1.5 mb-3">
                   {conn.features.map((f) => (
-                    <span key={f} className="text-[8px] px-2 py-0.5 bg-yellow-400/10 text-yellow-400 border border-yellow-400/20 font-[Press_Start_2P]">
+                    <span key={f} className="text-[8px] px-2 py-0.5 bg-red-500/10 text-red-500 border border-red-500/20 font-[Press_Start_2P]">
                       {f}
                     </span>
                   ))}
@@ -352,7 +352,7 @@ export default function ConnectPage() {
                       <button
                         onClick={() => handleSync(conn.provider)}
                         disabled={isSyncing}
-                        className="flex-1 pixel-btn pixel-btn-yellow text-[6px] py-2 flex items-center justify-center gap-1"
+                        className="flex-1 pixel-btn pixel-btn-red text-[6px] py-2 flex items-center justify-center gap-1"
                       >
                         {isSyncing ? (
                           <Loader2 className="w-3 h-3 animate-spin" />
@@ -373,7 +373,7 @@ export default function ConnectPage() {
                   <button
                     onClick={() => handleOAuthConnect(conn.provider)}
                     disabled={isLoading}
-                    className="w-full pixel-btn pixel-btn-yellow text-[6px] py-2 flex items-center justify-center gap-2"
+                    className="w-full pixel-btn pixel-btn-red text-[6px] py-2 flex items-center justify-center gap-2"
                   >
                     {isLoading ? (
                       <Loader2 className="w-3 h-3 animate-spin" />
@@ -385,7 +385,7 @@ export default function ConnectPage() {
                 ) : (
                   <button
                     onClick={() => setActiveModal(conn.id)}
-                    className="w-full pixel-btn pixel-btn-yellow text-[6px] py-2"
+                    className="w-full pixel-btn pixel-btn-red text-[6px] py-2"
                   >
                     {conn.id === "demo-dataset" ? "Load Demo" : "Connect"}
                   </button>
@@ -402,7 +402,7 @@ export default function ConnectPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="glass-panel max-w-md w-full p-6 border-yellow-400/20"
+            className="glass-panel max-w-md w-full p-6 border-red-500/20"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
@@ -413,7 +413,7 @@ export default function ConnectPage() {
             </div>
             <p className="text-sm text-[#a0a0a0] mb-4">{activeConnector.description}</p>
             <div className="p-4 mb-4 bg-yellow-400/5 border-4 border-yellow-400/15">
-              <h4 className="text-[8px] font-[Press_Start_2P] text-yellow-400 uppercase tracking-wider mb-2">Permission Required</h4>
+              <h4 className="text-[8px] font-[Press_Start_2P] text-red-500 uppercase tracking-wider mb-2">Permission Required</h4>
               <p className="text-xs text-[#a0a0a0]">I consent to QyntraWiki accessing my {activeConnector.name} data for building my personal wiki.</p>
             </div>
             <div className="flex items-start gap-3 mb-6">
@@ -422,7 +422,7 @@ export default function ConnectPage() {
                 id="consent"
                 checked={consentGiven[activeConnector.id] || false}
                 onChange={(e) => setConsentGiven((prev) => ({ ...prev, [activeConnector.id]: e.target.checked }))}
-                className="mt-0.5 w-4 h-4 accent-yellow-400"
+                className="mt-0.5 w-4 h-4 accent-red-500"
               />
               <label htmlFor="consent" className="text-xs text-[#a0a0a0] leading-relaxed">I consent to QyntraWiki accessing my {activeConnector.name} data.</label>
             </div>

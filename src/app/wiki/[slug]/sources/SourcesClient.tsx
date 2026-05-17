@@ -134,7 +134,7 @@ export default function SourcesClient({ slug, initialSources }: Props) {
         return <span className={cn(base, "bg-red-500/10 text-red-400 border border-red-500/20")}><XCircle className="w-3 h-3" /> Error</span>;
       case "pending":
       default:
-        return <span className={cn(base, "bg-yellow-400/10 text-yellow-400 border border-yellow-400/20")}><Clock className="w-3 h-3" /> Pending</span>;
+        return <span className={cn(base, "bg-red-500/10 text-red-500 border border-red-500/20")}><Clock className="w-3 h-3" /> Pending</span>;
     }
   };
 

@@ -63,8 +63,8 @@ export default function AgentsPage() {
 
   const statusConfig: Record<Agent["status"], { label: string; color: string; bg: string }> = {
     idle: { label: "idle", color: "text-[#666666]", bg: "bg-[rgba(107,101,96,0.1)]" },
-    ready: { label: "ready", color: "text-[#ffeb3b]", bg: "bg-[rgba(255,235,59,0.15)]" },
-    running: { label: "running", color: "text-[#00e5ff]", bg: "bg-[rgba(59,130,246,0.15)]" },
+    ready: { label: "ready", color: "text-[#e63946]", bg: "bg-[rgba(230,57,70,0.15)]" },
+    running: { label: "running", color: "text-[#00b4d8]", bg: "bg-[rgba(59,130,246,0.15)]" },
     completed: { label: "completed", color: "text-green-400", bg: "bg-[rgba(34,197,94,0.15)]" },
   };
 
@@ -80,7 +80,7 @@ export default function AgentsPage() {
       <div className="px-6 sm:px-8 lg:px-10 pb-10">
         {/* Safety notice */}
         <div className="glass-panel rounded-lg p-4 mb-6 flex items-center gap-3">
-          <Shield className="w-5 h-5 text-[#ffeb3b] shrink-0" />
+          <Shield className="w-5 h-5 text-[#e63946] shrink-0" />
           <div>
             <p className="text-sm font-medium text-[#f5f5f5]">Review Before Apply</p>
             <p className="text-xs text-[#a0a0a0]">
@@ -128,7 +128,7 @@ export default function AgentsPage() {
                   className={cn(
                     "w-full py-2 text-xs font-bold uppercase tracking-wider rounded transition-all flex items-center justify-center gap-2",
                     isRunning
-                      ? "bg-[rgba(59,130,246,0.15)] text-[#00e5ff] cursor-not-allowed"
+                      ? "bg-[rgba(59,130,246,0.15)] text-[#00b4d8] cursor-not-allowed"
                       : "btn-secondary"
                   )}
                 >

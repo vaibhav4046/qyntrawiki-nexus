@@ -35,17 +35,17 @@ function parseInfobox(raw: string | undefined): Record<string, string> {
 
 const markdownComponents = {
   h1: ({ children }: any) => (
-    <h1 className="text-2xl font-bold mt-8 mb-4 text-[#f5f5f5] tracking-tight border-b border-[rgba(255,235,59,0.15)] pb-2">
+    <h1 className="text-2xl font-bold mt-8 mb-4 text-[#f5f5f5] tracking-tight border-b border-[rgba(230,57,70,0.15)] pb-2">
       {children}
     </h1>
   ),
   h2: ({ children }: any) => (
-    <h2 className="text-lg font-semibold mt-6 mb-3 text-[#ffeb3b] flex items-center gap-2 before:w-1 before:h-5 before:rounded-full before:bg-[#ffeb3b]">
+    <h2 className="text-lg font-semibold mt-6 mb-3 text-[#e63946] flex items-center gap-2 before:w-1 before:h-5 before:rounded-full before:bg-[#e63946]">
       {children}
     </h2>
   ),
   h3: ({ children }: any) => (
-    <h3 className="text-base font-medium mt-5 mb-2 text-[#ffca28]">{children}</h3>
+    <h3 className="text-base font-medium mt-5 mb-2 text-[#f77f00]">{children}</h3>
   ),
   p: ({ children }: any) => (
     <p className="text-[15px] leading-7 text-[#a0a0a0] mb-4">{children}</p>
@@ -68,7 +68,7 @@ const markdownComponents = {
   ),
   li: ({ children }: any) => <li className="leading-7">{children}</li>,
   blockquote: ({ children }: any) => (
-    <blockquote className="border-l-2 border-[rgba(255,235,59,0.4)] pl-4 py-1 my-4 italic text-[#a0a0a0]/60 text-[15px]">
+    <blockquote className="border-l-2 border-[rgba(230,57,70,0.4)] pl-4 py-1 my-4 italic text-[#a0a0a0]/60 text-[15px]">
       {children}
     </blockquote>
   ),
@@ -77,7 +77,7 @@ const markdownComponents = {
     const isInline = !className;
     return isInline ? (
       <code
-        className="px-1.5 py-0.5 rounded bg-[rgba(255,235,59,0.1)] text-[#ffeb3b] text-sm font-mono"
+        className="px-1.5 py-0.5 rounded bg-[rgba(230,57,70,0.1)] text-[#e63946] text-sm font-mono"
         {...props}
       >
         {children}
@@ -95,7 +95,7 @@ const markdownComponents = {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-[#ffca28] hover:underline underline-offset-2"
+      className="text-[#f77f00] hover:underline underline-offset-2"
     >
       {children}
     </a>
@@ -106,10 +106,10 @@ const markdownComponents = {
     </div>
   ),
   thead: ({ children }: any) => (
-    <thead className="bg-[rgba(255,235,59,0.06)] text-[#a0a0a0]">{children}</thead>
+    <thead className="bg-[rgba(230,57,70,0.06)] text-[#a0a0a0]">{children}</thead>
   ),
   th: ({ children }: any) => (
-    <th className="px-4 py-2.5 text-left font-medium border-b border-[rgba(107,101,96,0.15)] text-[#ffeb3b]">
+    <th className="px-4 py-2.5 text-left font-medium border-b border-[rgba(107,101,96,0.15)] text-[#e63946]">
       {children}
     </th>
   ),
@@ -198,7 +198,7 @@ export default async function PublicWikiPagePage({ params }: Props) {
   return (
     <div className="min-h-screen bg-black">
       {/* Header */}
-      <header className="border-b border-[rgba(255,235,59,0.12)] px-6 py-4">
+      <header className="border-b border-[rgba(230,57,70,0.12)] px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
@@ -245,7 +245,7 @@ export default async function PublicWikiPagePage({ params }: Props) {
             {/* Infobox */}
             <div className="glass-card rounded-lg p-5">
               <h3 className="flex items-center gap-2 text-sm font-bold text-[#f5f5f5] mb-4">
-                <Tag className="w-4 h-4 text-[#ffeb3b]" /> Infobox
+                <Tag className="w-4 h-4 text-[#e63946]" /> Infobox
               </h3>
               <div className="space-y-3">
                 <div className="space-y-1">
@@ -259,7 +259,7 @@ export default async function PublicWikiPagePage({ params }: Props) {
                   <div className="flex items-center gap-2">
                     <div className="h-1.5 flex-1 rounded-full bg-[rgba(107,101,96,0.2)] overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-[#ffeb3b]"
+                        className="h-full rounded-full bg-[#e63946]"
                         style={{ width: `${Math.round(confScore * 100)}%` }}
                       />
                     </div>
@@ -295,7 +295,7 @@ export default async function PublicWikiPagePage({ params }: Props) {
                         healthScore >= 0.8
                           ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/30"
                           : healthScore >= 0.5
-                          ? "text-yellow-400 bg-yellow-400/10 border-yellow-400/30"
+                          ? "text-red-500 bg-red-500/10 border-red-500/30"
                           : "text-red-400 bg-red-500/10 border-red-500/30"
                       )}
                     >
@@ -310,7 +310,7 @@ export default async function PublicWikiPagePage({ params }: Props) {
             {citations.length > 0 && (
               <div className="glass-card rounded-lg p-5">
                 <h3 className="flex items-center gap-2 text-sm font-bold text-[#f5f5f5] mb-4">
-                  <Quote className="w-4 h-4 text-[#ffeb3b]" /> Citations (
+                  <Quote className="w-4 h-4 text-[#e63946]" /> Citations (
                   {citations.length})
                 </h3>
                 <div className="space-y-3">
@@ -322,7 +322,7 @@ export default async function PublicWikiPagePage({ params }: Props) {
                         className="border-b border-[rgba(107,101,96,0.1)] pb-3 last:border-0 last:pb-0"
                       >
                         <div className="flex items-start gap-2">
-                          <span className="text-xs font-mono text-[#ffca28]/70 mt-0.5">
+                          <span className="text-xs font-mono text-[#f77f00]/70 mt-0.5">
                             [{i + 1}]
                           </span>
                           <div className="min-w-0">
@@ -354,10 +354,10 @@ export default async function PublicWikiPagePage({ params }: Props) {
             {/* Back link */}
             <Link
               href={`/p/${wikiSlug}`}
-              className="glass-card rounded-lg p-4 flex items-center gap-3 group hover:border-[rgba(255,235,59,0.25)] transition-colors"
+              className="glass-card rounded-lg p-4 flex items-center gap-3 group hover:border-[rgba(230,57,70,0.25)] transition-colors"
             >
-              <BookOpen className="w-4 h-4 text-[#ffeb3b]" />
-              <span className="text-sm font-medium text-[#f5f5f5] group-hover:text-[#ffeb3b] transition-colors">
+              <BookOpen className="w-4 h-4 text-[#e63946]" />
+              <span className="text-sm font-medium text-[#f5f5f5] group-hover:text-[#e63946] transition-colors">
                 Back to {publicTitle}
               </span>
             </Link>

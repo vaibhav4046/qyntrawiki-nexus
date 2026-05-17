@@ -57,7 +57,7 @@ export default function ConnectCallbackPage() {
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="pixel-card border-yellow-400/30 p-8 max-w-md w-full text-center"
+        className="pixel-card border-red-500/30 p-8 max-w-md w-full text-center"
       >
         {status === "processing" && (
           <>
@@ -66,7 +66,7 @@ export default function ConnectCallbackPage() {
               transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               className="w-12 h-12 border-4 border-t-transparent border-yellow-400 mx-auto mb-4"
             />
-            <h2 className="pixel-heading text-[10px] text-yellow-400 mb-2">
+            <h2 className="pixel-heading text-[10px] text-red-500 mb-2">
               Connecting {connectorName}...
             </h2>
             <p className="text-sm text-[#a0a0a0]">
@@ -92,7 +92,7 @@ export default function ConnectCallbackPage() {
               {connectorName} is now linked to your wiki.
             </p>
             <div className="flex gap-3 justify-center">
-              <Link href="/app/connect" className="pixel-btn pixel-btn-yellow text-[6px]">
+              <Link href="/app/connect" className="pixel-btn pixel-btn-red text-[6px]">
                 Back to Connect
               </Link>
               <Link href="/app" className="pixel-btn pixel-btn-solid text-[6px] flex items-center gap-1">
@@ -116,7 +116,7 @@ export default function ConnectCallbackPage() {
             <p className="text-xs text-[#666666] mb-6">
               In production, this would exchange the OAuth code for tokens via a secure server route.
             </p>
-            <Link href="/app/connect" className="pixel-btn pixel-btn-yellow text-[6px]">
+            <Link href="/app/connect" className="pixel-btn pixel-btn-red text-[6px]">
               Try Again
             </Link>
           </>

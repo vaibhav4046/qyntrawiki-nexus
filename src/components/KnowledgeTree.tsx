@@ -41,14 +41,14 @@ export default function KnowledgeTree({ className = "" }: { className?: string }
 
   // Pac-Man color palette
   const colors = useMemo(() => ({
-    yellow: "#ffeb3b",
-    yellowBright: "#ffff00",
-    orange: "#ffca28",
+    yellow: "#e63946",
+    yellowBright: "#ff2a3a",
+    orange: "#f77f00",
     red: "#ff0000",
-    pink: "#ffb8ff",
+    pink: "#ff69b4",
     cyan: "#00ffff",
     white: "#a0a0a0",
-    blue: "#2121de",
+    blue: "#4a7c59",
   }), []);
 
   useEffect(() => {
@@ -133,7 +133,7 @@ export default function KnowledgeTree({ className = "" }: { className?: string }
       ctx.clearRect(0, 0, rect.width, rect.height);
 
       // Draw maze-like grid background (Pac-Man aesthetic)
-      ctx.strokeStyle = "rgba(33, 33, 222, 0.08)";
+      ctx.strokeStyle = "rgba(74,124,89, 0.08)";
       ctx.lineWidth = 1;
       const gridSize = 40;
       for (let gx = 0; gx < rect.width; gx += gridSize) {
@@ -160,9 +160,9 @@ export default function KnowledgeTree({ className = "" }: { className?: string }
           if (!target) continue;
 
           const gradient = ctx.createLinearGradient(node.x, node.y, target.x, target.y);
-          gradient.addColorStop(0, "rgba(255, 235, 59, 0.1)");
-          gradient.addColorStop(0.5, "rgba(255, 235, 59, 0.15)");
-          gradient.addColorStop(1, "rgba(255, 235, 59, 0.1)");
+          gradient.addColorStop(0, "rgba(230,57,70, 0.1)");
+          gradient.addColorStop(0.5, "rgba(230,57,70, 0.15)");
+          gradient.addColorStop(1, "rgba(230,57,70, 0.1)");
 
           ctx.beginPath();
           ctx.moveTo(node.x, node.y);
@@ -174,7 +174,7 @@ export default function KnowledgeTree({ className = "" }: { className?: string }
           ctx.stroke();
 
           // Glow effect on connections
-          ctx.shadowColor = "rgba(255, 235, 59, 0.3)";
+          ctx.shadowColor = "rgba(230,57,70, 0.3)";
           ctx.shadowBlur = 8;
           ctx.stroke();
           ctx.shadowBlur = 0;

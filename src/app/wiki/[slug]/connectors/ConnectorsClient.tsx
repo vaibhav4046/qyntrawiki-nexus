@@ -221,7 +221,7 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
       >
         <div className="flex items-center gap-3 mb-2">
           <div className="w-10 h-10 rounded-sm bg-[rgba(0,229,255,0.1)] flex items-center justify-center border border-[rgba(0,229,255,0.2)]">
-            <Plug className="w-5 h-5 text-[#00e5ff]" />
+            <Plug className="w-5 h-5 text-[#00b4d8]" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight">Connectors</h1>
@@ -240,7 +240,7 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
         className="flex items-center gap-4"
       >
         <div className="jules-card px-4 py-2.5 flex items-center gap-2.5">
-          <div className="w-2 h-2 rounded-full bg-[#00e5ff] animate-pulse" />
+          <div className="w-2 h-2 rounded-full bg-[#00b4d8] animate-pulse" />
           <span className="text-sm font-medium">
             {connectors.filter((c) => c.connected).length} Connected
           </span>
@@ -257,8 +257,8 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
             animate={{ opacity: 1, scale: 1 }}
             className="jules-card px-4 py-2.5 flex items-center gap-2.5 border-[rgba(0,229,255,0.3)]"
           >
-            <Loader2 className="w-3.5 h-3.5 text-[#00e5ff] animate-spin" />
-            <span className="text-sm font-medium text-[#00e5ff]">{syncingIds.size} syncing</span>
+            <Loader2 className="w-3.5 h-3.5 text-[#00b4d8] animate-spin" />
+            <span className="text-sm font-medium text-[#00b4d8]">{syncingIds.size} syncing</span>
           </motion.div>
         )}
       </motion.div>
@@ -301,7 +301,7 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
                         className={cn(
                           "w-10 h-10 rounded-sm flex items-center justify-center shrink-0 border",
                           isConnected
-                            ? "bg-[rgba(0,229,255,0.2)] border-[rgba(0,229,255,0.3)] text-[#00e5ff]"
+                            ? "bg-[rgba(0,229,255,0.2)] border-[rgba(0,229,255,0.3)] text-[#00b4d8]"
                             : "bg-muted/50 border-border text-[#6b5b8a]"
                         )}
                       >
@@ -318,15 +318,15 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
                     {/* Status Badge */}
                     <div className="shrink-0 ml-2">
                       {isSyncing ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(0,229,255,0.1)] px-2.5 py-1 text-xs font-medium text-[#00e5ff] border border-[rgba(0,229,255,0.2)]">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(0,229,255,0.1)] px-2.5 py-1 text-xs font-medium text-[#00b4d8] border border-[rgba(0,229,255,0.2)]">
                           <span className="relative flex h-1.5 w-1.5">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00e5ff] opacity-75" />
-                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00e5ff]" />
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00b4d8] opacity-75" />
+                            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00b4d8]" />
                           </span>
                           Syncing
                         </span>
                       ) : isConnected ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(0,229,255,0.1)] px-2.5 py-1 text-xs font-medium text-[#00e5ff] border border-[rgba(0,229,255,0.2)]">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-[rgba(0,229,255,0.1)] px-2.5 py-1 text-xs font-medium text-[#00b4d8] border border-[rgba(0,229,255,0.2)]">
                           <CheckCircle2 className="w-3 h-3" />
                           Connected
                         </span>
@@ -391,7 +391,7 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
                         </div>
                       ) : (
                         <div className="flex items-center gap-2 rounded-sm border border-border bg-muted/30 px-3 py-2">
-                          <Zap className="w-3.5 h-3.5 text-[#00e5ff]" />
+                          <Zap className="w-3.5 h-3.5 text-[#00b4d8]" />
                           <span className="text-xs font-mono text-[#6b5b8a] truncate flex-1">
                             {connector.apiKey || "Key saved"}
                           </span>
@@ -412,7 +412,7 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
                       className={cn(
                         "relative rounded-sm border-2 border-dashed transition-all duration-300 cursor-pointer",
                         dragOverId === connector.id
-                          ? "border-[#00e5ff] bg-[rgba(0,229,255,0.1)] scale-[1.02]"
+                          ? "border-[#00b4d8] bg-[rgba(0,229,255,0.1)] scale-[1.02]"
                           : isConnected
                           ? "border-[rgba(0,229,255,0.3)] bg-[rgba(0,229,255,0.05)] hover:border-[rgba(0,229,255,0.5)]"
                           : "border-border bg-muted/20 hover:border-[rgba(0,229,255,0.3)] hover:bg-[rgba(0,229,255,0.05)]"
@@ -435,7 +435,7 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
                           <Upload
                             className={cn(
                               "w-6 h-6 mb-2",
-                              dragOverId === connector.id ? "text-[#00e5ff]" : "text-[#6b5b8a]"
+                              dragOverId === connector.id ? "text-[#00b4d8]" : "text-[#6b5b8a]"
                             )}
                           />
                         </motion.div>
@@ -480,7 +480,7 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
                             key={idx}
                             className="flex items-center gap-2 rounded-sm border border-border bg-muted/30 px-2.5 py-1.5"
                           >
-                            <FileText className="w-3.5 h-3.5 text-[#00e5ff] shrink-0" />
+                            <FileText className="w-3.5 h-3.5 text-[#00b4d8] shrink-0" />
                             <span className="text-xs truncate flex-1">{file.name}</span>
                             <span className="text-[10px] text-[#6b5b8a] shrink-0">
                               {(file.size / 1024).toFixed(0)} KB
@@ -497,7 +497,7 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="jules-btn h-8 text-xs gap-1.5 px-2.5 hover:bg-[rgba(0,229,255,0.1)] hover:text-[#00e5ff]"
+                          className="jules-btn h-8 text-xs gap-1.5 px-2.5 hover:bg-[rgba(0,229,255,0.1)] hover:text-[#00b4d8]"
                           onClick={() => handleSync(connector)}
                           disabled={isSyncing}
                         >
@@ -511,7 +511,7 @@ export function ConnectorsClient({ wikiName, slug, initialConnectors }: Connecto
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="jules-btn h-8 text-xs gap-1.5 px-2.5 text-[#6b5b8a] hover:text-[#00e5ff] hover:bg-[rgba(0,229,255,0.1)]"
+                          className="jules-btn h-8 text-xs gap-1.5 px-2.5 text-[#6b5b8a] hover:text-[#00b4d8] hover:bg-[rgba(0,229,255,0.1)]"
                           onClick={() => handleDisconnect(connector)}
                           disabled={isConnecting}
                         >

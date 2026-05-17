@@ -145,7 +145,7 @@ export default async function PageArticlePage({ params }: Props) {
 
   const getHealthVariant = (score: number) => {
     if (score >= 0.8) return "text-emerald-400 bg-emerald-500/15 border-emerald-500/30";
-    if (score >= 0.5) return "text-yellow-400 bg-yellow-400/15 border-yellow-400/30";
+    if (score >= 0.5) return "text-red-500 bg-red-500/15 border-red-500/30";
     return "text-destructive bg-destructive/15 border-destructive/30";
   };
 

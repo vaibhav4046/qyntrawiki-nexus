@@ -160,14 +160,14 @@ export default function ImportPage() {
                 className={cn(
                   "p-3 rounded-lg border text-left transition-all",
                   active
-                    ? "bg-[rgba(255,235,59,0.1)] border-[rgba(255,235,59,0.3)]"
-                    : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] hover:border-[rgba(255,235,59,0.2)]"
+                    ? "bg-[rgba(230,57,70,0.1)] border-[rgba(230,57,70,0.3)]"
+                    : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] hover:border-[rgba(230,57,70,0.2)]"
                 )}
               >
                 <Icon
                   className={cn(
                     "w-4 h-4 mb-2",
-                    active ? "text-[#ffeb3b]" : "text-[#666666]"
+                    active ? "text-[#e63946]" : "text-[#666666]"
                   )}
                 />
                 <p
@@ -284,7 +284,7 @@ export default function ImportPage() {
 
           {method === "demo" && (
             <div className="text-center py-6">
-              <Database className="w-10 h-10 text-[#ffeb3b] mx-auto mb-4" />
+              <Database className="w-10 h-10 text-[#e63946] mx-auto mb-4" />
               <p className="text-sm text-[#f5f5f5] font-medium mb-2">
                 AI Agent Memory Encyclopedia
               </p>
@@ -297,7 +297,7 @@ export default function ImportPage() {
                   (tag) => (
                     <span
                       key={tag}
-                      className="text-[10px] px-2 py-1 bg-[rgba(255,235,59,0.1)] text-[#ffeb3b] rounded"
+                      className="text-[10px] px-2 py-1 bg-[rgba(230,57,70,0.1)] text-[#e63946] rounded"
                     >
                       {tag}
                     </span>
@@ -352,7 +352,7 @@ export default function ImportPage() {
                       step.status === "completed"
                         ? "bg-green-500/20"
                         : step.status === "processing"
-                        ? "bg-yellow-400/20"
+                        ? "bg-red-500/20"
                         : step.status === "error"
                         ? "bg-red-500/20"
                         : "bg-[rgba(107,101,96,0.2)]"
@@ -361,7 +361,7 @@ export default function ImportPage() {
                     {step.status === "completed" ? (
                       <Check className="w-3.5 h-3.5 text-green-400" />
                     ) : step.status === "processing" ? (
-                      <Loader2 className="w-3.5 h-3.5 text-yellow-400 animate-spin" />
+                      <Loader2 className="w-3.5 h-3.5 text-red-500 animate-spin" />
                     ) : step.status === "error" ? (
                       <X className="w-3.5 h-3.5 text-red-400" />
                     ) : (
@@ -375,7 +375,7 @@ export default function ImportPage() {
                         step.status === "completed"
                           ? "text-green-400"
                           : step.status === "processing"
-                          ? "text-yellow-400"
+                          ? "text-red-500"
                           : step.status === "error"
                           ? "text-red-400"
                           : "text-[#666666]"
@@ -423,7 +423,7 @@ export default function ImportPage() {
               {result.success && (
                 <a
                   href="/app/wiki"
-                  className="inline-flex items-center gap-1 text-xs text-[#ffeb3b] mt-3 hover:underline"
+                  className="inline-flex items-center gap-1 text-xs text-[#e63946] mt-3 hover:underline"
                 >
                   View Wiki <ChevronRight className="w-3 h-3" />
                 </a>

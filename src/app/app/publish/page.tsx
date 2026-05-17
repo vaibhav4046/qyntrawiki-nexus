@@ -37,7 +37,7 @@ function Toggle({
       className="flex items-center gap-3 group"
     >
       {checked ? (
-        <ToggleRight className="w-6 h-6 text-[#ffeb3b] transition-colors" />
+        <ToggleRight className="w-6 h-6 text-[#e63946] transition-colors" />
       ) : (
         <ToggleLeft className="w-6 h-6 text-[#666666] transition-colors" />
       )}
@@ -297,11 +297,11 @@ export default function PublishPage() {
           <h2 className="section-title flex items-center gap-2 mb-3">
             <LinkIcon className="w-4 h-4" /> Public URL Preview
           </h2>
-          <div className="flex items-center justify-between gap-3 p-3 rounded-md bg-[rgba(20,18,16,0.6)] border border-[rgba(255,235,59,0.1)]">
+          <div className="flex items-center justify-between gap-3 p-3 rounded-md bg-[rgba(20,18,16,0.6)] border border-[rgba(230,57,70,0.1)]">
             <Link
               href={previewUrl}
               target="_blank"
-              className="text-sm text-[#ffca28] hover:text-[#ffeb3b] transition-colors truncate"
+              className="text-sm text-[#f77f00] hover:text-[#e63946] transition-colors truncate"
             >
               {origin}
               {previewUrl}
@@ -349,7 +349,7 @@ export default function PublishPage() {
                     type="checkbox"
                     checked={isChecked}
                     onChange={() => togglePage(page.slug as string)}
-                    className="w-4 h-4 rounded border-[#666666] bg-transparent text-[#ffeb3b] focus:ring-[#ffeb3b] cursor-pointer"
+                    className="w-4 h-4 rounded border-[#666666] bg-transparent text-[#e63946] focus:ring-[#e63946] cursor-pointer"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
@@ -357,7 +357,7 @@ export default function PublishPage() {
                         {page.title as string}
                       </span>
                       {isChecked && (
-                        <Star className="w-3 h-3 text-[#ffeb3b]" />
+                        <Star className="w-3 h-3 text-[#e63946]" />
                       )}
                     </div>
                     <p className="text-xs text-[#666666] truncate mt-0.5">
@@ -374,7 +374,7 @@ export default function PublishPage() {
                     <ArrowRight
                       className={cn(
                         "w-4 h-4 transition-colors",
-                        isChecked ? "text-[#ffeb3b]" : "text-[#666666]"
+                        isChecked ? "text-[#e63946]" : "text-[#666666]"
                       )}
                     />
                   </div>

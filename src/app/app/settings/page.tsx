@@ -54,11 +54,11 @@ export default function SettingsPage() {
               className={cn(
                 "p-4 rounded-lg border text-left transition-all",
                 demoMode
-                  ? "bg-[rgba(255,235,59,0.1)] border-[rgba(255,235,59,0.3)]"
+                  ? "bg-[rgba(230,57,70,0.1)] border-[rgba(230,57,70,0.3)]"
                   : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)]"
               )}
             >
-              <Database className={cn("w-5 h-5 mb-2", demoMode ? "text-[#ffeb3b]" : "text-[#666666]")} />
+              <Database className={cn("w-5 h-5 mb-2", demoMode ? "text-[#e63946]" : "text-[#666666]")} />
               <p className={cn("text-xs font-bold", demoMode ? "text-[#f5f5f5]" : "text-[#a0a0a0]")}>Demo mode</p>
               <p className="text-[10px] text-[#666666] mt-1">Mock data, no API keys</p>
             </button>

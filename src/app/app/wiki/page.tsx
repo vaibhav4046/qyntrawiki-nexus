@@ -53,16 +53,16 @@ export default async function WikiHomePage() {
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-yellow-400/20 to-yellow-600/20 flex items-center justify-center">
-                      <BookOpen className="w-4 h-4 text-[#ffeb3b]" />
+                    <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-red-500/20 to-orange-500/20 flex items-center justify-center">
+                      <BookOpen className="w-4 h-4 text-[#e63946]" />
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-[#f5f5f5] group-hover:text-[#ffeb3b] transition-colors">
+                      <h3 className="text-sm font-bold text-[#f5f5f5] group-hover:text-[#e63946] transition-colors">
                         {page.title as string}
                       </h3>
                       <div className="flex items-center gap-2 mt-0.5">
                         {infobox.type && (
-                          <span className="text-[10px] px-1.5 py-0.5 bg-[rgba(255,235,59,0.1)] text-[#ffeb3b] rounded">
+                          <span className="text-[10px] px-1.5 py-0.5 bg-[rgba(230,57,70,0.1)] text-[#e63946] rounded">
                             {infobox.type}
                           </span>
                         )}
@@ -74,7 +74,7 @@ export default async function WikiHomePage() {
                       </div>
                     </div>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#ffeb3b] transition-colors" />
+                  <ArrowRight className="w-4 h-4 text-[#666666] group-hover:text-[#e63946] transition-colors" />
                 </div>
 
                 <p className="text-xs text-[#a0a0a0] leading-relaxed mb-3 line-clamp-2">
@@ -88,7 +88,7 @@ export default async function WikiHomePage() {
                       <span
                         className={cn(
                           "text-[10px] font-bold",
-                          health > 0.8 ? "text-green-400" : health > 0.6 ? "text-yellow-400" : "text-red-400"
+                          health > 0.8 ? "text-green-400" : health > 0.6 ? "text-red-500" : "text-red-400"
                         )}
                       >
                         {Math.round(health * 100)}%

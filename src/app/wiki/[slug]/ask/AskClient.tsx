@@ -93,7 +93,7 @@ export default function AskClient({ slug, pages }: Props) {
     <div className="max-w-3xl mx-auto px-4 py-8 space-y-8">
       <div>
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
-          <Sparkles className="w-7 h-7 text-[#00e5ff]" />
+          <Sparkles className="w-7 h-7 text-[#00b4d8]" />
           Ask the Wiki
         </h1>
         <p className="text-[#6b5b8a] mt-1">Ask questions about {slug} and get cited answers from your knowledge base</p>
@@ -124,7 +124,7 @@ export default function AskClient({ slug, pages }: Props) {
 
               <div className="flex items-start gap-2 max-w-[90%]">
                 <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500/20 to-blue-500/10 flex items-center justify-center flex-shrink-0 mt-0.5 border border-[rgba(0,229,255,0.2)]">
-                  <Sparkles className="w-3.5 h-3.5 text-[#00e5ff]" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#00b4d8]" />
                 </div>
                 <div className="flex-1 space-y-3">
                   <Card className="jules-card border-[rgba(139,92,246,0.15)]">
@@ -146,9 +146,9 @@ export default function AskClient({ slug, pages }: Props) {
                             {item.a.citations.map((cite, i) => (
                               <div key={i} className="p-3 bg-[#0a0512] border border-[rgba(139,92,246,0.15)] text-sm space-y-1">
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs font-mono text-[#00e5ff] bg-[rgba(0,229,255,0.1)] px-1.5 py-0.5 rounded">[{i + 1}]</span>
+                                  <span className="text-xs font-mono text-[#00b4d8] bg-[rgba(0,229,255,0.1)] px-1.5 py-0.5 rounded">[{i + 1}]</span>
                                   <span className="font-medium text-foreground">{cite.source}</span>
-                                  {cite.url && <a href={cite.url} target="_blank" rel="noopener noreferrer" className="text-[#6b5b8a] hover:text-[#00e5ff] ml-auto"><ExternalLink className="w-3.5 h-3.5" /></a>}
+                                  {cite.url && <a href={cite.url} target="_blank" rel="noopener noreferrer" className="text-[#6b5b8a] hover:text-[#00b4d8] ml-auto"><ExternalLink className="w-3.5 h-3.5" /></a>}
                                 </div>
                                 {cite.quote && <p className="text-[#6b5b8a] text-xs italic">&ldquo;{cite.quote}&rdquo;</p>}
                               </div>
@@ -172,9 +172,9 @@ export default function AskClient({ slug, pages }: Props) {
                             {item.a.context.map((ctx, i) => (
                               <div key={i} className="p-3 bg-[rgba(139,92,246,0.05)]">
                                 <div className="flex items-center gap-2 mb-1">
-                                  <BookOpen className="w-3.5 h-3.5 text-[#00e5ff]" />
+                                  <BookOpen className="w-3.5 h-3.5 text-[#00b4d8]" />
                                   <span className="text-sm font-medium text-foreground">{ctx.pageTitle}</span>
-                                  {ctx.pageSlug && <a href={`/wiki/${slug}/page/${ctx.pageSlug}`} className="text-xs text-[#00e5ff] hover:underline ml-auto inline-flex items-center gap-1">View <ExternalLink className="w-3 h-3" /></a>}
+                                  {ctx.pageSlug && <a href={`/wiki/${slug}/page/${ctx.pageSlug}`} className="text-xs text-[#00b4d8] hover:underline ml-auto inline-flex items-center gap-1">View <ExternalLink className="w-3 h-3" /></a>}
                                 </div>
                                 <p className="text-xs text-[#6b5b8a] line-clamp-3">{ctx.excerpt}</p>
                               </div>
@@ -193,11 +193,11 @@ export default function AskClient({ slug, pages }: Props) {
         {loading && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex items-start gap-2">
             <div className="w-7 h-7 rounded-full bg-gradient-to-br from-violet-500/20 to-blue-500/10 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-3.5 h-3.5 text-[#00e5ff]" />
+              <Sparkles className="w-3.5 h-3.5 text-[#00b4d8]" />
             </div>
             <Card className="jules-card flex-1 border-[rgba(139,92,246,0.15)]">
               <CardContent className="flex items-center gap-3 py-4">
-                <Loader2 className="w-4 h-4 text-[#00e5ff] animate-spin" />
+                <Loader2 className="w-4 h-4 text-[#00b4d8] animate-spin" />
                 <p className="text-sm text-[#6b5b8a]">Searching knowledge graph and generating answer...</p>
               </CardContent>
             </Card>

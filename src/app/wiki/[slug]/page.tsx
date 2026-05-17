@@ -34,7 +34,7 @@ export default async function WikiDashboardPage({ params }: Props) {
 
   const stats = [
     { label: "Total Pages", value: pageCount, icon: FileText, href: `/wiki/${slug}/pages`, color: "text-[#b794f6]" },
-    { label: "Sources", value: sourceCount, icon: Database, href: `/wiki/${slug}/sources`, color: "text-[#00e5ff]" },
+    { label: "Sources", value: sourceCount, icon: Database, href: `/wiki/${slug}/sources`, color: "text-[#00b4d8]" },
     { label: "Claims", value: claimCount, icon: Lightbulb, href: `/wiki/${slug}/graph`, color: "text-[#ffd500]" },
     { label: "Contradictions", value: contradictionCount, icon: AlertTriangle, href: `/wiki/${slug}/contradictions`, color: "text-[#ff2d92]" },
   ];
@@ -50,8 +50,8 @@ export default async function WikiDashboardPage({ params }: Props) {
 
   const statusColors: Record<string, string> = {
     queued: "text-[#4a3a6a] border-dotted border-[#4a3a6a]",
-    processing: "text-[#00e5ff] border-dotted border-[#00e5ff]",
-    completed: "text-[#00e5ff] border-dotted border-[#00e5ff]",
+    processing: "text-[#00b4d8] border-dotted border-[#00b4d8]",
+    completed: "text-[#00b4d8] border-dotted border-[#00b4d8]",
     failed: "text-[#ff2d92] border-dotted border-[#ff2d92]",
   };
 

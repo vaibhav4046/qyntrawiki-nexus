@@ -18,7 +18,7 @@ const statusBadge = (status: string) => {
     case "refuted":
       return <span className={cn(base, "bg-red-500/10 text-red-400 border border-red-500/20")}><XCircle className="w-3 h-3" /> Refuted</span>;
     default:
-      return <span className={cn(base, "bg-yellow-400/10 text-yellow-400 border border-yellow-400/20")}><MinusCircle className="w-3 h-3" /> {status}</span>;
+      return <span className={cn(base, "bg-red-500/10 text-red-500 border border-red-500/20")}><MinusCircle className="w-3 h-3" /> {status}</span>;
   }
 };
 
@@ -69,8 +69,8 @@ export default async function ContradictionsPage({ params }: Props) {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="p-4 rounded-lg bg-amber-500/5 border border-yellow-400/10 space-y-2">
-                    <span className="text-xs font-semibold text-yellow-400 uppercase tracking-wider">Claim A</span>
+                  <div className="p-4 rounded-lg bg-amber-500/5 border border-red-500/10 space-y-2">
+                    <span className="text-xs font-semibold text-red-500 uppercase tracking-wider">Claim A</span>
                     <p className="text-sm">
                       <span className="font-medium text-foreground">{claim.subject as string}</span>
                       <span className="text-muted-foreground"> {claim.predicate as string} </span>
@@ -113,7 +113,7 @@ export default async function ContradictionsPage({ params }: Props) {
                 {claim.explanation && (
                   <div className="p-3 rounded-md bg-muted/50 border border-border">
                     <p className="text-sm text-muted-foreground flex items-start gap-2">
-                      <AlertTriangle className="w-4 h-4 text-yellow-400 flex-shrink-0 mt-0.5" />
+                      <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
                       {claim.explanation as string}
                     </p>
                   </div>
