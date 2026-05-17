@@ -1,10 +1,10 @@
-/* ─── Fonts ─── */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Press+Start+2P&display=swap');
+/* ─── Pixel Fonts ─── */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=JetBrains+Mono:wght@400;700;800&display=swap');
 
 @import "tailwindcss";
 
 @theme inline {
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', 'Courier New', monospace;
   --font-pixel: 'Press Start 2P', monospace;
   --color-background: #060606;
@@ -13,12 +13,13 @@
 
 :root {
   --contra-black: #060606;
-  --contra-dark: #0c0c0c;
-  --contra-card: #111111;
-  --contra-card-hover: #181818;
+  --contra-dark: #0a0a0a;
+  --contra-card: #0d0d0d;
+  --contra-card-hover: #131313;
   --contra-border: #1a1a1a;
   --contra-border-hover: #2a2a2a;
   --contra-red: #e63946;
+  --contra-red-bright: #ff2a3a;
   --contra-red-dim: rgba(230,57,70,0.15);
   --contra-orange: #f77f00;
   --contra-orange-dim: rgba(247,127,0,0.15);
@@ -35,14 +36,14 @@ html { scroll-behavior: smooth; background: var(--contra-black); }
 body {
   background: var(--contra-black);
   color: var(--contra-white);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.55;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── Clean Card ─── */
+/* ─── Clean Card (default app style) ─── */
 .q-card {
   background: var(--contra-card);
   border: 1px solid var(--contra-border);
@@ -73,8 +74,8 @@ body {
 }
 
 .q-btn:hover {
-  background: #ff2a3a;
-  border-color: #ff2a3a;
+  background: var(--contra-red-bright);
+  border-color: var(--contra-red-bright);
 }
 
 .q-btn-ghost {
@@ -96,18 +97,7 @@ body {
   border-color: #5a8c69;
 }
 
-.q-btn-orange {
-  background: var(--contra-orange);
-  border-color: var(--contra-orange);
-  color: #000;
-}
-
-.q-btn-orange:hover {
-  background: #ff9500;
-  border-color: #ff9500;
-}
-
-/* ─── Pixel accent (used sparingly) ─── */
+/* ─── Pixel accents (game pages) ─── */
 .pixel-accent {
   font-family: 'Press Start 2P', monospace;
   font-size: 11px;
@@ -115,31 +105,16 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* ─── Progress bar ─── */
-.q-progress {
-  height: 6px;
-  background: var(--contra-dark);
-  border-radius: 3px;
-  overflow: hidden;
+/* ─── Animations ─── */
+@keyframes flame-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
 }
 
-.q-progress-fill {
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.6s ease;
+@keyframes konami-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
-
-/* ─── Status dots ─── */
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  display: inline-block;
-}
-
-.status-dot.active { background: var(--contra-green); box-shadow: 0 0 6px var(--contra-green); }
-.status-dot.standby { background: var(--contra-orange); }
-.status-dot.offline { background: var(--contra-gray-dim); }
 
 /* ─── Selection ─── */
 ::selection {
@@ -152,14 +127,3 @@ body {
 ::-webkit-scrollbar-track { background: var(--contra-black); }
 ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: #444; }
-
-/* ─── Landing page specific (keep animations) ─── */
-@keyframes flame-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-
-@keyframes scan-line {
-  0% { transform: translateY(-100%); }
-  100% { transform: translateY(100vh); }
-}
