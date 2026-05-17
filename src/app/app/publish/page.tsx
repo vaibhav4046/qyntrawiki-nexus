@@ -37,11 +37,11 @@ function Toggle({
       className="flex items-center gap-3 group"
     >
       {checked ? (
-        <ToggleRight className="w-6 h-6 text-[#fbbf24] transition-colors" />
+        <ToggleRight className="w-6 h-6 text-[#ffeb3b] transition-colors" />
       ) : (
-        <ToggleLeft className="w-6 h-6 text-[#6b6560] transition-colors" />
+        <ToggleLeft className="w-6 h-6 text-[#666666] transition-colors" />
       )}
-      <span className="text-sm text-[#a89f91] group-hover:text-[#f5f0eb] transition-colors">
+      <span className="text-sm text-[#a0a0a0] group-hover:text-[#f5f5f5] transition-colors">
         {label}
       </span>
     </button>
@@ -192,7 +192,7 @@ export default function PublishPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-warm flex items-center justify-center text-[#a89f91]">
+      <div className="min-h-screen bg-black flex items-center justify-center text-[#a0a0a0]">
         <div className="flex items-center gap-2">
           <Globe className="w-5 h-5 animate-pulse" />
           Loading publish settings...
@@ -205,12 +205,12 @@ export default function PublishPage() {
   const previewUrl = `/p/${publicSlug || "your-slug"}`;
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-black">
       <div className="px-6 sm:px-8 lg:px-10 pt-8 pb-6">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-[#f5f0eb]">Publish Wiki</h1>
-            <p className="mt-1 text-sm text-[#a89f91]">
+            <h1 className="text-2xl font-bold text-[#f5f5f5]">Publish Wiki</h1>
+            <p className="mt-1 text-sm text-[#a0a0a0]">
               Choose what to share with the world
             </p>
           </div>
@@ -220,7 +220,7 @@ export default function PublishPage() {
                 <Globe className="w-3 h-3" /> Live
               </span>
             ) : (
-              <span className="badge bg-[rgba(107,101,96,0.15)] text-[#6b6560] border border-[rgba(107,101,96,0.2)] flex items-center gap-1.5">
+              <span className="badge bg-[rgba(107,101,96,0.15)] text-[#666666] border border-[rgba(107,101,96,0.2)] flex items-center gap-1.5">
                 <Lock className="w-3 h-3" /> Private
               </span>
             )}
@@ -236,7 +236,7 @@ export default function PublishPage() {
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="md:col-span-2">
-              <label className="block text-xs text-[#a89f91] mb-1.5 uppercase tracking-wider font-bold">
+              <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wider font-bold">
                 Wiki Title
               </label>
               <input
@@ -249,11 +249,11 @@ export default function PublishPage() {
             </div>
 
             <div>
-              <label className="block text-xs text-[#a89f91] mb-1.5 uppercase tracking-wider font-bold">
+              <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wider font-bold">
                 Public Slug
               </label>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-[#6b6560] shrink-0">/p/</span>
+                <span className="text-sm text-[#666666] shrink-0">/p/</span>
                 <input
                   type="text"
                   value={publicSlug}
@@ -265,7 +265,7 @@ export default function PublishPage() {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-xs text-[#a89f91] mb-1.5 uppercase tracking-wider font-bold">
+              <label className="block text-xs text-[#a0a0a0] mb-1.5 uppercase tracking-wider font-bold">
                 Description
               </label>
               <textarea
@@ -297,11 +297,11 @@ export default function PublishPage() {
           <h2 className="section-title flex items-center gap-2 mb-3">
             <LinkIcon className="w-4 h-4" /> Public URL Preview
           </h2>
-          <div className="flex items-center justify-between gap-3 p-3 rounded-md bg-[rgba(20,18,16,0.6)] border border-[rgba(234,88,12,0.1)]">
+          <div className="flex items-center justify-between gap-3 p-3 rounded-md bg-[rgba(20,18,16,0.6)] border border-[rgba(255,235,59,0.1)]">
             <Link
               href={previewUrl}
               target="_blank"
-              className="text-sm text-[#fb923c] hover:text-[#fbbf24] transition-colors truncate"
+              className="text-sm text-[#ffca28] hover:text-[#ffeb3b] transition-colors truncate"
             >
               {origin}
               {previewUrl}
@@ -328,7 +328,7 @@ export default function PublishPage() {
           <h2 className="section-title flex items-center gap-2 mb-5">
             <FileText className="w-4 h-4" /> Page Selector
           </h2>
-          <p className="text-xs text-[#6b6560] mb-4">
+          <p className="text-xs text-[#666666] mb-4">
             Check the pages you want to make public. Unchecked pages stay private.
           </p>
 
@@ -349,18 +349,18 @@ export default function PublishPage() {
                     type="checkbox"
                     checked={isChecked}
                     onChange={() => togglePage(page.slug as string)}
-                    className="w-4 h-4 rounded border-[#6b6560] bg-transparent text-[#fbbf24] focus:ring-[#fbbf24] cursor-pointer"
+                    className="w-4 h-4 rounded border-[#666666] bg-transparent text-[#ffeb3b] focus:ring-[#ffeb3b] cursor-pointer"
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-[#f5f0eb]">
+                      <span className="text-sm font-medium text-[#f5f5f5]">
                         {page.title as string}
                       </span>
                       {isChecked && (
-                        <Star className="w-3 h-3 text-[#fbbf24]" />
+                        <Star className="w-3 h-3 text-[#ffeb3b]" />
                       )}
                     </div>
-                    <p className="text-xs text-[#6b6560] truncate mt-0.5">
+                    <p className="text-xs text-[#666666] truncate mt-0.5">
                       {(page.summary as string)?.slice(0, 100)}
                       {(page.summary as string)?.length > 100 ? "..." : ""}
                     </p>
@@ -374,7 +374,7 @@ export default function PublishPage() {
                     <ArrowRight
                       className={cn(
                         "w-4 h-4 transition-colors",
-                        isChecked ? "text-[#fbbf24]" : "text-[#6b6560]"
+                        isChecked ? "text-[#ffeb3b]" : "text-[#666666]"
                       )}
                     />
                   </div>
@@ -386,7 +386,7 @@ export default function PublishPage() {
           {pages.length === 0 && (
             <div className="empty-state py-6">
               <BookOpen className="w-8 h-8 mb-3" />
-              <p className="text-sm text-[#a89f91]">No pages found.</p>
+              <p className="text-sm text-[#a0a0a0]">No pages found.</p>
             </div>
           )}
         </div>
@@ -409,11 +409,11 @@ export default function PublishPage() {
                 >
                   <div className="flex items-center gap-2">
                     <Check className="w-3.5 h-3.5 text-green-400" />
-                    <span className="text-sm font-medium text-[#f5f0eb]">
+                    <span className="text-sm font-medium text-[#f5f5f5]">
                       {page.title as string}
                     </span>
                   </div>
-                  <p className="text-xs text-[#6b6560] mt-1 truncate">
+                  <p className="text-xs text-[#666666] mt-1 truncate">
                     {(page.summary as string)?.slice(0, 80)}
                     {(page.summary as string)?.length > 80 ? "..." : ""}
                   </p>
@@ -422,8 +422,8 @@ export default function PublishPage() {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <EyeOff className="w-8 h-8 text-[#6b6560] mb-2" />
-              <p className="text-sm text-[#a89f91]">No pages selected for publishing.</p>
+              <EyeOff className="w-8 h-8 text-[#666666] mb-2" />
+              <p className="text-sm text-[#a0a0a0]">No pages selected for publishing.</p>
             </div>
           )}
         </div>
@@ -456,7 +456,7 @@ export default function PublishPage() {
                 <Globe className="w-4 h-4" />
                 Publish Wiki
               </button>
-              <p className="text-xs text-[#6b6560]">
+              <p className="text-xs text-[#666666]">
                 Publishing makes your selected pages visible at the public URL above.
               </p>
             </>

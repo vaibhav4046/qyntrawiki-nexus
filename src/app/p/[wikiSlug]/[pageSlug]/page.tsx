@@ -35,40 +35,40 @@ function parseInfobox(raw: string | undefined): Record<string, string> {
 
 const markdownComponents = {
   h1: ({ children }: any) => (
-    <h1 className="text-2xl font-bold mt-8 mb-4 text-[#f5f0eb] tracking-tight border-b border-[rgba(234,88,12,0.15)] pb-2">
+    <h1 className="text-2xl font-bold mt-8 mb-4 text-[#f5f5f5] tracking-tight border-b border-[rgba(255,235,59,0.15)] pb-2">
       {children}
     </h1>
   ),
   h2: ({ children }: any) => (
-    <h2 className="text-lg font-semibold mt-6 mb-3 text-[#fbbf24] flex items-center gap-2 before:w-1 before:h-5 before:rounded-full before:bg-[#fbbf24]">
+    <h2 className="text-lg font-semibold mt-6 mb-3 text-[#ffeb3b] flex items-center gap-2 before:w-1 before:h-5 before:rounded-full before:bg-[#ffeb3b]">
       {children}
     </h2>
   ),
   h3: ({ children }: any) => (
-    <h3 className="text-base font-medium mt-5 mb-2 text-[#fb923c]">{children}</h3>
+    <h3 className="text-base font-medium mt-5 mb-2 text-[#ffca28]">{children}</h3>
   ),
   p: ({ children }: any) => (
-    <p className="text-[15px] leading-7 text-[#a89f91] mb-4">{children}</p>
+    <p className="text-[15px] leading-7 text-[#a0a0a0] mb-4">{children}</p>
   ),
   strong: ({ children }: any) => (
-    <strong className="font-semibold text-[#f5f0eb]">{children}</strong>
+    <strong className="font-semibold text-[#f5f5f5]">{children}</strong>
   ),
   em: ({ children }: any) => (
-    <em className="italic text-[#a89f91]/70">{children}</em>
+    <em className="italic text-[#a0a0a0]/70">{children}</em>
   ),
   ul: ({ children }: any) => (
-    <ul className="list-disc list-inside space-y-1.5 mb-4 text-[15px] text-[#a89f91] ml-1">
+    <ul className="list-disc list-inside space-y-1.5 mb-4 text-[15px] text-[#a0a0a0] ml-1">
       {children}
     </ul>
   ),
   ol: ({ children }: any) => (
-    <ol className="list-decimal list-inside space-y-1.5 mb-4 text-[15px] text-[#a89f91] ml-1">
+    <ol className="list-decimal list-inside space-y-1.5 mb-4 text-[15px] text-[#a0a0a0] ml-1">
       {children}
     </ol>
   ),
   li: ({ children }: any) => <li className="leading-7">{children}</li>,
   blockquote: ({ children }: any) => (
-    <blockquote className="border-l-2 border-[rgba(245,158,11,0.4)] pl-4 py-1 my-4 italic text-[#a89f91]/60 text-[15px]">
+    <blockquote className="border-l-2 border-[rgba(255,235,59,0.4)] pl-4 py-1 my-4 italic text-[#a0a0a0]/60 text-[15px]">
       {children}
     </blockquote>
   ),
@@ -77,7 +77,7 @@ const markdownComponents = {
     const isInline = !className;
     return isInline ? (
       <code
-        className="px-1.5 py-0.5 rounded bg-[rgba(245,158,11,0.1)] text-[#fbbf24] text-sm font-mono"
+        className="px-1.5 py-0.5 rounded bg-[rgba(255,235,59,0.1)] text-[#ffeb3b] text-sm font-mono"
         {...props}
       >
         {children}
@@ -95,7 +95,7 @@ const markdownComponents = {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-[#fb923c] hover:underline underline-offset-2"
+      className="text-[#ffca28] hover:underline underline-offset-2"
     >
       {children}
     </a>
@@ -106,15 +106,15 @@ const markdownComponents = {
     </div>
   ),
   thead: ({ children }: any) => (
-    <thead className="bg-[rgba(234,88,12,0.06)] text-[#a89f91]">{children}</thead>
+    <thead className="bg-[rgba(255,235,59,0.06)] text-[#a0a0a0]">{children}</thead>
   ),
   th: ({ children }: any) => (
-    <th className="px-4 py-2.5 text-left font-medium border-b border-[rgba(107,101,96,0.15)] text-[#fbbf24]">
+    <th className="px-4 py-2.5 text-left font-medium border-b border-[rgba(107,101,96,0.15)] text-[#ffeb3b]">
       {children}
     </th>
   ),
   td: ({ children }: any) => (
-    <td className="px-4 py-2 border-b border-[rgba(107,101,96,0.1)] text-[#a89f91]">
+    <td className="px-4 py-2 border-b border-[rgba(107,101,96,0.1)] text-[#a0a0a0]">
       {children}
     </td>
   ),
@@ -144,13 +144,13 @@ export default async function PublicWikiPagePage({ params }: Props) {
 
   if (!page) {
     return (
-      <div className="min-h-screen bg-gradient-warm flex flex-col items-center justify-center px-6">
+      <div className="min-h-screen bg-black flex flex-col items-center justify-center px-6">
         <div className="glass-card rounded-lg p-8 max-w-md w-full text-center">
-          <Lock className="w-10 h-10 text-[#6b6560] mx-auto mb-4" />
-          <h1 className="text-xl font-bold text-[#f5f0eb] mb-2">
+          <Lock className="w-10 h-10 text-[#666666] mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-[#f5f5f5] mb-2">
             This page is not publicly available.
           </h1>
-          <p className="text-sm text-[#a89f91] mb-6">
+          <p className="text-sm text-[#a0a0a0] mb-6">
             The page you are looking for is either private or does not exist in this wiki.
           </p>
           <Link
@@ -196,20 +196,20 @@ export default async function PublicWikiPagePage({ params }: Props) {
     (publishSettings?.publicTitle as string) || (wiki.name as string);
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-black">
       {/* Header */}
-      <header className="border-b border-[rgba(234,88,12,0.12)] px-6 py-4">
+      <header className="border-b border-[rgba(255,235,59,0.12)] px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link
               href={`/p/${wikiSlug}`}
-              className="flex items-center gap-1.5 text-xs text-[#6b6560] hover:text-[#f5f0eb] transition-colors"
+              className="flex items-center gap-1.5 text-xs text-[#666666] hover:text-[#f5f5f5] transition-colors"
             >
               <ArrowLeft className="w-3.5 h-3.5" />
               Back to wiki
             </Link>
           </div>
-          <span className="text-xs text-[#6b6560]">{publicTitle}</span>
+          <span className="text-xs text-[#666666]">{publicTitle}</span>
         </div>
       </header>
 
@@ -230,9 +230,9 @@ export default async function PublicWikiPagePage({ params }: Props) {
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-16 gap-3 text-center">
-                  <AlertTriangle className="w-10 h-10 text-[#6b6560]/30" />
-                  <p className="text-[#a89f91] font-medium">No article content yet</p>
-                  <p className="text-[#6b6560] text-sm max-w-md">
+                  <AlertTriangle className="w-10 h-10 text-[#666666]/30" />
+                  <p className="text-[#a0a0a0] font-medium">No article content yet</p>
+                  <p className="text-[#666666] text-sm max-w-md">
                     This page is awaiting compilation.
                   </p>
                 </div>
@@ -244,33 +244,33 @@ export default async function PublicWikiPagePage({ params }: Props) {
           <aside className="w-full lg:w-72 shrink-0 space-y-4">
             {/* Infobox */}
             <div className="glass-card rounded-lg p-5">
-              <h3 className="flex items-center gap-2 text-sm font-bold text-[#f5f0eb] mb-4">
-                <Tag className="w-4 h-4 text-[#fbbf24]" /> Infobox
+              <h3 className="flex items-center gap-2 text-sm font-bold text-[#f5f5f5] mb-4">
+                <Tag className="w-4 h-4 text-[#ffeb3b]" /> Infobox
               </h3>
               <div className="space-y-3">
                 <div className="space-y-1">
-                  <p className="text-xs text-[#6b6560]">Type</p>
-                  <p className="text-sm font-medium text-[#f5f0eb]">
+                  <p className="text-xs text-[#666666]">Type</p>
+                  <p className="text-sm font-medium text-[#f5f5f5]">
                     {infobox.type || "Article"}
                   </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs text-[#6b6560]">Confidence</p>
+                  <p className="text-xs text-[#666666]">Confidence</p>
                   <div className="flex items-center gap-2">
                     <div className="h-1.5 flex-1 rounded-full bg-[rgba(107,101,96,0.2)] overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-[#fbbf24]"
+                        className="h-full rounded-full bg-[#ffeb3b]"
                         style={{ width: `${Math.round(confScore * 100)}%` }}
                       />
                     </div>
-                    <span className="text-xs font-mono text-[#f5f0eb]">
+                    <span className="text-xs font-mono text-[#f5f5f5]">
                       {Math.round(confScore * 100)}%
                     </span>
                   </div>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs text-[#6b6560]">Sources cited</p>
-                  <p className="text-sm font-medium text-[#f5f0eb]">
+                  <p className="text-xs text-[#666666]">Sources cited</p>
+                  <p className="text-sm font-medium text-[#f5f5f5]">
                     {citations.length}
                   </p>
                 </div>
@@ -278,24 +278,24 @@ export default async function PublicWikiPagePage({ params }: Props) {
                   .filter(([k]) => !["type"].includes(k))
                   .map(([key, value]) => (
                     <div key={key} className="space-y-1">
-                      <p className="text-xs text-[#6b6560] capitalize">
+                      <p className="text-xs text-[#666666] capitalize">
                         {key.replace(/([A-Z])/g, " $1").trim()}
                       </p>
-                      <p className="text-sm font-medium text-[#f5f0eb] truncate">
+                      <p className="text-sm font-medium text-[#f5f5f5] truncate">
                         {value}
                       </p>
                     </div>
                   ))}
                 <div className="pt-2 border-t border-[rgba(107,101,96,0.15)]">
                   <div className="flex items-center gap-2">
-                    <Shield className="w-3.5 h-3.5 text-[#a89f91]" />
+                    <Shield className="w-3.5 h-3.5 text-[#a0a0a0]" />
                     <span
                       className={cn(
                         "rounded-full border px-2 py-0.5 text-xs font-medium",
                         healthScore >= 0.8
                           ? "text-emerald-400 bg-emerald-500/10 border-emerald-500/30"
                           : healthScore >= 0.5
-                          ? "text-amber-400 bg-amber-500/10 border-amber-500/30"
+                          ? "text-yellow-400 bg-yellow-400/10 border-yellow-400/30"
                           : "text-red-400 bg-red-500/10 border-red-500/30"
                       )}
                     >
@@ -309,8 +309,8 @@ export default async function PublicWikiPagePage({ params }: Props) {
             {/* Citations */}
             {citations.length > 0 && (
               <div className="glass-card rounded-lg p-5">
-                <h3 className="flex items-center gap-2 text-sm font-bold text-[#f5f0eb] mb-4">
-                  <Quote className="w-4 h-4 text-[#fbbf24]" /> Citations (
+                <h3 className="flex items-center gap-2 text-sm font-bold text-[#f5f5f5] mb-4">
+                  <Quote className="w-4 h-4 text-[#ffeb3b]" /> Citations (
                   {citations.length})
                 </h3>
                 <div className="space-y-3">
@@ -322,23 +322,23 @@ export default async function PublicWikiPagePage({ params }: Props) {
                         className="border-b border-[rgba(107,101,96,0.1)] pb-3 last:border-0 last:pb-0"
                       >
                         <div className="flex items-start gap-2">
-                          <span className="text-xs font-mono text-[#fb923c]/70 mt-0.5">
+                          <span className="text-xs font-mono text-[#ffca28]/70 mt-0.5">
                             [{i + 1}]
                           </span>
                           <div className="min-w-0">
                             {!hidePrivateSources ? (
                               <>
-                                <p className="text-sm font-medium text-[#f5f0eb] truncate">
+                                <p className="text-sm font-medium text-[#f5f5f5] truncate">
                                   {src?.title as string || "Unknown source"}
                                 </p>
                                 {citation.quote && (
-                                  <p className="text-xs text-[#a89f91] mt-0.5 line-clamp-2 italic">
+                                  <p className="text-xs text-[#a0a0a0] mt-0.5 line-clamp-2 italic">
                                     &ldquo;{citation.quote as string}&rdquo;
                                   </p>
                                 )}
                               </>
                             ) : (
-                              <p className="text-sm text-[#a89f91]">
+                              <p className="text-sm text-[#a0a0a0]">
                                 Source details hidden
                               </p>
                             )}
@@ -354,10 +354,10 @@ export default async function PublicWikiPagePage({ params }: Props) {
             {/* Back link */}
             <Link
               href={`/p/${wikiSlug}`}
-              className="glass-card rounded-lg p-4 flex items-center gap-3 group hover:border-[rgba(245,158,11,0.25)] transition-colors"
+              className="glass-card rounded-lg p-4 flex items-center gap-3 group hover:border-[rgba(255,235,59,0.25)] transition-colors"
             >
-              <BookOpen className="w-4 h-4 text-[#fbbf24]" />
-              <span className="text-sm font-medium text-[#f5f0eb] group-hover:text-[#fbbf24] transition-colors">
+              <BookOpen className="w-4 h-4 text-[#ffeb3b]" />
+              <span className="text-sm font-medium text-[#f5f5f5] group-hover:text-[#ffeb3b] transition-colors">
                 Back to {publicTitle}
               </span>
             </Link>

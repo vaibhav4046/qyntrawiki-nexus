@@ -135,10 +135,10 @@ export default function ImportPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-black">
       <div className="px-6 sm:px-8 lg:px-10 pt-8 pb-6">
-        <h1 className="text-2xl font-bold text-[#f5f0eb]">Import Lab</h1>
-        <p className="mt-1 text-sm text-[#a89f91]">
+        <h1 className="text-2xl font-bold text-[#f5f5f5]">Import Lab</h1>
+        <p className="mt-1 text-sm text-[#a0a0a0]">
           Add knowledge sources to your wiki — URLs, text, files, or demo data
         </p>
       </div>
@@ -160,25 +160,25 @@ export default function ImportPage() {
                 className={cn(
                   "p-3 rounded-lg border text-left transition-all",
                   active
-                    ? "bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.3)]"
-                    : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] hover:border-[rgba(245,158,11,0.2)]"
+                    ? "bg-[rgba(255,235,59,0.1)] border-[rgba(255,235,59,0.3)]"
+                    : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] hover:border-[rgba(255,235,59,0.2)]"
                 )}
               >
                 <Icon
                   className={cn(
                     "w-4 h-4 mb-2",
-                    active ? "text-[#fbbf24]" : "text-[#6b6560]"
+                    active ? "text-[#ffeb3b]" : "text-[#666666]"
                   )}
                 />
                 <p
                   className={cn(
                     "text-xs font-semibold",
-                    active ? "text-[#f5f0eb]" : "text-[#a89f91]"
+                    active ? "text-[#f5f5f5]" : "text-[#a0a0a0]"
                   )}
                 >
                   {m.label}
                 </p>
-                <p className="text-[10px] text-[#6b6560] mt-0.5">{m.desc}</p>
+                <p className="text-[10px] text-[#666666] mt-0.5">{m.desc}</p>
               </button>
             );
           })}
@@ -189,7 +189,7 @@ export default function ImportPage() {
           {method === "url" && (
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-[#a89f91] uppercase tracking-wider mb-2 block">
+                <label className="text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-2 block">
                   URL
                 </label>
                 <input
@@ -201,7 +201,7 @@ export default function ImportPage() {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-[#a89f91] uppercase tracking-wider mb-2 block">
+                <label className="text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-2 block">
                   Title (optional)
                 </label>
                 <input
@@ -218,7 +218,7 @@ export default function ImportPage() {
           {method === "text" && (
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-[#a89f91] uppercase tracking-wider mb-2 block">
+                <label className="text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-2 block">
                   Title
                 </label>
                 <input
@@ -230,7 +230,7 @@ export default function ImportPage() {
                 />
               </div>
               <div>
-                <label className="text-xs font-bold text-[#a89f91] uppercase tracking-wider mb-2 block">
+                <label className="text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-2 block">
                   Content
                 </label>
                 <textarea
@@ -246,18 +246,18 @@ export default function ImportPage() {
 
           {method === "file" && (
             <div className="text-center py-8">
-              <Upload className="w-10 h-10 text-[#6b6560] mx-auto mb-4" />
-              <p className="text-sm text-[#a89f91] mb-2">
+              <Upload className="w-10 h-10 text-[#666666] mx-auto mb-4" />
+              <p className="text-sm text-[#a0a0a0] mb-2">
                 Drag and drop files here, or click to browse
               </p>
-              <p className="text-xs text-[#6b6560]">
+              <p className="text-xs text-[#666666]">
                 Supported: .txt, .md, .json, .csv, .html
               </p>
               <input
                 type="file"
                 multiple
                 accept=".txt,.md,.json,.csv,.html"
-                className="mt-4 mx-auto block text-xs text-[#a89f91]"
+                className="mt-4 mx-auto block text-xs text-[#a0a0a0]"
                 onChange={() => {
                   setTitle("Uploaded Files");
                 }}
@@ -268,7 +268,7 @@ export default function ImportPage() {
           {method === "wikipedia" && (
             <div className="space-y-4">
               <div>
-                <label className="text-xs font-bold text-[#a89f91] uppercase tracking-wider mb-2 block">
+                <label className="text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-2 block">
                   Wikipedia Article Title
                 </label>
                 <input
@@ -284,11 +284,11 @@ export default function ImportPage() {
 
           {method === "demo" && (
             <div className="text-center py-6">
-              <Database className="w-10 h-10 text-[#fbbf24] mx-auto mb-4" />
-              <p className="text-sm text-[#f5f0eb] font-medium mb-2">
+              <Database className="w-10 h-10 text-[#ffeb3b] mx-auto mb-4" />
+              <p className="text-sm text-[#f5f5f5] font-medium mb-2">
                 AI Agent Memory Encyclopedia
               </p>
-              <p className="text-xs text-[#a89f91] mb-4 max-w-md mx-auto">
+              <p className="text-xs text-[#a0a0a0] mb-4 max-w-md mx-auto">
                 Load a complete demo dataset with 7 sources, 8 wiki pages, knowledge graph,
                 contradictions, and ask sessions. Perfect for exploring QyntraWiki capabilities.
               </p>
@@ -297,7 +297,7 @@ export default function ImportPage() {
                   (tag) => (
                     <span
                       key={tag}
-                      className="text-[10px] px-2 py-1 bg-[rgba(245,158,11,0.1)] text-[#fbbf24] rounded"
+                      className="text-[10px] px-2 py-1 bg-[rgba(255,235,59,0.1)] text-[#ffeb3b] rounded"
                     >
                       {tag}
                     </span>
@@ -340,7 +340,7 @@ export default function ImportPage() {
             animate={{ opacity: 1, y: 0 }}
             className="glass-panel rounded-lg p-6 mb-6"
           >
-            <h3 className="text-xs font-bold text-[#a89f91] uppercase tracking-wider mb-4">
+            <h3 className="text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-4">
               Compilation Pipeline
             </h3>
             <div className="space-y-3">
@@ -352,7 +352,7 @@ export default function ImportPage() {
                       step.status === "completed"
                         ? "bg-green-500/20"
                         : step.status === "processing"
-                        ? "bg-amber-500/20"
+                        ? "bg-yellow-400/20"
                         : step.status === "error"
                         ? "bg-red-500/20"
                         : "bg-[rgba(107,101,96,0.2)]"
@@ -361,11 +361,11 @@ export default function ImportPage() {
                     {step.status === "completed" ? (
                       <Check className="w-3.5 h-3.5 text-green-400" />
                     ) : step.status === "processing" ? (
-                      <Loader2 className="w-3.5 h-3.5 text-amber-400 animate-spin" />
+                      <Loader2 className="w-3.5 h-3.5 text-yellow-400 animate-spin" />
                     ) : step.status === "error" ? (
                       <X className="w-3.5 h-3.5 text-red-400" />
                     ) : (
-                      <div className="w-2 h-2 rounded-full bg-[#6b6560]" />
+                      <div className="w-2 h-2 rounded-full bg-[#666666]" />
                     )}
                   </div>
                   <div className="flex-1">
@@ -375,10 +375,10 @@ export default function ImportPage() {
                         step.status === "completed"
                           ? "text-green-400"
                           : step.status === "processing"
-                          ? "text-amber-400"
+                          ? "text-yellow-400"
                           : step.status === "error"
                           ? "text-red-400"
-                          : "text-[#6b6560]"
+                          : "text-[#666666]"
                       )}
                     >
                       {step.label}
@@ -419,11 +419,11 @@ export default function ImportPage() {
               >
                 {result.success ? "Import Successful" : "Import Failed"}
               </p>
-              <p className="text-xs text-[#a89f91] mt-1">{result.message}</p>
+              <p className="text-xs text-[#a0a0a0] mt-1">{result.message}</p>
               {result.success && (
                 <a
                   href="/app/wiki"
-                  className="inline-flex items-center gap-1 text-xs text-[#fbbf24] mt-3 hover:underline"
+                  className="inline-flex items-center gap-1 text-xs text-[#ffeb3b] mt-3 hover:underline"
                 >
                   View Wiki <ChevronRight className="w-3 h-3" />
                 </a>

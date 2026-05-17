@@ -25,7 +25,7 @@ export default async function WikiPagesPage({ params }: Props) {
 
   const getHealthVariant = (score: number) => {
     if (score >= 0.8) return "bg-emerald-500/15 text-emerald-400 border-emerald-500/30";
-    if (score >= 0.5) return "bg-amber-500/15 text-amber-400 border-amber-500/30";
+    if (score >= 0.5) return "bg-yellow-400/15 text-yellow-400 border-yellow-400/30";
     return "bg-destructive/15 text-destructive border-destructive/30";
   };
 

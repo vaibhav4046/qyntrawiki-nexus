@@ -59,10 +59,10 @@ export default function FilesPage() {
   const extensions = Array.from(new Set(files.map((f) => f.extension)));
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-black">
       <div className="px-6 sm:px-8 lg:px-10 pt-8 pb-6">
-        <h1 className="text-2xl font-bold text-[#f5f0eb]">Personal File Browser</h1>
-        <p className="mt-1 text-sm text-[#a89f91]">
+        <h1 className="text-2xl font-bold text-[#f5f5f5]">Personal File Browser</h1>
+        <p className="mt-1 text-sm text-[#a0a0a0]">
           Browse imported files, sources, and generated wiki pages
         </p>
       </div>
@@ -71,7 +71,7 @@ export default function FilesPage() {
         {/* Search & filters */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#6b6560]" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#666666]" />
             <input
               type="text"
               value={search}
@@ -86,8 +86,8 @@ export default function FilesPage() {
               className={cn(
                 "px-3 py-2.5 text-xs font-medium rounded-lg transition-all",
                 !filterExt
-                  ? "bg-[rgba(245,158,11,0.2)] text-[#fbbf24]"
-                  : "bg-[rgba(107,101,96,0.1)] text-[#a89f91] hover:bg-[rgba(245,158,11,0.1)]"
+                  ? "bg-[rgba(255,235,59,0.2)] text-[#ffeb3b]"
+                  : "bg-[rgba(107,101,96,0.1)] text-[#a0a0a0] hover:bg-[rgba(255,235,59,0.1)]"
               )}
             >
               All
@@ -99,8 +99,8 @@ export default function FilesPage() {
                 className={cn(
                   "px-3 py-2.5 text-xs font-medium rounded-lg transition-all uppercase",
                   filterExt === ext
-                    ? "bg-[rgba(245,158,11,0.2)] text-[#fbbf24]"
-                    : "bg-[rgba(107,101,96,0.1)] text-[#a89f91] hover:bg-[rgba(245,158,11,0.1)]"
+                    ? "bg-[rgba(255,235,59,0.2)] text-[#ffeb3b]"
+                    : "bg-[rgba(107,101,96,0.1)] text-[#a0a0a0] hover:bg-[rgba(255,235,59,0.1)]"
                 )}
               >
                 .{ext}
@@ -111,7 +111,7 @@ export default function FilesPage() {
 
         {/* File list */}
         <div className="glass-panel rounded-lg overflow-hidden">
-          <div className="grid grid-cols-12 gap-4 px-4 py-3 border-b border-[rgba(234,88,12,0.1)] text-[10px] font-bold text-[#6b6560] uppercase tracking-wider">
+          <div className="grid grid-cols-12 gap-4 px-4 py-3 border-b border-[rgba(255,235,59,0.1)] text-[10px] font-bold text-[#666666] uppercase tracking-wider">
             <div className="col-span-5">Name</div>
             <div className="col-span-3 hidden sm:block">Path</div>
             <div className="col-span-2 hidden md:block">Size</div>
@@ -124,21 +124,21 @@ export default function FilesPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: idx * 0.03 }}
-              className="grid grid-cols-12 gap-4 px-4 py-3 border-b border-[rgba(107,101,96,0.08)] hover:bg-[rgba(245,158,11,0.03)] transition-colors cursor-pointer"
+              className="grid grid-cols-12 gap-4 px-4 py-3 border-b border-[rgba(107,101,96,0.08)] hover:bg-[rgba(255,235,59,0.03)] transition-colors cursor-pointer"
               onClick={() => setSelectedFile(file)}
             >
               <div className="col-span-5 flex items-center gap-3 min-w-0">
-                <FileText className="w-4 h-4 text-[#fbbf24] shrink-0" />
+                <FileText className="w-4 h-4 text-[#ffeb3b] shrink-0" />
                 <div className="min-w-0">
-                  <p className="text-xs font-medium text-[#f5f0eb] truncate">{file.name}</p>
-                  <p className="text-[10px] text-[#6b6560] truncate">{file.summary}</p>
+                  <p className="text-xs font-medium text-[#f5f5f5] truncate">{file.name}</p>
+                  <p className="text-[10px] text-[#666666] truncate">{file.summary}</p>
                 </div>
               </div>
               <div className="col-span-3 hidden sm:flex items-center">
-                <p className="text-xs text-[#a89f91] truncate">{file.path}</p>
+                <p className="text-xs text-[#a0a0a0] truncate">{file.path}</p>
               </div>
               <div className="col-span-2 hidden md:flex items-center">
-                <span className="text-xs text-[#a89f91]">
+                <span className="text-xs text-[#a0a0a0]">
                   {Math.round(file.sizeBytes / 1024)} KB
                 </span>
               </div>
@@ -148,14 +148,14 @@ export default function FilesPage() {
                     e.stopPropagation();
                     setSelectedFile(file);
                   }}
-                  className="p-1.5 rounded hover:bg-[rgba(245,158,11,0.1)] text-[#6b6560] hover:text-[#fbbf24] transition-colors"
+                  className="p-1.5 rounded hover:bg-[rgba(255,235,59,0.1)] text-[#666666] hover:text-[#ffeb3b] transition-colors"
                   title="Preview"
                 >
                   <FolderOpen className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={(e) => e.stopPropagation()}
-                  className="p-1.5 rounded hover:bg-[rgba(245,158,11,0.1)] text-[#6b6560] hover:text-[#fbbf24] transition-colors"
+                  className="p-1.5 rounded hover:bg-[rgba(255,235,59,0.1)] text-[#666666] hover:text-[#ffeb3b] transition-colors"
                   title="Download"
                 >
                   <Download className="w-3.5 h-3.5" />
@@ -166,7 +166,7 @@ export default function FilesPage() {
 
           {filtered.length === 0 && (
             <div className="empty-state py-8">
-              <p className="text-sm text-[#a89f91]">No files match your search.</p>
+              <p className="text-sm text-[#a0a0a0]">No files match your search.</p>
             </div>
           )}
         </div>
@@ -181,50 +181,50 @@ export default function FilesPage() {
           <motion.div
             initial={{ x: 400, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
-            className="w-full max-w-md bg-[#0f0f0f] border-l border-[rgba(234,88,12,0.15)] h-full overflow-y-auto"
+            className="w-full max-w-md bg-[#0f0f0f] border-l border-[rgba(255,235,59,0.15)] h-full overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-lg font-bold text-[#f5f0eb]">File Preview</h3>
+                <h3 className="text-lg font-bold text-[#f5f5f5]">File Preview</h3>
                 <button
                   onClick={() => setSelectedFile(null)}
-                  className="text-[#6b6560] hover:text-[#f5f0eb]"
+                  className="text-[#666666] hover:text-[#f5f5f5]"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               <div className="space-y-4">
-                <div className="p-4 rounded-lg bg-[rgba(245,158,11,0.05)] border border-[rgba(245,158,11,0.1)]">
-                  <FileText className="w-8 h-8 text-[#fbbf24] mb-3" />
-                  <p className="text-sm font-bold text-[#f5f0eb]">{selectedFile.name}</p>
-                  <p className="text-xs text-[#a89f91] mt-1">{selectedFile.path}</p>
+                <div className="p-4 rounded-lg bg-[rgba(255,235,59,0.05)] border border-[rgba(255,235,59,0.1)]">
+                  <FileText className="w-8 h-8 text-[#ffeb3b] mb-3" />
+                  <p className="text-sm font-bold text-[#f5f5f5]">{selectedFile.name}</p>
+                  <p className="text-xs text-[#a0a0a0] mt-1">{selectedFile.path}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="p-3 rounded-lg bg-[rgba(107,101,96,0.05)]">
-                    <p className="text-[10px] text-[#6b6560] uppercase tracking-wider">Size</p>
-                    <p className="text-sm text-[#f5f0eb] font-medium">
+                    <p className="text-[10px] text-[#666666] uppercase tracking-wider">Size</p>
+                    <p className="text-sm text-[#f5f5f5] font-medium">
                       {Math.round(selectedFile.sizeBytes / 1024)} KB
                     </p>
                   </div>
                   <div className="p-3 rounded-lg bg-[rgba(107,101,96,0.05)]">
-                    <p className="text-[10px] text-[#6b6560] uppercase tracking-wider">Type</p>
-                    <p className="text-sm text-[#f5f0eb] font-medium">{selectedFile.mimeType}</p>
+                    <p className="text-[10px] text-[#666666] uppercase tracking-wider">Type</p>
+                    <p className="text-sm text-[#f5f5f5] font-medium">{selectedFile.mimeType}</p>
                   </div>
                 </div>
 
                 <div className="p-3 rounded-lg bg-[rgba(107,101,96,0.05)]">
-                  <p className="text-[10px] text-[#6b6560] uppercase tracking-wider mb-2">Summary</p>
-                  <p className="text-xs text-[#a89f91]">{selectedFile.summary}</p>
+                  <p className="text-[10px] text-[#666666] uppercase tracking-wider mb-2">Summary</p>
+                  <p className="text-xs text-[#a0a0a0]">{selectedFile.summary}</p>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
                   {JSON.parse(selectedFile.tagsJson).map((tag: string) => (
                     <span
                       key={tag}
-                      className="text-[10px] px-2 py-1 bg-[rgba(245,158,11,0.1)] text-[#fbbf24] rounded"
+                      className="text-[10px] px-2 py-1 bg-[rgba(255,235,59,0.1)] text-[#ffeb3b] rounded"
                     >
                       {tag}
                     </span>

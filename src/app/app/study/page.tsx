@@ -59,10 +59,10 @@ export default function StudyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-black">
       <div className="px-6 sm:px-8 lg:px-10 pt-8 pb-6">
-        <h1 className="text-2xl font-bold text-[#f5f0eb]">Study Mode</h1>
-        <p className="mt-1 text-sm text-[#a89f91]">
+        <h1 className="text-2xl font-bold text-[#f5f5f5]">Study Mode</h1>
+        <p className="mt-1 text-sm text-[#a0a0a0]">
           Generate AI-powered learning material from your wiki pages and citations
         </p>
       </div>
@@ -81,8 +81,8 @@ export default function StudyPage() {
                 className={cn(
                   "text-xs px-3 py-2 rounded-lg border transition-all text-left",
                   topic === t
-                    ? "bg-[rgba(245,158,11,0.15)] border-[rgba(245,158,11,0.3)] text-[#fbbf24]"
-                    : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] text-[#a89f91] hover:border-[rgba(245,158,11,0.2)]"
+                    ? "bg-[rgba(255,235,59,0.15)] border-[rgba(255,235,59,0.3)] text-[#ffeb3b]"
+                    : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] text-[#a0a0a0] hover:border-[rgba(255,235,59,0.2)]"
                 )}
               >
                 {t}
@@ -107,15 +107,15 @@ export default function StudyPage() {
                   className={cn(
                     "p-4 rounded-lg border transition-all text-left",
                     mode === m
-                      ? "bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.3)]"
-                      : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] hover:border-[rgba(245,158,11,0.2)]"
+                      ? "bg-[rgba(255,235,59,0.1)] border-[rgba(255,235,59,0.3)]"
+                      : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)] hover:border-[rgba(255,235,59,0.2)]"
                   )}
                 >
-                  <Icon className={cn("w-5 h-5 mb-2", mode === m ? "text-[#fbbf24]" : "text-[#6b6560]")} />
-                  <p className={cn("text-xs font-bold", mode === m ? "text-[#f5f0eb]" : "text-[#a89f91]")}>
+                  <Icon className={cn("w-5 h-5 mb-2", mode === m ? "text-[#ffeb3b]" : "text-[#666666]")} />
+                  <p className={cn("text-xs font-bold", mode === m ? "text-[#f5f5f5]" : "text-[#a0a0a0]")}>
                     {cfg.label}
                   </p>
-                  <p className="text-[10px] text-[#6b6560] mt-1">{cfg.desc}</p>
+                  <p className="text-[10px] text-[#666666] mt-1">{cfg.desc}</p>
                 </button>
               );
             })}
@@ -153,8 +153,8 @@ export default function StudyPage() {
         {!content && !loading && (
           <div className="empty-state py-12">
             <GraduationCap className="w-10 h-10 mb-4" />
-            <p className="text-sm text-[#a89f91]">Select a topic and mode, then generate.</p>
-            <p className="text-xs text-[#6b6560] mt-1">Study material is generated from your wiki content.</p>
+            <p className="text-sm text-[#a0a0a0]">Select a topic and mode, then generate.</p>
+            <p className="text-xs text-[#666666] mt-1">Study material is generated from your wiki content.</p>
           </div>
         )}
       </div>

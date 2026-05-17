@@ -62,17 +62,17 @@ export default function AgentsPage() {
   }
 
   const statusConfig: Record<Agent["status"], { label: string; color: string; bg: string }> = {
-    idle: { label: "idle", color: "text-[#6b6560]", bg: "bg-[rgba(107,101,96,0.1)]" },
-    ready: { label: "ready", color: "text-[#fbbf24]", bg: "bg-[rgba(245,158,11,0.15)]" },
-    running: { label: "running", color: "text-[#60a5fa]", bg: "bg-[rgba(59,130,246,0.15)]" },
+    idle: { label: "idle", color: "text-[#666666]", bg: "bg-[rgba(107,101,96,0.1)]" },
+    ready: { label: "ready", color: "text-[#ffeb3b]", bg: "bg-[rgba(255,235,59,0.15)]" },
+    running: { label: "running", color: "text-[#00e5ff]", bg: "bg-[rgba(59,130,246,0.15)]" },
     completed: { label: "completed", color: "text-green-400", bg: "bg-[rgba(34,197,94,0.15)]" },
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-black">
       <div className="px-6 sm:px-8 lg:px-10 pt-8 pb-6">
-        <h1 className="text-2xl font-bold text-[#f5f0eb]">Agent Control Room</h1>
-        <p className="mt-1 text-sm text-[#a89f91]">
+        <h1 className="text-2xl font-bold text-[#f5f5f5]">Agent Control Room</h1>
+        <p className="mt-1 text-sm text-[#a0a0a0]">
           Safe, reviewable workspace agents — no destructive file operations without approval
         </p>
       </div>
@@ -80,10 +80,10 @@ export default function AgentsPage() {
       <div className="px-6 sm:px-8 lg:px-10 pb-10">
         {/* Safety notice */}
         <div className="glass-panel rounded-lg p-4 mb-6 flex items-center gap-3">
-          <Shield className="w-5 h-5 text-[#fbbf24] shrink-0" />
+          <Shield className="w-5 h-5 text-[#ffeb3b] shrink-0" />
           <div>
-            <p className="text-sm font-medium text-[#f5f0eb]">Review Before Apply</p>
-            <p className="text-xs text-[#a89f91]">
+            <p className="text-sm font-medium text-[#f5f5f5]">Review Before Apply</p>
+            <p className="text-xs text-[#a0a0a0]">
               Agents generate proposals. Destructive file operations require a separate approval step.
             </p>
           </div>
@@ -119,8 +119,8 @@ export default function AgentsPage() {
                   </span>
                 </div>
 
-                <h3 className="text-sm font-bold text-[#f5f0eb] mb-1">{agent.name}</h3>
-                <p className="text-xs text-[#a89f91] mb-4 leading-relaxed">{agent.description}</p>
+                <h3 className="text-sm font-bold text-[#f5f5f5] mb-1">{agent.name}</h3>
+                <p className="text-xs text-[#a0a0a0] mb-4 leading-relaxed">{agent.description}</p>
 
                 <button
                   onClick={() => runAgent(agent.id)}
@@ -128,7 +128,7 @@ export default function AgentsPage() {
                   className={cn(
                     "w-full py-2 text-xs font-bold uppercase tracking-wider rounded transition-all flex items-center justify-center gap-2",
                     isRunning
-                      ? "bg-[rgba(59,130,246,0.15)] text-[#60a5fa] cursor-not-allowed"
+                      ? "bg-[rgba(59,130,246,0.15)] text-[#00e5ff] cursor-not-allowed"
                       : "btn-secondary"
                   )}
                 >

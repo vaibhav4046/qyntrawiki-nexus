@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 
 const summaryStats = [
-  { label: "Total Claims", value: 312, icon: FileText, color: "text-amber-400", bg: "bg-amber-500/15" },
+  { label: "Total Claims", value: 312, icon: FileText, color: "text-yellow-400", bg: "bg-yellow-400/15" },
   { label: "Supported", value: 198, icon: ShieldCheck, color: "text-green-400", bg: "bg-green-500/15" },
   { label: "Disputed", value: 24, icon: XCircle, color: "text-red-400", bg: "bg-red-500/15" },
   { label: "Under Review", value: 11, icon: Eye, color: "text-orange-400", bg: "bg-orange-500/15" },
@@ -66,7 +66,7 @@ const contradictions = [
 
 export default function ContradictionsPage() {
   return (
-    <div className="min-h-screen bg-gradient-warm p-6 md:p-10">
+    <div className="min-h-screen bg-black p-6 md:p-10">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -75,11 +75,11 @@ export default function ContradictionsPage() {
       >
         {/* Header */}
         <div className="mb-10">
-          <h1 className="text-3xl md:text-4xl font-bold text-[#f5f0eb] mb-2 flex items-center gap-3">
-            <Scale className="w-8 h-8 text-amber-400" />
+          <h1 className="text-3xl md:text-4xl font-bold text-[#f5f5f5] mb-2 flex items-center gap-3">
+            <Scale className="w-8 h-8 text-yellow-400" />
             Claim and Contradiction Ledger
           </h1>
-          <p className="text-[#a89f91] text-lg">
+          <p className="text-[#a0a0a0] text-lg">
             Track disputed claims, compare evidence, and resolve conflicting statements.
           </p>
         </div>
@@ -97,15 +97,15 @@ export default function ContradictionsPage() {
               <div className={`p-2.5 rounded-lg ${stat.bg} mb-2`}>
                 <stat.icon className={`w-5 h-5 ${stat.color}`} />
               </div>
-              <span className="text-2xl font-bold text-[#f5f0eb]">{stat.value}</span>
-              <span className="text-xs text-[#a89f91] mt-1">{stat.label}</span>
+              <span className="text-2xl font-bold text-[#f5f5f5]">{stat.value}</span>
+              <span className="text-xs text-[#a0a0a0] mt-1">{stat.label}</span>
             </motion.div>
           ))}
         </div>
 
         {/* Contradictions List */}
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-[#f5f0eb] mb-5 flex items-center gap-2">
+          <h2 className="text-xl font-semibold text-[#f5f5f5] mb-5 flex items-center gap-2">
             <AlertCircle className="w-5 h-5 text-red-400" />
             Disputed Claims
           </h2>
@@ -130,7 +130,7 @@ export default function ContradictionsPage() {
                 >
                   {c.status === "disputed" ? "Disputed" : "Possible Contradiction"}
                 </span>
-                <span className="text-xs text-[#6b6560]">#{c.id.toString().padStart(3, "0")}</span>
+                <span className="text-xs text-[#666666]">#{c.id.toString().padStart(3, "0")}</span>
               </div>
 
               {/* Claims Grid */}
@@ -138,18 +138,18 @@ export default function ContradictionsPage() {
                 {/* Claim A */}
                 <div className="glass-panel rounded-lg p-5 border-l-4 border-l-amber-500">
                   <div className="flex items-center gap-2 mb-3">
-                    <BookOpen className="w-4 h-4 text-amber-400" />
+                    <BookOpen className="w-4 h-4 text-yellow-400" />
                     <span className="text-xs font-medium text-amber-300 uppercase tracking-wider">
                       Claim A
                     </span>
                   </div>
                   <div className="space-y-2">
-                    <div className="text-[#f5f0eb] font-medium">
-                      <span className="text-amber-400">{c.claimA.subject}</span>{" "}
-                      <span className="text-[#a89f91]">{c.claimA.predicate}</span>{" "}
-                      <span className="text-[#f5f0eb]">{c.claimA.object}</span>
+                    <div className="text-[#f5f5f5] font-medium">
+                      <span className="text-yellow-400">{c.claimA.subject}</span>{" "}
+                      <span className="text-[#a0a0a0]">{c.claimA.predicate}</span>{" "}
+                      <span className="text-[#f5f5f5]">{c.claimA.object}</span>
                     </div>
-                    <div className="text-xs text-[#6b6560]">Source: {c.claimA.source}</div>
+                    <div className="text-xs text-[#666666]">Source: {c.claimA.source}</div>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
                         <div
@@ -157,7 +157,7 @@ export default function ContradictionsPage() {
                           style={{ width: `${c.claimA.confidence}%` }}
                         />
                       </div>
-                      <span className="text-xs font-semibold text-amber-400">
+                      <span className="text-xs font-semibold text-yellow-400">
                         {c.claimA.confidence}%
                       </span>
                     </div>
@@ -180,12 +180,12 @@ export default function ContradictionsPage() {
                     </span>
                   </div>
                   <div className="space-y-2">
-                    <div className="text-[#f5f0eb] font-medium">
+                    <div className="text-[#f5f5f5] font-medium">
                       <span className="text-orange-400">{c.claimB.subject}</span>{" "}
-                      <span className="text-[#a89f91]">{c.claimB.predicate}</span>{" "}
-                      <span className="text-[#f5f0eb]">{c.claimB.object}</span>
+                      <span className="text-[#a0a0a0]">{c.claimB.predicate}</span>{" "}
+                      <span className="text-[#f5f5f5]">{c.claimB.object}</span>
                     </div>
-                    <div className="text-xs text-[#6b6560]">Source: {c.claimB.source}</div>
+                    <div className="text-xs text-[#666666]">Source: {c.claimB.source}</div>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
                         <div
@@ -204,8 +204,8 @@ export default function ContradictionsPage() {
               {/* Explanation */}
               <div className="mt-6 p-4 rounded-lg bg-white/5 border border-white/10">
                 <div className="flex items-start gap-3">
-                  <MessageSquare className="w-4 h-4 text-[#a89f91] mt-0.5 shrink-0" />
-                  <p className="text-sm text-[#a89f91] leading-relaxed">{c.explanation}</p>
+                  <MessageSquare className="w-4 h-4 text-[#a0a0a0] mt-0.5 shrink-0" />
+                  <p className="text-sm text-[#a0a0a0] leading-relaxed">{c.explanation}</p>
                 </div>
               </div>
 
@@ -219,7 +219,7 @@ export default function ContradictionsPage() {
                   <Eye className="w-4 h-4" />
                   Needs Review
                 </button>
-                <button className="px-4 py-2 text-sm font-medium rounded-lg bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 transition-colors border border-amber-500/25 flex items-center gap-2">
+                <button className="px-4 py-2 text-sm font-medium rounded-lg bg-yellow-400/15 text-amber-300 hover:bg-yellow-400/25 transition-colors border border-yellow-400/25 flex items-center gap-2">
                   <GitPullRequest className="w-4 h-4" />
                   Create Wiki Section
                 </button>

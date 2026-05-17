@@ -34,10 +34,10 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-black">
       <div className="px-6 sm:px-8 lg:px-10 pt-8 pb-6">
-        <h1 className="text-2xl font-bold text-[#f5f0eb]">Runtime Settings</h1>
-        <p className="mt-1 text-sm text-[#a89f91]">
+        <h1 className="text-2xl font-bold text-[#f5f5f5]">Runtime Settings</h1>
+        <p className="mt-1 text-sm text-[#a0a0a0]">
           Server routes use environment variables for production. Session keys stay in memory.
         </p>
       </div>
@@ -54,13 +54,13 @@ export default function SettingsPage() {
               className={cn(
                 "p-4 rounded-lg border text-left transition-all",
                 demoMode
-                  ? "bg-[rgba(245,158,11,0.1)] border-[rgba(245,158,11,0.3)]"
+                  ? "bg-[rgba(255,235,59,0.1)] border-[rgba(255,235,59,0.3)]"
                   : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)]"
               )}
             >
-              <Database className={cn("w-5 h-5 mb-2", demoMode ? "text-[#fbbf24]" : "text-[#6b6560]")} />
-              <p className={cn("text-xs font-bold", demoMode ? "text-[#f5f0eb]" : "text-[#a89f91]")}>Demo mode</p>
-              <p className="text-[10px] text-[#6b6560] mt-1">Mock data, no API keys</p>
+              <Database className={cn("w-5 h-5 mb-2", demoMode ? "text-[#ffeb3b]" : "text-[#666666]")} />
+              <p className={cn("text-xs font-bold", demoMode ? "text-[#f5f5f5]" : "text-[#a0a0a0]")}>Demo mode</p>
+              <p className="text-[10px] text-[#666666] mt-1">Mock data, no API keys</p>
             </button>
             <button
               onClick={() => setDemoMode(false)}
@@ -71,9 +71,9 @@ export default function SettingsPage() {
                   : "bg-[rgba(20,18,16,0.5)] border-[rgba(107,101,96,0.15)]"
               )}
             >
-              <Brain className={cn("w-5 h-5 mb-2", !demoMode ? "text-green-400" : "text-[#6b6560]")} />
-              <p className={cn("text-xs font-bold", !demoMode ? "text-[#f5f0eb]" : "text-[#a89f91]")}>Live mode</p>
-              <p className="text-[10px] text-[#6b6560] mt-1">Uses configured API keys</p>
+              <Brain className={cn("w-5 h-5 mb-2", !demoMode ? "text-green-400" : "text-[#666666]")} />
+              <p className={cn("text-xs font-bold", !demoMode ? "text-[#f5f5f5]" : "text-[#a0a0a0]")}>Live mode</p>
+              <p className="text-[10px] text-[#666666] mt-1">Uses configured API keys</p>
             </button>
           </div>
         </div>
@@ -85,7 +85,7 @@ export default function SettingsPage() {
           </h2>
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-[#a89f91] uppercase tracking-wider mb-2">Model Provider</label>
+              <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Model Provider</label>
               <select
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
@@ -97,7 +97,7 @@ export default function SettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold text-[#a89f91] uppercase tracking-wider mb-2">Base URL</label>
+              <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">Base URL</label>
               <input
                 type="text"
                 value={baseUrl}
@@ -107,7 +107,7 @@ export default function SettingsPage() {
               />
             </div>
             <div>
-              <label className="block text-xs font-bold text-[#a89f91] uppercase tracking-wider mb-2">API Key</label>
+              <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">API Key</label>
               <input
                 type="password"
                 value={apiKey}
@@ -115,7 +115,7 @@ export default function SettingsPage() {
                 placeholder="sk-..."
                 className="w-full rounded-md"
               />
-              <p className="text-[10px] text-[#6b6560] mt-1">Stored in memory only. Never sent to client.</p>
+              <p className="text-[10px] text-[#666666] mt-1">Stored in memory only. Never sent to client.</p>
             </div>
           </div>
         </div>
@@ -126,7 +126,7 @@ export default function SettingsPage() {
             <Database className="w-4 h-4" /> HydraDB
           </h2>
           <div>
-            <label className="block text-xs font-bold text-[#a89f91] uppercase tracking-wider mb-2">API Key</label>
+            <label className="block text-xs font-bold text-[#a0a0a0] uppercase tracking-wider mb-2">API Key</label>
             <input
               type="password"
               value={hydraKey}
@@ -134,7 +134,7 @@ export default function SettingsPage() {
               placeholder="hydra_..."
               className="w-full rounded-md"
             />
-            <p className="text-[10px] text-[#6b6560] mt-1">Sync extracted text to HydraDB when server keys are configured.</p>
+            <p className="text-[10px] text-[#666666] mt-1">Sync extracted text to HydraDB when server keys are configured.</p>
           </div>
         </div>
 
@@ -148,7 +148,7 @@ export default function SettingsPage() {
           <h2 className="section-title flex items-center gap-2 mb-4">
             <Shield className="w-4 h-4" /> Privacy Guardrails
           </h2>
-          <div className="space-y-2 text-xs text-[#a89f91]">
+          <div className="space-y-2 text-xs text-[#a0a0a0]">
             <p className="flex items-center gap-2"><Check className="w-3 h-3 text-green-400" /> Permission-first folder indexing</p>
             <p className="flex items-center gap-2"><Check className="w-3 h-3 text-green-400" /> Raw files remain local by default</p>
             <p className="flex items-center gap-2"><Check className="w-3 h-3 text-green-400" /> No LinkedIn or Instagram scraping</p>

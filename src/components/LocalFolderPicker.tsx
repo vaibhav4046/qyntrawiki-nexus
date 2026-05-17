@@ -191,11 +191,11 @@ export default function LocalFolderPicker() {
     return (
       <div className="glass-card rounded-lg p-6">
         <div className="text-center py-6">
-          <Shield className="w-10 h-10 text-[#fbbf24] mx-auto mb-4" />
-          <h3 className="text-sm font-bold text-[#f5f0eb] mb-2">
+          <Shield className="w-10 h-10 text-[#ffeb3b] mx-auto mb-4" />
+          <h3 className="text-sm font-bold text-[#f5f5f5] mb-2">
             Local Folder Access
           </h3>
-          <p className="text-xs text-[#a89f91] mb-4 max-w-md mx-auto">
+          <p className="text-xs text-[#a0a0a0] mb-4 max-w-md mx-auto">
             Your browser doesn't support the File System Access API. Use Chrome, Edge, or Opera for native folder access.
           </p>
           <div className="flex flex-col items-center gap-3">
@@ -225,7 +225,7 @@ export default function LocalFolderPicker() {
                 setSelectedDir(`${selected.length} files selected`);
               }}
             />
-            <p className="text-[10px] text-[#6b6560]">
+            <p className="text-[10px] text-[#666666]">
               Supported: {[...SUPPORTED_EXTENSIONS].slice(0, 10).join(", ")}...
             </p>
           </div>
@@ -244,9 +244,9 @@ export default function LocalFolderPicker() {
             id="local-consent"
             checked={consentGiven}
             onChange={(e) => setConsentGiven(e.target.checked)}
-            className="mt-0.5 w-4 h-4 accent-amber-500"
+            className="mt-0.5 w-4 h-4 accent-yellow-400"
           />
-          <label htmlFor="local-consent" className="text-xs text-[#a89f91] leading-relaxed">
+          <label htmlFor="local-consent" className="text-xs text-[#a0a0a0] leading-relaxed">
             I consent to QyntraWiki scanning my selected folder for readable files. Files are only indexed for wiki compilation. Raw files stay local unless explicitly synced.
           </label>
         </div>
@@ -278,10 +278,10 @@ export default function LocalFolderPicker() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-sm font-bold text-[#f5f0eb]">
+              <p className="text-sm font-bold text-[#f5f5f5]">
                 {selectedDir} — {files.length} files
               </p>
-              <p className="text-xs text-[#6b6560]">
+              <p className="text-xs text-[#666666]">
                 {Math.round(totalSize / 1024)}KB total
                 {Object.entries(typeCounts).map(([type, count]) => (
                   <span key={type} className="ml-3">
@@ -308,13 +308,13 @@ export default function LocalFolderPicker() {
             {files.map((file) => (
               <div
                 key={file.path}
-                className="flex items-center justify-between px-3 py-2 rounded border border-[rgba(107,101,96,0.1)] hover:bg-[rgba(245,158,11,0.03)] transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded border border-[rgba(107,101,96,0.1)] hover:bg-[rgba(255,235,59,0.03)] transition-colors"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <FileText className="w-4 h-4 text-[#6b6560] shrink-0" />
+                  <FileText className="w-4 h-4 text-[#666666] shrink-0" />
                   <div className="min-w-0">
-                    <p className="text-xs font-medium text-[#f5f0eb] truncate">{file.name}</p>
-                    <p className="text-[10px] text-[#6b6560] truncate">
+                    <p className="text-xs font-medium text-[#f5f5f5] truncate">{file.name}</p>
+                    <p className="text-[10px] text-[#666666] truncate">
                       {file.path} · {Math.round(file.sizeBytes / 1024)}KB · {file.type}
                     </p>
                   </div>
@@ -327,8 +327,8 @@ export default function LocalFolderPicker() {
                     imported.has(file.path)
                       ? "bg-[rgba(34,197,94,0.15)] text-green-400"
                       : importing.has(file.path)
-                      ? "bg-[rgba(59,130,246,0.1)] text-[#60a5fa]"
-                      : "btn-ghost hover:text-[#fbbf24]"
+                      ? "bg-[rgba(59,130,246,0.1)] text-[#00e5ff]"
+                      : "btn-ghost hover:text-[#ffeb3b]"
                   )}
                 >
                   {importing.has(file.path) ? (
@@ -349,8 +349,8 @@ export default function LocalFolderPicker() {
       {!files.length && !scanning && !error && (
         <div className="empty-state py-8">
           <FolderOpen className="w-8 h-8 mb-3" />
-          <p className="text-sm text-[#a89f91]">Select a folder to scan for readable files.</p>
-          <p className="text-xs text-[#6b6560] mt-1">
+          <p className="text-sm text-[#a0a0a0]">Select a folder to scan for readable files.</p>
+          <p className="text-xs text-[#666666] mt-1">
             QyntraWiki will show a preview before importing anything.
           </p>
         </div>

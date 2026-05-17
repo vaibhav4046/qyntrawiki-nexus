@@ -79,59 +79,84 @@ const comparisonFeatures = [
 ];
 
 const wikiPages = [
-  { title: "HydraDB", summary: "Graph-first context infrastructure for AI agents — replaces vector-only retrieval with intelligent recall pipeline.", tags: ["Product", "AI"], color: "text-amber-400" },
+  { title: "HydraDB", summary: "Graph-first context infrastructure for AI agents — replaces vector-only retrieval with intelligent recall pipeline.", tags: ["Product", "AI"], color: "text-yellow-400" },
   { title: "Context Graph", summary: "Persistent, evolving knowledge structure tracking entities, relationships, and temporal signals across documents.", tags: ["Concept"], color: "text-blue-400" },
   { title: "LLM Wiki", summary: "AI-maintained wiki that builds structured, interlinked articles with cross-references and automatic updates.", tags: ["Concept", "Pattern"], color: "text-green-400" },
 ];
 
+const trustItems = [
+  { icon: Shield, title: "Permission-first", desc: "Every connector requires explicit consent before accessing data.", color: "#ff0000", bg: "rgba(255,0,0,0.15)", border: "rgba(255,0,0,0.3)" },
+  { icon: Server, title: "Local-first", desc: "Files stay local unless you enable HydraDB sync.", color: "#ffb8ff", bg: "rgba(255,184,255,0.15)", border: "rgba(255,184,255,0.3)" },
+  { icon: Lock, title: "No scraping", desc: "LinkedIn & Instagram use export-import mode — never silent access.", color: "#00ffff", bg: "rgba(0,255,255,0.15)", border: "rgba(0,255,255,0.3)" },
+  { icon: Check, title: "No data sold", desc: "Your data is yours. Zero third-party sharing.", color: "#ffb852", bg: "rgba(255,184,82,0.15)", border: "rgba(255,184,82,0.3)" },
+];
+
+function getBadgeClass(tag: string) {
+  switch (tag) {
+    case "Product": return "pixel-badge pixel-badge-yellow";
+    case "AI": return "pixel-badge pixel-badge-blue";
+    case "Concept": return "pixel-badge pixel-badge-green";
+    case "Pattern": return "pixel-badge pixel-badge-pink";
+    default: return "pixel-badge pixel-badge-yellow";
+  }
+}
+
 export default function LandingPage() {
   return (
-    <main className="relative min-h-screen bg-primary text-primary overflow-x-hidden font-[family-name:var(--font-sans)]">
+    <main className="relative min-h-screen bg-[#000] text-[#f5f5f5] overflow-x-hidden font-[family-name:var(--font-sans)]">
       {/* ── HERO ── */}
-      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 py-24 bg-gradient-hero overflow-hidden">
+      <section className="relative min-h-screen flex flex-col items-center justify-center px-6 py-24 bg-[#000] overflow-hidden border-b-[4px] border-[#2121de]">
         <div className="absolute inset-0 z-0 opacity-50">
           <KnowledgeTree />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-t from-[#080808] to-transparent z-[1] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-60 bg-gradient-to-t from-[#000] to-transparent z-[1] pointer-events-none" />
 
         {/* Nav */}
         <div className="absolute top-0 left-0 right-0 z-20 px-6 py-5">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <Link href="/" className="flex items-center gap-2.5">
-              <Database className="w-5 h-5 text-amber-400" />
-              <span className="text-sm font-bold tracking-tight">QyntraWiki</span>
+              <Database className="w-5 h-5 text-[#ffeb3b]" />
+              <span className="text-[20px] font-bold tracking-tight text-[#f5f5f5]">QyntraWiki</span>
             </Link>
             <div className="flex items-center gap-3">
-              <Link href="/app" className="btn-secondary text-sm py-2.5 px-5">Open App</Link>
-              <Link href="/app/connect" className="btn-primary text-sm py-2.5 px-5">Start Now</Link>
+              <Link href="/app" className="pixel-btn pixel-btn-ghost py-2.5 px-5">Open App</Link>
+              <Link href="/app/connect" className="pixel-btn pixel-btn-yellow py-2.5 px-5">Start Now</Link>
             </div>
           </div>
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto text-center pt-16">
+          {/* Pac-Man chomp */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="w-20 h-20 bg-[#ffeb3b] pac-chomp mx-auto mb-8"
+          />
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="section-label mb-6">HydraDB WikiThon 2026</span>
+            <span className="pixel-label mb-6">HydraDB WikiThon 2026</span>
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="h1 mb-6 max-w-4xl mx-auto"
+            className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mb-6 max-w-4xl mx-auto text-[#f5f5f5]"
           >
             The Brain Behind Your{" "}
-            <span className="text-gradient">Personal Knowledge</span>
+            <span className="gradient-pixel">Personal Knowledge</span>
           </motion.h1>
 
           <motion.p
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2 }}
-            className="text-lg text-secondary max-w-2xl mx-auto mb-10 leading-relaxed"
+            className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto mb-10 leading-relaxed"
           >
             A unified context layer to capture your entire working knowledge:
             files, notes, links, exports, cloud docs, and daily memory —
@@ -144,10 +169,10 @@ export default function LandingPage() {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Link href="/app" className="btn-primary text-base px-8 py-3.5">
+            <Link href="/app" className="pixel-btn pixel-btn-solid px-8 py-3.5">
               Start Building <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/app" className="btn-secondary text-base px-8 py-3.5">
+            <Link href="/app" className="pixel-btn pixel-btn-yellow px-8 py-3.5">
               Load Demo <Database className="w-4 h-4" />
             </Link>
           </motion.div>
@@ -160,11 +185,11 @@ export default function LandingPage() {
             className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-3xl mx-auto"
           >
             {stats.map((s) => (
-              <div key={s.label} className="stat-card">
-                <div className="stat-value text-amber-400">
+              <div key={s.label} className="pixel-stat">
+                <div className="pixel-stat-value">
                   <AnimatedCounter target={s.value} suffix={s.suffix || ""} />
                 </div>
-                <div className="stat-label">{s.label}</div>
+                <div className="pixel-stat-label">{s.label}</div>
               </div>
             ))}
           </motion.div>
@@ -172,11 +197,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── WHY QYNTRAWIKI ── */}
-      <section className="relative z-10 px-6 py-24">
+      <section className="relative z-10 px-6 py-24 bg-[#000]">
         <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
-          <span className="section-label">Why QyntraWiki</span>
-          <h2 className="h2 mt-4 mb-4">Similarity isn't relevance.<br />Give your knowledge the right context.</h2>
-          <p className="section-subtitle mx-auto">
+          <span className="pixel-label">Why QyntraWiki</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
+            Similarity isn't relevance.<br />Give your knowledge the right context.
+          </h2>
+          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
             Flat file storage returns what's close, not what's correct.
             QyntraWiki connects your tools and data, builds a structured graph,
             and delivers the exact context you need.
@@ -187,25 +214,25 @@ export default function LandingPage() {
         <SectionReveal className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Without */}
-            <div className="card p-8 border-red-500/10">
-              <h3 className="text-lg font-semibold text-red-400 mb-6">Without QyntraWiki</h3>
+            <div className="pixel-card p-8" style={{ borderColor: "rgba(255,0,0,0.3)" }}>
+              <h3 className="pixel-heading text-[9px] text-[#ff0000] mb-6">Without QyntraWiki</h3>
               <div className="space-y-3">
                 {comparisonFeatures.map((f, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <X className="w-4 h-4 text-red-500/40 shrink-0" />
-                    <span className="text-sm text-tertiary">{f.label}</span>
+                    <X className="w-4 h-4 text-[#666666] shrink-0" />
+                    <span className="text-[18px] text-[#666666]">{f.label}</span>
                   </div>
                 ))}
               </div>
             </div>
             {/* With */}
-            <div className="card p-8 border-amber-500/20 bg-gradient-card">
-              <h3 className="text-lg font-semibold text-amber-400 mb-6">With QyntraWiki</h3>
+            <div className="pixel-card p-8" style={{ borderColor: "rgba(255,235,59,0.6)" }}>
+              <h3 className="pixel-heading text-[9px] text-[#ffeb3b] mb-6">With QyntraWiki</h3>
               <div className="space-y-3">
                 {comparisonFeatures.map((f, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <Check className="w-4 h-4 text-green-400 shrink-0" />
-                    <span className="text-sm text-secondary">{f.label}</span>
+                    <Check className="w-4 h-4 text-[#4ade80] shrink-0" />
+                    <span className="text-[18px] text-[#a0a0a0]">{f.label}</span>
                   </div>
                 ))}
               </div>
@@ -215,11 +242,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── CONNECTORS ── */}
-      <section className="relative z-10 px-6 py-24 bg-secondary">
+      <section className="relative z-10 px-6 py-24 bg-[#0a0a0a]">
         <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
-          <span className="section-label">Connectors</span>
-          <h2 className="h2 mt-4 mb-4">Permission-first source connections</h2>
-          <p className="section-subtitle mx-auto">
+          <span className="pixel-label">Connectors</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
+            Permission-first source connections
+          </h2>
+          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
             Native connectors for your entire digital life. Every connector requires explicit consent.
           </p>
         </SectionReveal>
@@ -229,12 +258,12 @@ export default function LandingPage() {
             const Icon = c.icon;
             return (
               <SectionReveal key={c.name}>
-                <div className="connector-card p-5 h-full">
-                  <div className="w-9 h-9 rounded-lg bg-amber-500/10 flex items-center justify-center mb-3">
-                    <Icon className="w-4.5 h-4.5 text-amber-400" />
+                <div className="pixel-card p-5 h-full">
+                  <div className="w-9 h-9 bg-[rgba(255,235,59,0.1)] flex items-center justify-center mb-3 border-[4px] border-[rgba(255,235,59,0.2)]">
+                    <Icon className="w-4 h-4 text-[#ffeb3b]" />
                   </div>
-                  <h3 className="text-sm font-semibold text-primary mb-1">{c.name}</h3>
-                  <p className="text-xs text-tertiary leading-relaxed">{c.desc}</p>
+                  <h3 className="pixel-heading text-[8px] text-[#f5f5f5] mb-1">{c.name}</h3>
+                  <p className="text-[16px] text-[#666666] leading-relaxed">{c.desc}</p>
                 </div>
               </SectionReveal>
             );
@@ -243,11 +272,13 @@ export default function LandingPage() {
       </section>
 
       {/* ── WIKI PAGES ── */}
-      <section className="relative z-10 px-6 py-24">
+      <section className="relative z-10 px-6 py-24 bg-[#000]">
         <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
-          <span className="section-label">Personal Wiki</span>
-          <h2 className="h2 mt-4 mb-4">Auto-generated, cited encyclopedia</h2>
-          <p className="section-subtitle mx-auto">
+          <span className="pixel-label">Personal Wiki</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
+            Auto-generated, cited encyclopedia
+          </h2>
+          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
             Sources become Wikipedia-style articles with infoboxes, citations, backlinks, and contradiction tracking.
           </p>
         </SectionReveal>
@@ -255,12 +286,12 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-4">
           {wikiPages.map((p, i) => (
             <SectionReveal key={p.title}>
-              <div className="card p-6 h-full">
-                <h3 className="text-base font-semibold text-primary mb-2">{p.title}</h3>
-                <p className="text-sm text-tertiary leading-relaxed mb-4">{p.summary}</p>
-                <div className="flex gap-2">
+              <div className="pixel-card p-6 h-full">
+                <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">{p.title}</h3>
+                <p className="text-[16px] text-[#666666] leading-relaxed mb-4">{p.summary}</p>
+                <div className="flex gap-2 flex-wrap">
                   {p.tags.map((t) => (
-                    <span key={t} className="badge badge-amber">{t}</span>
+                    <span key={t} className={getBadgeClass(t)}>{t}</span>
                   ))}
                 </div>
               </div>
@@ -270,28 +301,30 @@ export default function LandingPage() {
       </section>
 
       {/* ── GRAPH + ASK ── */}
-      <section className="relative z-10 px-6 py-24 bg-secondary">
+      <section className="relative z-10 px-6 py-24 bg-[#0a0a0a]">
         <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
-          <span className="section-label">Memory Graph</span>
-          <h2 className="h2 mt-4 mb-4">Visualize your knowledge network</h2>
-          <p className="section-subtitle mx-auto">
+          <span className="pixel-label">Memory Graph</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
+            Visualize your knowledge network
+          </h2>
+          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
             Explore pages, sources, entities, claims, and their relationships in an interactive graph.
             Ask natural language questions with cited answers.
           </p>
         </SectionReveal>
 
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="card p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
-            <GitBranch className="w-10 h-10 text-amber-400 mb-4" />
-            <h3 className="text-lg font-semibold text-primary mb-2">HydraDB Memory Graph</h3>
-            <p className="text-sm text-tertiary">
+          <div className="pixel-card p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
+            <GitBranch className="w-10 h-10 text-[#ffeb3b] mb-4" />
+            <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">HydraDB Memory Graph</h3>
+            <p className="text-[16px] text-[#666666]">
               Pages, files, entities, claims, and contradictions become visible graph context.
             </p>
           </div>
-          <div className="card p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
-            <MessageSquare className="w-10 h-10 text-blue-400 mb-4" />
-            <h3 className="text-lg font-semibold text-primary mb-2">Ask Your Wiki</h3>
-            <p className="text-sm text-tertiary">
+          <div className="pixel-card p-6 flex flex-col items-center justify-center text-center min-h-[240px]">
+            <MessageSquare className="w-10 h-10 text-[#00ffff] mb-4" />
+            <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">Ask Your Wiki</h3>
+            <p className="text-[16px] text-[#666666]">
               Ask questions with citations, related files, and context used transparency.
             </p>
           </div>
@@ -299,25 +332,27 @@ export default function LandingPage() {
       </section>
 
       {/* ── PUBLISH ── */}
-      <section className="relative z-10 px-6 py-24">
+      <section className="relative z-10 px-6 py-24 bg-[#000]">
         <SectionReveal className="max-w-7xl mx-auto text-center mb-16">
-          <span className="section-label">Publish</span>
-          <h2 className="h2 mt-4 mb-4">Share your knowledge publicly</h2>
-          <p className="section-subtitle mx-auto">
+          <span className="pixel-label">Publish</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
+            Share your knowledge publicly
+          </h2>
+          <p className="text-[20px] text-[#a0a0a0] max-w-2xl mx-auto leading-relaxed">
             Publish selected pages while keeping private sources hidden.
             Share what you want, keep the rest private.
           </p>
         </SectionReveal>
 
         <div className="max-w-4xl mx-auto">
-          <div className="card p-8 text-center">
-            <Globe className="w-10 h-10 text-amber-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-primary mb-2">One-click publish</h3>
-            <p className="text-sm text-tertiary max-w-md mx-auto mb-6">
+          <div className="pixel-card p-8 text-center">
+            <Globe className="w-10 h-10 text-[#ffeb3b] mx-auto mb-4" />
+            <h3 className="pixel-heading text-[9px] text-[#f5f5f5] mb-2">One-click publish</h3>
+            <p className="text-[16px] text-[#666666] max-w-md mx-auto mb-6">
               Public routes show generated article content and public-safe citation labels.
               Raw private files stay hidden.
             </p>
-            <Link href="/app/publish" className="btn-primary">
+            <Link href="/app/publish" className="pixel-btn pixel-btn-solid">
               Go to Publish <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
@@ -325,25 +360,26 @@ export default function LandingPage() {
       </section>
 
       {/* ── TRUST ── */}
-      <section className="relative z-10 px-6 py-24 bg-secondary">
+      <section className="relative z-10 px-6 py-24 bg-[#0a0a0a]">
         <SectionReveal className="max-w-7xl mx-auto text-center mb-12">
-          <span className="section-label">Trust</span>
-          <h2 className="h2 mt-4 mb-4">Built with privacy first</h2>
+          <span className="pixel-label">Trust</span>
+          <h2 className="pixel-heading text-[10px] sm:text-[11px] leading-relaxed mt-4 mb-4 text-[#f5f5f5]">
+            Built with privacy first
+          </h2>
         </SectionReveal>
 
         <div className="max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {[
-            { icon: Shield, title: "Permission-first", desc: "Every connector requires explicit consent before accessing data." },
-            { icon: Server, title: "Local-first", desc: "Files stay local unless you enable HydraDB sync." },
-            { icon: Lock, title: "No scraping", desc: "LinkedIn & Instagram use export-import mode — never silent access." },
-            { icon: Check, title: "No data sold", desc: "Your data is yours. Zero third-party sharing." },
-          ].map((item) => {
+          {trustItems.map((item) => {
             const I = item.icon;
             return (
-              <div key={item.title} className="card p-5 text-center">
-                <I className="w-7 h-7 text-amber-400 mx-auto mb-3" />
-                <h4 className="text-sm font-semibold text-primary mb-1">{item.title}</h4>
-                <p className="text-xs text-tertiary">{item.desc}</p>
+              <div
+                key={item.title}
+                className="pixel-card p-5 text-center"
+                style={{ borderColor: item.border, backgroundColor: item.bg }}
+              >
+                <I className="w-7 h-7 mx-auto mb-3" style={{ color: item.color }} />
+                <h4 className="pixel-heading text-[8px] text-[#f5f5f5] mb-1">{item.title}</h4>
+                <p className="text-[14px] text-[#a0a0a0]">{item.desc}</p>
               </div>
             );
           })}
@@ -351,14 +387,16 @@ export default function LandingPage() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="relative z-10 px-6 py-24">
+      <section className="relative z-10 px-6 py-24 bg-[#000]">
         <SectionReveal className="max-w-4xl mx-auto text-center">
-          <h2 className="h2 mb-6">Ready to build your<br />personal Wikipedia?</h2>
+          <h2 className="pixel-heading text-[10px] sm:text-[12px] leading-relaxed mb-6 text-[#f5f5f5]">
+            Ready to build your<br />personal Wikipedia?
+          </h2>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/app/connect" className="btn-primary text-base px-8 py-3.5">
+            <Link href="/app/connect" className="pixel-btn pixel-btn-solid px-8 py-3.5">
               Start Nexus Scan <Zap className="w-4 h-4" />
             </Link>
-            <Link href="/app" className="btn-secondary text-base px-8 py-3.5">
+            <Link href="/app" className="pixel-btn pixel-btn-yellow px-8 py-3.5">
               Load Demo <Database className="w-4 h-4" />
             </Link>
           </div>
@@ -366,19 +404,19 @@ export default function LandingPage() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer className="border-t border-white/5 px-6 py-10">
+      <footer className="border-t-[4px] border-[#2121de] px-6 py-10 bg-[#000]">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <Database className="w-5 h-5 text-amber-400" />
-            <span className="text-sm font-semibold">QyntraWiki</span>
-            <span className="text-xs text-tertiary">Built for HydraDB WikiThon</span>
+            <Database className="w-5 h-5 text-[#ffeb3b]" />
+            <span className="text-[16px] font-bold text-[#f5f5f5]">QyntraWiki</span>
+            <span className="text-[12px] text-[#666666]">Built for HydraDB WikiThon</span>
           </div>
-          <div className="flex items-center gap-6 text-xs text-tertiary">
-            <Link href="/app" className="hover:text-primary transition-colors">App</Link>
-            <a href="https://hydradb.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">HydraDB</a>
-            <a href="https://github.com/vaibhav4046/qyntrawiki-nexus" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">GitHub</a>
+          <div className="flex items-center gap-6 text-[12px] text-[#666666]">
+            <Link href="/app" className="hover:text-[#ffeb3b] transition-colors">App</Link>
+            <a href="https://hydradb.com" target="_blank" rel="noopener noreferrer" className="hover:text-[#ffeb3b] transition-colors">HydraDB</a>
+            <a href="https://github.com/vaibhav4046/qyntrawiki-nexus" target="_blank" rel="noopener noreferrer" className="hover:text-[#ffeb3b] transition-colors">GitHub</a>
           </div>
-          <span className="text-xs text-muted">© 2026 QyntraWiki Nexus</span>
+          <span className="text-[12px] text-[#666666]">© 2026 QyntraWiki Nexus</span>
         </div>
       </footer>
     </main>

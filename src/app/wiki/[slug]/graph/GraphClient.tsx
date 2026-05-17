@@ -40,12 +40,12 @@ interface Props {
 }
 
 const nodeColors: Record<string, string> = {
-  Product: "#f59e0b",
+  Product: "#ffeb3b",
   Concept: "#a78bfa",
-  Person: "#60a5fa",
+  Person: "#00e5ff",
   Organization: "#34d399",
   Location: "#f472b6",
-  Event: "#fb923c",
+  Event: "#ffca28",
   unknown: "#6b7280",
 };
 
@@ -65,7 +65,7 @@ export default function GraphClient({ slug, initialEntities, initialRelations, i
     const placed = new Set<string>();
 
     initialPages.forEach((p, i) => {
-      const color = "#f59e0b";
+      const color = "#ffeb3b";
       nodes.push({
         id: p.id,
         type: "default",
@@ -134,12 +134,12 @@ export default function GraphClient({ slug, initialEntities, initialRelations, i
         label: rel.relationType,
         animated: true,
         style: {
-          stroke: "#f59e0b44",
+          stroke: "#ffeb3b44",
           strokeWidth: Math.max(1, rel.weight * 2),
         },
         markerEnd: {
           type: MarkerType.ArrowClosed,
-          color: "#f59e0b66",
+          color: "#ffeb3b66",
         },
         labelStyle: { fill: "#a89b8c", fontSize: 10 },
         labelBgStyle: { fill: "rgba(13,10,8,0.8)" },
@@ -225,7 +225,7 @@ export default function GraphClient({ slug, initialEntities, initialRelations, i
               if (node.data?.nodeType === "entity") {
                 return entityNodeColor(node.data?.entityType || "unknown");
               }
-              return "#f59e0b";
+              return "#ffeb3b";
             }}
             style={{ background: "rgba(21,18,14,0.9)", border: "1px solid #2d261e", borderRadius: "8px" }}
             maskColor="rgba(13,10,8,0.6)"

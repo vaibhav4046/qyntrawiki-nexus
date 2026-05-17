@@ -81,13 +81,13 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-black">
       {/* Top bar */}
       <div className="border-b border-white/5 bg-black/20 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 py-3">
           <Link
             href="/app/wiki"
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#a89f91] transition-colors hover:text-[#f5f0eb]"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#a0a0a0] transition-colors hover:text-[#f5f5f5]"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Wiki
@@ -98,10 +98,10 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
       <div className="mx-auto max-w-7xl px-4 py-8">
         {/* Title */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight text-[#f5f0eb] sm:text-4xl">
+          <h1 className="text-3xl font-bold tracking-tight text-[#f5f5f5] sm:text-4xl">
             {page.title}
           </h1>
-          <p className="mt-2 text-[#a89f91]">
+          <p className="mt-2 text-[#a0a0a0]">
             Last updated {formatDate(page.updatedAt)}
           </p>
         </div>
@@ -110,12 +110,12 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
           {/* LEFT: Table of Contents */}
           <aside className="order-2 lg:order-1 lg:col-span-3">
             <div className="glass-card sticky top-24 rounded-2xl p-5">
-              <div className="mb-4 flex items-center gap-2 text-[#f5f0eb]">
-                <BookOpen className="h-4 w-4 text-amber-400" />
+              <div className="mb-4 flex items-center gap-2 text-[#f5f5f5]">
+                <BookOpen className="h-4 w-4 text-yellow-400" />
                 <span className="text-sm font-semibold uppercase tracking-wider">Contents</span>
               </div>
               {headings.length === 0 ? (
-                <p className="text-sm text-[#6b6560]">No sections</p>
+                <p className="text-sm text-[#666666]">No sections</p>
               ) : (
                 <nav className="space-y-1">
                   {headings.map((h) => (
@@ -123,7 +123,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                       key={h.id}
                       href={`#${h.id}`}
                       className={`block rounded-md px-3 py-1.5 text-sm transition-colors hover:bg-white/5 ${
-                        h.level === 3 ? "pl-6 text-[#a89f91]" : "font-medium text-[#f5f0eb]"
+                        h.level === 3 ? "pl-6 text-[#a0a0a0]" : "font-medium text-[#f5f5f5]"
                       }`}
                     >
                       {h.text}
@@ -144,7 +144,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                     const text = String(children);
                     const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
                     return (
-                      <h2 id={id} className="mt-8 text-xl font-semibold text-[#f5f0eb] scroll-mt-28">
+                      <h2 id={id} className="mt-8 text-xl font-semibold text-[#f5f5f5] scroll-mt-28">
                         {children}
                       </h2>
                     );
@@ -153,25 +153,25 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                     const text = String(children);
                     const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
                     return (
-                      <h3 id={id} className="mt-6 text-lg font-semibold text-[#f5f0eb] scroll-mt-28">
+                      <h3 id={id} className="mt-6 text-lg font-semibold text-[#f5f5f5] scroll-mt-28">
                         {children}
                       </h3>
                     );
                   },
                   p: ({ children }) => (
-                    <p className="mt-3 leading-7 text-[#a89f91]">{children}</p>
+                    <p className="mt-3 leading-7 text-[#a0a0a0]">{children}</p>
                   ),
                   ul: ({ children }) => (
-                    <ul className="mt-3 list-disc space-y-1 pl-6 text-[#a89f91]">{children}</ul>
+                    <ul className="mt-3 list-disc space-y-1 pl-6 text-[#a0a0a0]">{children}</ul>
                   ),
                   ol: ({ children }) => (
-                    <ol className="mt-3 list-decimal space-y-1 pl-6 text-[#a89f91]">{children}</ol>
+                    <ol className="mt-3 list-decimal space-y-1 pl-6 text-[#a0a0a0]">{children}</ol>
                   ),
                   li: ({ children }) => <li className="leading-7">{children}</li>,
                   a: ({ href, children }) => (
                     <a
                       href={href}
-                      className="font-medium text-amber-400 underline underline-offset-4 transition-colors hover:text-orange-500"
+                      className="font-medium text-yellow-400 underline underline-offset-4 transition-colors hover:text-orange-500"
                       target={href?.startsWith("http") ? "_blank" : undefined}
                       rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
                     >
@@ -179,17 +179,17 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                     </a>
                   ),
                   blockquote: ({ children }) => (
-                    <blockquote className="mt-3 border-l-4 border-amber-400/60 bg-white/5 pl-4 italic text-[#a89f91]">
+                    <blockquote className="mt-3 border-l-4 border-amber-400/60 bg-white/5 pl-4 italic text-[#a0a0a0]">
                       {children}
                     </blockquote>
                   ),
                   code: ({ children }) => (
-                    <code className="rounded-md bg-white/10 px-1.5 py-0.5 text-sm font-mono text-[#f5f0eb]">
+                    <code className="rounded-md bg-white/10 px-1.5 py-0.5 text-sm font-mono text-[#f5f5f5]">
                       {children}
                     </code>
                   ),
                   pre: ({ children }) => (
-                    <pre className="mt-3 overflow-x-auto rounded-xl bg-black/30 p-4 text-sm text-[#f5f0eb]">
+                    <pre className="mt-3 overflow-x-auto rounded-xl bg-black/30 p-4 text-sm text-[#f5f5f5]">
                       {children}
                     </pre>
                   ),
@@ -199,12 +199,12 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                     </div>
                   ),
                   th: ({ children }) => (
-                    <th className="border-b border-white/10 px-3 py-2 text-left font-semibold text-[#f5f0eb]">
+                    <th className="border-b border-white/10 px-3 py-2 text-left font-semibold text-[#f5f5f5]">
                       {children}
                     </th>
                   ),
                   td: ({ children }) => (
-                    <td className="border-b border-white/5 px-3 py-2 text-[#a89f91]">{children}</td>
+                    <td className="border-b border-white/5 px-3 py-2 text-[#a0a0a0]">{children}</td>
                   ),
                   hr: () => <hr className="my-6 border-white/10" />,
                 }}
@@ -218,26 +218,26 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
               <section className="mt-8">
                 <div className="glass-card rounded-2xl p-6">
                   <div className="mb-4 flex items-center gap-2">
-                    <LinkIcon className="h-5 w-5 text-amber-400" />
-                    <h2 className="text-lg font-semibold text-[#f5f0eb]">Citations</h2>
+                    <LinkIcon className="h-5 w-5 text-yellow-400" />
+                    <h2 className="text-lg font-semibold text-[#f5f5f5]">Citations</h2>
                   </div>
                   <ul className="space-y-3">
                     {citations.map((c, idx) => (
                       <li
                         key={c.id}
-                        className="flex items-start gap-3 rounded-xl bg-white/5 p-3 text-sm text-[#a89f91]"
+                        className="flex items-start gap-3 rounded-xl bg-white/5 p-3 text-sm text-[#a0a0a0]"
                       >
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-400/10 text-xs font-bold text-amber-400">
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-400/10 text-xs font-bold text-yellow-400">
                           {idx + 1}
                         </span>
                         <div className="flex-1">
-                          <p className="font-medium text-[#f5f0eb]">{c.title || "Untitled citation"}</p>
+                          <p className="font-medium text-[#f5f5f5]">{c.title || "Untitled citation"}</p>
                           {c.url && (
                             <a
                               href={c.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="mt-1 inline-flex items-center gap-1 text-xs text-amber-400 hover:text-orange-500"
+                              className="mt-1 inline-flex items-center gap-1 text-xs text-yellow-400 hover:text-orange-500"
                             >
                               <ExternalLink className="h-3 w-3" />
                               {c.url}
@@ -257,15 +257,15 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                 <div className="glass-card rounded-2xl p-6">
                   <div className="mb-4 flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-emerald-400" />
-                    <h2 className="text-lg font-semibold text-[#f5f0eb]">Claims</h2>
+                    <h2 className="text-lg font-semibold text-[#f5f5f5]">Claims</h2>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2">
                     {claims.map((claim) => (
                       <div
                         key={claim.id}
-                        className="rounded-xl bg-white/5 p-4 text-sm text-[#a89f91]"
+                        className="rounded-xl bg-white/5 p-4 text-sm text-[#a0a0a0]"
                       >
-                        <p className="font-medium text-[#f5f0eb]">{claim.text}</p>
+                        <p className="font-medium text-[#f5f5f5]">{claim.text}</p>
                         <div className="mt-2 flex items-center gap-2">
                           <span
                             className={`badge ${
@@ -279,7 +279,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                             {claim.status}
                           </span>
                           {typeof claim.confidence === "number" && (
-                            <span className="text-xs text-[#6b6560]">
+                            <span className="text-xs text-[#666666]">
                               Confidence: {Math.round(claim.confidence * 100)}%
                             </span>
                           )}
@@ -297,7 +297,7 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                 <div className="glass-card rounded-2xl p-6">
                   <div className="mb-4 flex items-center gap-2">
                     <History className="h-5 w-5 text-orange-500" />
-                    <h2 className="text-lg font-semibold text-[#f5f0eb]">Recent Revisions</h2>
+                    <h2 className="text-lg font-semibold text-[#f5f5f5]">Recent Revisions</h2>
                   </div>
                   <div className="space-y-2">
                     {revisions.map((rev) => (
@@ -306,10 +306,10 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                         className="flex items-center justify-between rounded-xl bg-white/5 px-4 py-3 text-sm"
                       >
                         <div className="flex items-center gap-3">
-                          <GitBranch className="h-4 w-4 text-[#6b6560]" />
-                          <span className="text-[#f5f0eb]">{rev.editSummary || "No summary"}</span>
+                          <GitBranch className="h-4 w-4 text-[#666666]" />
+                          <span className="text-[#f5f5f5]">{rev.editSummary || "No summary"}</span>
                         </div>
-                        <span className="text-xs text-[#6b6560]">{formatDate(rev.createdAt)}</span>
+                        <span className="text-xs text-[#666666]">{formatDate(rev.createdAt)}</span>
                       </div>
                     ))}
                   </div>
@@ -322,8 +322,8 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
               <section className="mt-8">
                 <div className="glass-card rounded-2xl p-6">
                   <div className="mb-4 flex items-center gap-2">
-                    <Users className="h-5 w-5 text-amber-400" />
-                    <h2 className="text-lg font-semibold text-[#f5f0eb]">Related Pages</h2>
+                    <Users className="h-5 w-5 text-yellow-400" />
+                    <h2 className="text-lg font-semibold text-[#f5f5f5]">Related Pages</h2>
                   </div>
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {relatedPages
@@ -334,8 +334,8 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                           href={`/app/wiki/${rp.slug}`}
                           className="group flex items-center gap-3 rounded-xl bg-white/5 p-3 transition-colors hover:bg-white/10"
                         >
-                          <FileText className="h-4 w-4 shrink-0 text-[#6b6560] group-hover:text-amber-400" />
-                          <span className="text-sm font-medium text-[#a89f91] group-hover:text-[#f5f0eb]">
+                          <FileText className="h-4 w-4 shrink-0 text-[#666666] group-hover:text-yellow-400" />
+                          <span className="text-sm font-medium text-[#a0a0a0] group-hover:text-[#f5f5f5]">
                             {rp.title}
                           </span>
                         </Link>
@@ -350,8 +350,8 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
           <aside className="order-3 lg:col-span-3">
             <div className="glass-card sticky top-24 rounded-2xl p-5">
               <div className="mb-4 flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-amber-400" />
-                <span className="text-sm font-semibold uppercase tracking-wider text-[#f5f0eb]">
+                <Sparkles className="h-4 w-4 text-yellow-400" />
+                <span className="text-sm font-semibold uppercase tracking-wider text-[#f5f5f5]">
                   Infobox
                 </span>
               </div>
@@ -365,8 +365,8 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
                 {/* Confidence */}
                 <div>
                   <div className="mb-1 flex items-center justify-between text-sm">
-                    <span className="text-[#a89f91]">Confidence</span>
-                    <span className="font-semibold text-[#f5f0eb]">{Math.round(confidence * 100)}%</span>
+                    <span className="text-[#a0a0a0]">Confidence</span>
+                    <span className="font-semibold text-[#f5f5f5]">{Math.round(confidence * 100)}%</span>
                   </div>
                   <div className="health-bar h-2 w-full rounded-full">
                     <div
@@ -378,62 +378,62 @@ export default async function WikiArticlePage({ params }: WikiPageProps) {
 
                 {/* Source count */}
                 <div className="flex items-center justify-between rounded-xl bg-white/5 px-3 py-2 text-sm">
-                  <div className="flex items-center gap-2 text-[#a89f91]">
+                  <div className="flex items-center gap-2 text-[#a0a0a0]">
                     <BookOpen className="h-4 w-4" />
                     Sources
                   </div>
-                  <span className="font-semibold text-[#f5f0eb]">{sourceCount}</span>
+                  <span className="font-semibold text-[#f5f5f5]">{sourceCount}</span>
                 </div>
 
                 {/* Health score */}
                 <div className="flex items-center justify-between rounded-xl bg-white/5 px-3 py-2 text-sm">
-                  <div className="flex items-center gap-2 text-[#a89f91]">
+                  <div className="flex items-center gap-2 text-[#a0a0a0]">
                     <Shield className="h-4 w-4" />
                     Health
                   </div>
-                  <span className="font-semibold text-[#f5f0eb]">{Math.round(healthScore * 100)}%</span>
+                  <span className="font-semibold text-[#f5f5f5]">{Math.round(healthScore * 100)}%</span>
                 </div>
 
                 {/* Coverage score */}
                 <div className="flex items-center justify-between rounded-xl bg-white/5 px-3 py-2 text-sm">
-                  <div className="flex items-center gap-2 text-[#a89f91]">
+                  <div className="flex items-center gap-2 text-[#a0a0a0]">
                     <TrendingUp className="h-4 w-4" />
                     Coverage
                   </div>
-                  <span className="font-semibold text-[#f5f0eb]">{Math.round(coverageScore * 100)}%</span>
+                  <span className="font-semibold text-[#f5f5f5]">{Math.round(coverageScore * 100)}%</span>
                 </div>
 
                 {/* Created / Updated */}
                 <div className="space-y-2 border-t border-white/10 pt-4">
                   <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2 text-[#6b6560]">
+                    <div className="flex items-center gap-2 text-[#666666]">
                       <Clock className="h-3.5 w-3.5" />
                       Created
                     </div>
-                    <span className="text-[#a89f91]">{formatDate(page.createdAt)}</span>
+                    <span className="text-[#a0a0a0]">{formatDate(page.createdAt)}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <div className="flex items-center gap-2 text-[#6b6560]">
+                    <div className="flex items-center gap-2 text-[#666666]">
                       <MessageSquare className="h-3.5 w-3.5" />
                       Updated
                     </div>
-                    <span className="text-[#a89f91]">{formatDate(page.updatedAt)}</span>
+                    <span className="text-[#a0a0a0]">{formatDate(page.updatedAt)}</span>
                   </div>
                 </div>
 
                 {/* Citation / claim / source counts */}
                 <div className="grid grid-cols-3 gap-2 border-t border-white/10 pt-4">
                   <div className="rounded-lg bg-white/5 p-2 text-center">
-                    <div className="text-xs text-[#6b6560]">Citations</div>
-                    <div className="mt-0.5 text-sm font-bold text-[#f5f0eb]">{citations.length}</div>
+                    <div className="text-xs text-[#666666]">Citations</div>
+                    <div className="mt-0.5 text-sm font-bold text-[#f5f5f5]">{citations.length}</div>
                   </div>
                   <div className="rounded-lg bg-white/5 p-2 text-center">
-                    <div className="text-xs text-[#6b6560]">Claims</div>
-                    <div className="mt-0.5 text-sm font-bold text-[#f5f0eb]">{claims.length}</div>
+                    <div className="text-xs text-[#666666]">Claims</div>
+                    <div className="mt-0.5 text-sm font-bold text-[#f5f5f5]">{claims.length}</div>
                   </div>
                   <div className="rounded-lg bg-white/5 p-2 text-center">
-                    <div className="text-xs text-[#6b6560]">Revisions</div>
-                    <div className="mt-0.5 text-sm font-bold text-[#f5f0eb]">{revisions.length}</div>
+                    <div className="text-xs text-[#666666]">Revisions</div>
+                    <div className="mt-0.5 text-sm font-bold text-[#f5f5f5]">{revisions.length}</div>
                   </div>
                 </div>
               </div>

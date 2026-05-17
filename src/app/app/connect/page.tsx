@@ -129,11 +129,11 @@ export default function ConnectPage() {
   const activeConnector = connectors.find((c) => c.id === activeModal);
 
   return (
-    <div className="min-h-screen bg-gradient-warm">
+    <div className="min-h-screen bg-black">
       {/* Header */}
       <div className="px-6 sm:px-8 lg:px-10 pt-8 pb-6">
-        <h1 className="text-2xl font-bold text-[#f5f0eb]">Permission Center</h1>
-        <p className="mt-1 text-sm text-[#a89f91]">
+        <h1 className="text-2xl font-bold text-[#f5f5f5]">Permission Center</h1>
+        <p className="mt-1 text-sm text-[#a0a0a0]">
           Connect your sources with permission-first data import
         </p>
       </div>
@@ -141,10 +141,10 @@ export default function ConnectPage() {
       <div className="px-6 sm:px-8 lg:px-10 pb-10">
         {/* Trust banner */}
         <div className="glass-panel rounded-lg p-4 mb-8 flex items-center gap-3">
-          <Shield className="w-5 h-5 text-[#fbbf24] shrink-0" />
+          <Shield className="w-5 h-5 text-[#ffeb3b] shrink-0" />
           <div>
-            <p className="text-sm font-medium text-[#f5f0eb]">Permission-First Architecture</p>
-            <p className="text-xs text-[#a89f91]">
+            <p className="text-sm font-medium text-[#f5f5f5]">Permission-First Architecture</p>
+            <p className="text-xs text-[#a0a0a0]">
               QyntraWiki never silently accesses your data. Every connector requires explicit consent. For restricted APIs (LinkedIn, Instagram), we only support export-import mode.
             </p>
           </div>
@@ -190,15 +190,15 @@ export default function ConnectPage() {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-sm font-bold text-[#f5f0eb] mb-1">{conn.name}</h3>
-                <p className="text-xs text-[#a89f91] mb-4 leading-relaxed">{conn.description}</p>
+                <h3 className="text-sm font-bold text-[#f5f5f5] mb-1">{conn.name}</h3>
+                <p className="text-xs text-[#a0a0a0] mb-4 leading-relaxed">{conn.description}</p>
 
                 {/* Features */}
                 <div className="flex flex-wrap gap-1.5 mb-4">
                   {conn.features.map((f) => (
                     <span
                       key={f}
-                      className="text-[10px] px-2 py-0.5 bg-[rgba(245,158,11,0.1)] text-[#fbbf24] rounded"
+                      className="text-[10px] px-2 py-0.5 bg-[rgba(255,235,59,0.1)] text-[#ffeb3b] rounded"
                     >
                       {f}
                     </span>
@@ -207,8 +207,8 @@ export default function ConnectPage() {
 
                 {/* Permission text */}
                 <div className="flex items-start gap-2 mb-4 p-2.5 rounded bg-[rgba(107,101,96,0.08)]">
-                  <Shield className="w-3.5 h-3.5 text-[#6b6560] mt-0.5 shrink-0" />
-                  <p className="text-[10px] text-[#6b6560] leading-relaxed">{conn.permissionText}</p>
+                  <Shield className="w-3.5 h-3.5 text-[#666666] mt-0.5 shrink-0" />
+                  <p className="text-[10px] text-[#666666] leading-relaxed">{conn.permissionText}</p>
                 </div>
 
                 {/* Action */}
@@ -242,24 +242,24 @@ export default function ConnectPage() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold text-[#f5f0eb]">
+              <h3 className="text-lg font-bold text-[#f5f5f5]">
                 Connect {activeConnector.name}
               </h3>
               <button
                 onClick={() => setActiveModal(null)}
-                className="text-[#6b6560] hover:text-[#f5f0eb]"
+                className="text-[#666666] hover:text-[#f5f5f5]"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <p className="text-sm text-[#a89f91] mb-4">{activeConnector.description}</p>
+            <p className="text-sm text-[#a0a0a0] mb-4">{activeConnector.description}</p>
 
-            <div className="p-4 rounded-lg bg-[rgba(245,158,11,0.05)] border border-[rgba(245,158,11,0.15)] mb-4">
-              <h4 className="text-xs font-bold text-[#fbbf24] uppercase tracking-wider mb-2">
+            <div className="p-4 rounded-lg bg-[rgba(255,235,59,0.05)] border border-[rgba(255,235,59,0.15)] mb-4">
+              <h4 className="text-xs font-bold text-[#ffeb3b] uppercase tracking-wider mb-2">
                 Permission Required
               </h4>
-              <p className="text-xs text-[#a89f91]">{activeConnector.permissionText}</p>
+              <p className="text-xs text-[#a0a0a0]">{activeConnector.permissionText}</p>
             </div>
 
             <div className="flex items-start gap-3 mb-6">
@@ -273,9 +273,9 @@ export default function ConnectPage() {
                     [activeConnector.id]: e.target.checked,
                   }))
                 }
-                className="mt-0.5 w-4 h-4 accent-amber-500"
+                className="mt-0.5 w-4 h-4 accent-yellow-400"
               />
-              <label htmlFor="consent" className="text-xs text-[#a89f91] leading-relaxed">
+              <label htmlFor="consent" className="text-xs text-[#a0a0a0] leading-relaxed">
                 I consent to QyntraWiki accessing my {activeConnector.name} data for the purpose of
                 building my personal wiki. I understand I can revoke this access at any time.
               </label>
@@ -287,7 +287,7 @@ export default function ConnectPage() {
                 "w-full py-3 text-xs font-bold uppercase tracking-wider rounded transition-all flex items-center justify-center gap-2",
                 consentGiven[activeConnector.id]
                   ? "btn-primary"
-                  : "bg-[rgba(107,101,96,0.2)] text-[#6b6560] cursor-not-allowed"
+                  : "bg-[rgba(107,101,96,0.2)] text-[#666666] cursor-not-allowed"
               )}
             >
               {activeConnector.actionLabel}
