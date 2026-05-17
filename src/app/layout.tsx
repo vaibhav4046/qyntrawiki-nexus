@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
@@ -9,25 +15,16 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QyntraWiki — Your Autonomous Knowledge Agent",
+  title: "QyntraWiki — Personal Wikipedia powered by HydraDB",
   description:
-    "QyntraWiki connects to Notion, Drive, LinkedIn, Instagram, GitHub, Slack, and more — then compiles everything into a living, self-updating knowledge base.",
+    "Your own Wikipedia, built from your life. Connect files, notes, links, exports, and cloud knowledge. QyntraWiki compiles them into a cited, searchable, HydraDB-powered personal wiki.",
   keywords: [
-    "personalized wiki",
-    "knowledge base",
-    "graph database",
-    "HydraDB",
-    "QyntraWiki",
-    "connectors",
-    "notion",
-    "google drive",
-    "linkedin",
-    "instagram",
+    "personalized wiki", "knowledge base", "HydraDB", "QyntraWiki",
+    "connectors", "notion", "google drive", "linkedin", "instagram", "graph database",
   ],
   openGraph: {
-    title: "QyntraWiki",
-    description:
-      "Your Autonomous Knowledge Agent. Connect everything. Know everything.",
+    title: "QyntraWiki Nexus — Personal Wikipedia powered by HydraDB",
+    description: "Build your own Wikipedia from local files, cloud docs, and daily knowledge. Cited, searchable, HydraDB-powered.",
     type: "website",
   },
   robots: { index: true, follow: true },
@@ -35,12 +32,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${jetbrainsMono.variable} h-full antialiased dark`}>
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased dark`}>
+      <body className="min-h-full flex flex-col bg-primary text-primary">
         {children}
       </body>
     </html>
