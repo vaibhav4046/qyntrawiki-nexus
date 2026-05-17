@@ -1,0 +1,167 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Wiki {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String   @default("")
+  topic       String   @default("")
+  tenantId    String   @default("")
+  isPublished Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sources        Source[]
+  pages          Page[]
+  entities       Entity[]
+  relations      Relation[]
+  claims         Claim[]
+  citations      Citation[]
+  ingestJobs     IngestJob[]
+  askSessions    AskSession[]
+}
+
+model Source {
+  id            String   @id @default(cuid())
+  wikiId        String
+  type          String   @default("text")
+  title         String
+  url           String   @default("")
+  rawText       String   @default("")
+  fileName      String   @default("")
+  hydraSourceId String   @default("")
+  status        String   @default("pending")
+  error         String   @default("")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  wiki      Wiki       @relation(fields: [wikiId], references: [id])
+  citations Citation[]
+  jobs      IngestJob[]
+}
+
+model Page {
+  id              String   @id @default(cuid())
+  wikiId          String
+  title           String
+  slug            String
+  summary         String   @default("")
+  contentMd       String   @default("")
+  infoboxJson     String   @default("{}")
+  confidenceScore Float    @default(0)
+  coverageScore   Float    @default(0)
+  healthScore     Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  wiki       Wiki           @relation(fields: [wikiId], references: [id])
+  revisions  PageRevision[]
+  claims     Claim[]
+  citations  Citation[]
+  fromRelations Relation[] @relation("FromPage")
+  toRelations   Relation[] @relation("ToPage")
+  entities   Entity[]
+
+  @@unique([wikiId, slug])
+}
+
+model PageRevision {
+  id        String   @id @default(cuid())
+  pageId    String
+  contentMd String
+  summary   String   @default("")
+  reason    String   @default("Source ingested")
+  createdAt DateTime @default(now())
+
+  page Page @relation(fields: [pageId], references: [id])
+}
+
+model Entity {
+  id          String  @id @default(cuid())
+  wikiId      String
+  name        String
+  type        String  @default("unknown")
+  description String  @default("")
+  pageId      String?
+
+  wiki Wiki @relation(fields: [wikiId], references: [id])
+  page Page? @relation(fields: [pageId], references: [id])
+}
+
+model Relation {
+  id           String  @id @default(cuid())
+  wikiId       String
+  fromPageId   String
+  toPageId     String
+  relationType String  @default("mentions")
+  weight       Float   @default(1.0)
+  evidence     String  @default("")
+
+  wiki     Wiki @relation(fields: [wikiId], references: [id])
+  fromPage Page @relation("FromPage", fields: [fromPageId], references: [id])
+  toPage   Page @relation("ToPage", fields: [toPageId], references: [id])
+}
+
+model Claim {
+  id              String   @id @default(cuid())
+  wikiId          String
+  pageId          String
+  subject         String
+  predicate       String
+  object          String
+  normalizedClaim String   @default("")
+  status          String   @default("supported")
+  confidence      Float    @default(0.5)
+  sourceIdsJson   String   @default("[]")
+  explanation     String   @default("")
+  createdAt       DateTime @default(now())
+
+  wiki Wiki @relation(fields: [wikiId], references: [id])
+  page Page @relation(fields: [pageId], references: [id])
+}
+
+model Citation {
+  id       String   @id @default(cuid())
+  wikiId   String
+  pageId   String
+  sourceId String
+  quote    String   @default("")
+  url      String   @default("")
+  location String   @default("")
+  createdAt DateTime @default(now())
+
+  wiki   Wiki   @relation(fields: [wikiId], references: [id])
+  page   Page   @relation(fields: [pageId], references: [id])
+  source Source @relation(fields: [sourceId], references: [id])
+}
+
+model IngestJob {
+  id       String   @id @default(cuid())
+  wikiId   String
+  sourceId String
+  status   String   @default("queued")
+  step     String   @default("")
+  logsJson String   @default("[]")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  wiki   Wiki   @relation(fields: [wikiId], references: [id])
+  source Source @relation(fields: [sourceId], references: [id])
+}
+
+model AskSession {
+  id         String   @id @default(cuid())
+  wikiId     String
+  question   String
+  answer     String   @default("")
+  contextJson String  @default("[]")
+  createdAt  DateTime @default(now())
+
+  wiki Wiki @relation(fields: [wikiId], references: [id])
+}

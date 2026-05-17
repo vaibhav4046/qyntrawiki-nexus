@@ -1,0 +1,46 @@
+[
+  {
+    "id": "c_1778963908835_dv5tkrq",
+    "type": "text",
+    "title": "HydraDB Overview",
+    "rawText": "HydraDB is a graph-first context infrastructure for AI agents. It builds an ontology-first context graph over your data. Entities, relationships, and temporal signals are extracted automatically at write time. When you query for Apple, HydraDB knows you mean the customer you serve, not the fruit. Every retrieval runs through a multi-stage intelligent recall pipeline: metadata filter → hybrid retrieval → graph traversal → personalized ranking → results. Vector databases return similarity. HydraDB returns relevance.",
+    "wikiId": "demo-wiki",
+    "url": "",
+    "status": "pending",
+    "createdAt": "2026-05-16T20:38:28.835Z",
+    "updatedAt": "2026-05-16T20:38:28.835Z"
+  },
+  {
+    "id": "c_1778963908847_3ethrf0",
+    "type": "text",
+    "title": "LLM Wiki Pattern",
+    "rawText": "The LLM Wiki pattern lets an LLM incrementally build and maintain a persistent wiki. Instead of just retrieving from raw documents at query time, the LLM builds a structured, interlinked collection of markdown files. When you add a new source, the LLM extracts key information and integrates it into the existing wiki - updating entity pages, revising topic summaries, noting where new data contradicts old claims. The wiki is a persistent, compounding artifact. Cross-references are already there. Contradictions have already been flagged.",
+    "wikiId": "demo-wiki",
+    "url": "",
+    "status": "pending",
+    "createdAt": "2026-05-16T20:38:28.847Z",
+    "updatedAt": "2026-05-16T20:38:28.847Z"
+  },
+  {
+    "id": "c_1778963908863_hqbvvaa",
+    "type": "text",
+    "title": "Vector Search Limitations",
+    "rawText": "Vector databases are search engines. They answer one question well: What is most similar to this query? This breaks for stateful agents because vector search treats every chunk as an isolated point. There is no concept of who said what, what is contradicted later, what is stale, or how an entity has evolved. The failure mode is not the embedding model - it is the assumption that semantic similarity equals relevance.",
+    "wikiId": "demo-wiki",
+    "url": "",
+    "status": "pending",
+    "createdAt": "2026-05-16T20:38:28.863Z",
+    "updatedAt": "2026-05-16T20:38:28.863Z"
+  },
+  {
+    "id": "c_1778963908878_flkxvx7",
+    "type": "text",
+    "title": "Counter: Vector DBs Are Sufficient",
+    "rawText": "Vector databases alone are sufficient for agent memory. With good chunking, metadata filtering, and reranking, vector search can handle most use cases. Graph-based approaches add unnecessary complexity and latency. For 90% of applications, a well-tuned vector database with proper metadata is all you need for reliable agent context retrieval.",
+    "wikiId": "demo-wiki",
+    "url": "",
+    "status": "pending",
+    "createdAt": "2026-05-16T20:38:28.878Z",
+    "updatedAt": "2026-05-16T20:38:28.878Z"
+  }
+]
